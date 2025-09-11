@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, ChevronDown } from 'lucide-react';
+import { Menu, ChevronDown, LogIn, LogOut, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { user, signOut, loading } = useAuth();
 
   const navItems = [
     { name: 'Home', href: '/' },
@@ -83,9 +86,44 @@ const Navigation = () => {
               </div>
             ))}
             
-            <Button variant="default" asChild>
-              <Link to="/membership">Join Network</Link>
-            </Button>
+            {/* Authentication */}
+            {!loading && (
+              <>
+                {user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm">
+                        <User className="h-4 w-4 mr-2" />
+                        Account
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin">
+                          <User className="h-4 w-4 mr-2" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={signOut}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <Button variant="outline" asChild>
+                    <Link to="/auth">
+                      <LogIn className="h-4 w-4 mr-2" />
+                      Sign In
+                    </Link>
+                  </Button>
+                )}
+                
+                <Button variant="default" asChild>
+                  <Link to="/membership">Join Network</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Navigation */}
@@ -126,13 +164,48 @@ const Navigation = () => {
                     )}
                   </div>
                 ))}
-                <div className="pt-4">
-                  <Button className="w-full" asChild>
-                    <Link to="/membership" onClick={() => setIsOpen(false)}>
-                      Join Network
-                    </Link>
-                  </Button>
-                </div>
+                
+                {/* Mobile Authentication */}
+                {!loading && (
+                  <div className="pt-4 border-t border-border">
+                    {user ? (
+                      <>
+                        <Link
+                          to="/admin"
+                          onClick={() => setIsOpen(false)}
+                          className="flex items-center px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <User className="h-4 w-4 mr-2" />
+                          Admin Panel
+                        </Link>
+                        <Button
+                          variant="outline"
+                          className="w-full mt-2"
+                          onClick={() => {
+                            signOut();
+                            setIsOpen(false);
+                          }}
+                        >
+                          <LogOut className="h-4 w-4 mr-2" />
+                          Sign Out
+                        </Button>
+                      </>
+                    ) : (
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link to="/auth" onClick={() => setIsOpen(false)}>
+                          <LogIn className="h-4 w-4 mr-2" />
+                          Sign In
+                        </Link>
+                      </Button>
+                    )}
+                    
+                    <Button className="w-full mt-2" asChild>
+                      <Link to="/membership" onClick={() => setIsOpen(false)}>
+                        Join Network
+                      </Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </SheetContent>
           </Sheet>
