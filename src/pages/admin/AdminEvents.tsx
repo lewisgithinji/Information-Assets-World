@@ -11,6 +11,7 @@ import { useEvents } from '@/hooks/useEvents';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { format, parseISO } from 'date-fns';
+import AdminLayout from '@/components/AdminLayout';
 
 export default function AdminEvents() {
   const navigate = useNavigate();
@@ -62,17 +63,17 @@ export default function AdminEvents() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <AdminLayout>
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-2 text-muted-foreground">Loading events...</p>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <AdminLayout>
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Manage Events</h1>
@@ -205,6 +206,6 @@ export default function AdminEvents() {
           ))}
         </div>
       )}
-    </div>
+    </AdminLayout>
   );
 }

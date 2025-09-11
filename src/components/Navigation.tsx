@@ -26,7 +26,6 @@ const Navigation = () => {
       ]
     },
     { name: 'Research Papers', href: '/papers' },
-    { name: 'Membership', href: '/membership' },
     { name: 'About', href: '/about' },
     { name: 'Global Offices', href: '/offices' },
     { name: 'Contact', href: '/contact' },
@@ -88,6 +87,11 @@ const Navigation = () => {
               </div>
             ))}
             
+            {/* Join Network - appears first */}
+            <Button variant="default" asChild>
+              <Link to="/membership">Join Network</Link>
+            </Button>
+
             {/* Authentication */}
             {!loading && (
               <>
@@ -140,10 +144,6 @@ const Navigation = () => {
                     </Link>
                   </Button>
                 )}
-                
-                <Button variant="default" asChild>
-                  <Link to="/membership">Join Network</Link>
-                </Button>
               </>
             )}
           </div>
@@ -187,9 +187,18 @@ const Navigation = () => {
                   </div>
                 ))}
                 
+                {/* Mobile Join Network - appears first */}
+                <div className="pt-4 border-t border-border">
+                  <Button className="w-full" asChild>
+                    <Link to="/membership" onClick={() => setIsOpen(false)}>
+                      Join Network
+                    </Link>
+                  </Button>
+                </div>
+
                 {/* Mobile Authentication */}
                 {!loading && (
-                  <div className="pt-4 border-t border-border">
+                  <div className="pt-2">
                     {user ? (
                       <>
                         <Link
@@ -233,19 +242,13 @@ const Navigation = () => {
                         </Button>
                       </>
                     ) : (
-                      <Button variant="outline" className="w-full" asChild>
+                      <Button variant="outline" className="w-full mt-2" asChild>
                         <Link to="/auth" onClick={() => setIsOpen(false)}>
                           <LogIn className="h-4 w-4 mr-2" />
                           Sign In
                         </Link>
                       </Button>
                     )}
-                    
-                    <Button className="w-full mt-2" asChild>
-                      <Link to="/membership" onClick={() => setIsOpen(false)}>
-                        Join Network
-                      </Link>
-                    </Button>
                   </div>
                 )}
               </div>
