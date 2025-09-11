@@ -24,10 +24,31 @@ const Footer = () => {
     <footer className="relative gradient-footer border-t border-glass-border overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 rounded-full bg-primary/10 animate-rotate-slow animate-glow-pulse"></div>
-        <div className="absolute top-3/4 right-1/3 w-24 h-24 rounded-full bg-primary-light/15 animate-rotate-fast animate-float"></div>
-        <div className="absolute bottom-1/3 left-1/2 w-20 h-20 rounded-full bg-accent/10 animate-rotate-slow" style={{animationDelay: '-5s'}}></div>
-        <div className="absolute top-1/2 right-1/4 w-16 h-16 rounded-full bg-primary-glow/20 animate-float" style={{animationDelay: '-2s'}}></div>
+        {/* Large rotating circles */}
+        <div className="absolute top-10 left-10 w-16 h-16 bg-primary-light/35 rounded-full animate-rotate-slow" />
+        <div className="absolute top-20 right-20 w-20 h-20 bg-primary-glow/40 rounded-full animate-rotate-fast" style={{ animationDelay: '-2s' }} />
+        <div className="absolute bottom-20 left-20 w-24 h-24 bg-primary/30 rounded-full animate-float" style={{ animationDelay: '-4s' }} />
+        <div className="absolute bottom-10 right-10 w-18 h-18 bg-accent/35 rounded-full animate-glow-pulse" style={{ animationDelay: '-1s' }} />
+        
+        {/* Medium rotating squares */}
+        <div className="absolute top-1/2 left-1/4 w-12 h-12 bg-teal/30 rotate-45 animate-rotate-medium" style={{ animationDelay: '-6s' }} />
+        <div className="absolute top-1/3 right-1/3 w-14 h-14 bg-primary-dark/25 rotate-45 animate-shimmer" style={{ animationDelay: '-3s' }} />
+        
+        {/* Small drifting elements */}
+        <div className="absolute top-16 left-1/2 w-8 h-8 bg-primary-glow/40 rounded-full animate-drift" style={{ animationDelay: '-7s' }} />
+        <div className="absolute bottom-32 right-1/4 w-10 h-10 bg-accent-light/30 rounded-full animate-rotate-fast" style={{ animationDelay: '-5s' }} />
+        
+        {/* Gradient shimmer shapes */}
+        <div className="absolute top-1/4 right-12 w-16 h-16 rounded-full animate-shimmer" 
+             style={{ 
+               background: 'linear-gradient(45deg, hsl(217 91% 75% / 0.3), hsl(185 85% 75% / 0.3))',
+               animationDelay: '-8s' 
+             }} />
+        <div className="absolute bottom-1/4 left-12 w-12 h-12 rounded-full animate-drift" 
+             style={{ 
+               background: 'linear-gradient(135deg, hsl(45 85% 75% / 0.25), hsl(217 91% 85% / 0.25))',
+               animationDelay: '-10s' 
+             }} />
       </div>
       
       <div className="container mx-auto px-4 py-12 relative z-10">

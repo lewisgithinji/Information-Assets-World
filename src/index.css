@@ -74,8 +74,8 @@
     --shadow-glow: 0 0 40px hsl(217 91% 85% / 0.4);
     
     /* Glass Effect */
-    --glass-bg: hsla(220, 30%, 15%, 0.8);
-    --glass-border: hsla(220, 50%, 30%, 0.3);
+    --glass-bg: hsla(220, 30%, 20%, 0.6);
+    --glass-border: hsla(220, 50%, 40%, 0.5);
     
     /* Animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -156,11 +156,23 @@
   }
   
   .animate-rotate-slow {
-    animation: rotate-slow 20s linear infinite;
+    animation: rotate-slow 12s linear infinite;
+  }
+
+  .animate-rotate-medium {
+    animation: rotate-medium 6s linear infinite;
   }
 
   .animate-rotate-fast {
-    animation: rotate-fast 8s linear infinite;
+    animation: rotate-fast 4s linear infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  .animate-drift {
+    animation: drift 8s ease-in-out infinite;
   }
 
   .animate-glow-pulse {
@@ -185,7 +197,7 @@
 
   .glass-effect {
     background: var(--glass-bg);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(15px);
     border: 1px solid var(--glass-border);
   }
   
@@ -217,12 +229,47 @@
   }
 }
 
+@keyframes rotate-medium {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes rotate-fast {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1) rotate(180deg);
+  }
+}
+
+@keyframes drift {
+  0%, 100% {
+    transform: translateX(0px) translateY(0px);
+  }
+  25% {
+    transform: translateX(20px) translateY(-15px);
+  }
+  50% {
+    transform: translateX(-10px) translateY(-30px);
+  }
+  75% {
+    transform: translateX(-20px) translateY(-10px);
   }
 }
 
