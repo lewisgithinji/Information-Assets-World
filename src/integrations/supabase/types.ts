@@ -361,6 +361,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_public_office_locations: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          city: string
+          country: string
+          id: string
+          latitude: number
+          longitude: number
+          region: string
+        }[]
+      }
       get_user_role: {
         Args: { user_id: string }
         Returns: string

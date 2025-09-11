@@ -1,399 +1,324 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Mail, Phone, MapPin, Clock, MessageSquare, Users, Calendar, FileText } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Mail, Phone, MapPin, Clock, Globe, Users, MessageSquare, Building2, Loader2, Calendar } from 'lucide-react';
+import { useOffices } from '@/hooks/useOffices';
+import OfficeContactInfo from '@/components/OfficeContactInfo';
 
-const Contact = () => {
-  const { toast } = useToast();
+export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    organization: '',
     subject: '',
-    inquiry_type: '',
     message: '',
+    region: '',
   });
+  
+  const { data: offices = [], isLoading } = useOffices();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Basic validation
-    if (!formData.name || !formData.email || !formData.message) {
-      toast({
-        title: "Please fill in required fields",
-        description: "Name, email, and message are required.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // In a real app, this would submit to a form service
-    toast({
-      title: "Message sent successfully!",
-      description: "We'll get back to you within 24 hours.",
-    });
-
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      organization: '',
-      subject: '',
-      inquiry_type: '',
-      message: '',
-    });
+    console.log('Form submitted:', formData);
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const inquiryTypes = [
-    { value: 'membership', label: 'Membership Inquiry' },
-    { value: 'events', label: 'Event Information' },
-    { value: 'partnership', label: 'Partnership Opportunity' },
-    { value: 'research', label: 'Research Collaboration' },
-    { value: 'advertising', label: 'Advertising & Sponsorship' },
-    { value: 'support', label: 'Technical Support' },
-    { value: 'other', label: 'Other' },
-  ];
-
-  const contactMethods = [
-    {
-      icon: Mail,
-      title: 'Email Us',
-      description: 'Get in touch via email',
-      contact: 'info@informationassetsworld.com',
-      action: 'mailto:info@informationassetsworld.com'
-    },
-    {
-      icon: Phone,
-      title: 'Call Us',
-      description: 'Speak with our team directly',
-      contact: '+254 700 000 000',
-      action: 'tel:+254700000000'
-    },
-    {
-      icon: MessageSquare,
-      title: 'Live Chat',
-      description: 'Chat with support online',
-      contact: 'Available 24/7',
-      action: '#'
-    }
-  ];
-
-  const offices = [
-    {
-      region: 'Africa (Headquarters)',
-      city: 'Nairobi, Kenya',
-      address: 'Westlands Business District',
-      phone: '+254 700 000 000',
-      email: 'africa@informationassetsworld.com',
-      hours: '8AM - 6PM EAT'
-    },
-    {
-      region: 'Asia Pacific',
-      city: 'Bangkok, Thailand',
-      address: 'Sukhumvit Business District',
-      phone: '+66 2 000 0000',
-      email: 'asia@informationassetsworld.com',
-      hours: '9AM - 6PM ICT'
-    },
-    {
-      region: 'Europe',
-      city: 'Brussels, Belgium',
-      address: 'European Quarter',
-      phone: '+32 2 000 0000',
-      email: 'europe@informationassetsworld.com',
-      hours: '9AM - 5PM CET'
-    },
-    {
-      region: 'Americas',
-      city: 'Columbus, USA',
-      address: 'Downtown Columbus',
-      phone: '+1 614 000 0000',
-      email: 'americas@informationassetsworld.com',
-      hours: '9AM - 5PM EST'
-    }
-  ];
-
-  const supportTopics = [
-    {
-      icon: Users,
-      title: 'Membership Support',
-      description: 'Questions about membership benefits, billing, or account management',
-      contact: 'membership@informationassetsworld.com'
-    },
-    {
-      icon: Calendar,
-      title: 'Event Support',
-      description: 'Registration, scheduling, or technical issues with events',
-      contact: 'events@informationassetsworld.com'
-    },
-    {
-      icon: FileText,
-      title: 'Research Support',
-      description: 'Paper submissions, peer review process, or research collaboration',
-      contact: 'research@informationassetsworld.com'
-    }
-  ];
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
+          <p className="text-muted-foreground">Loading contact information...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="py-12">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Contact Us
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Get in touch with our global team. We're here to help with membership, 
-            events, partnerships, and any questions you may have.
-          </p>
+    <div className="min-h-screen bg-gradient-subtle">
+      {/* Hero Section */}
+      <section className="bg-gradient-hero py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center text-white">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 hero-text-shadow">
+              Get in Touch
+            </h1>
+            <p className="text-xl md:text-2xl opacity-90 hero-text-shadow">
+              Connect with our global team of information asset experts
+            </p>
+          </div>
         </div>
+      </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-          {/* Contact Form */}
-          <div className="lg:col-span-2">
-            <Card className="border-card-border">
-              <CardHeader>
-                <CardTitle className="text-2xl">Send us a Message</CardTitle>
-                <p className="text-muted-foreground">
-                  Fill out the form below and we'll get back to you within 24 hours.
-                </p>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Full Name *</Label>
-                      <Input
-                        id="name"
-                        value={formData.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                        placeholder="Your full name"
-                        required
-                      />
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-6xl mx-auto">
+          {/* Contact Methods */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
+            {/* Contact Form */}
+            <div>
+              <Card className="border-card-border">
+                <CardHeader>
+                  <CardTitle className="text-2xl flex items-center gap-3">
+                    <MessageSquare className="h-6 w-6 text-primary" />
+                    Send us a Message
+                  </CardTitle>
+                  <CardDescription>
+                    Fill out the form below and we'll get back to you within 24 hours.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="name">Full Name</Label>
+                        <Input
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="email">Email Address</Label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        placeholder="your.email@example.com"
-                        required
-                      />
-                    </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="organization">Organization</Label>
-                      <Input
-                        id="organization"
-                        value={formData.organization}
-                        onChange={(e) => handleInputChange('organization', e.target.value)}
-                        placeholder="Your organization name"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="inquiry_type">Inquiry Type</Label>
-                      <Select value={formData.inquiry_type} onValueChange={(value) => handleInputChange('inquiry_type', value)}>
+                    <div>
+                      <Label htmlFor="region">Preferred Contact Region</Label>
+                      <Select value={formData.region} onValueChange={(value) => handleSelectChange('region', value)}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select inquiry type" />
+                          <SelectValue placeholder="Select a region" />
                         </SelectTrigger>
                         <SelectContent>
-                          {inquiryTypes.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label}
-                            </SelectItem>
-                          ))}
+                          <SelectItem value="global">Global Headquarters</SelectItem>
+                          <SelectItem value="africa">Africa</SelectItem>
+                          <SelectItem value="asia">Asia Pacific</SelectItem>
+                          <SelectItem value="europe">Europe</SelectItem>
+                          <SelectItem value="americas">Americas</SelectItem>
+                          <SelectItem value="oceania">Oceania</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="subject">Subject</Label>
-                    <Input
-                      id="subject"
-                      value={formData.subject}
-                      onChange={(e) => handleInputChange('subject', e.target.value)}
-                      placeholder="Brief description of your inquiry"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => handleInputChange('message', e.target.value)}
-                      placeholder="Please provide details about your inquiry..."
-                      rows={6}
-                      required
-                    />
-                  </div>
-
-                  <Button type="submit" size="lg" className="w-full">
-                    Send Message
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Contact Methods */}
-          <div className="space-y-6">
-            <Card className="border-card-border">
-              <CardHeader>
-                <CardTitle>Quick Contact</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {contactMethods.map((method) => {
-                  const Icon = method.icon;
-                  return (
-                    <a
-                      key={method.title}
-                      href={method.action}
-                      className="flex items-start gap-3 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors"
-                    >
-                      <Icon className="h-5 w-5 text-primary mt-0.5" />
-                      <div>
-                        <p className="font-medium text-foreground">{method.title}</p>
-                        <p className="text-sm text-muted-foreground">{method.description}</p>
-                        <p className="text-sm text-primary font-medium">{method.contact}</p>
-                      </div>
-                    </a>
-                  );
-                })}
-              </CardContent>
-            </Card>
-
-            {/* Response Time */}
-            <Card className="border-card-border">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Response Times
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">General Inquiries</span>
-                  <Badge variant="secondary">24 hours</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Technical Support</span>
-                  <Badge variant="secondary">4 hours</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Partnerships</span>
-                  <Badge variant="secondary">48 hours</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Emergency</span>
-                  <Badge variant="default">1 hour</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Support Topics */}
-        <div className="mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Specialized Support
-            </h2>
-            <p className="text-muted-foreground">
-              For specific inquiries, contact our specialized support teams directly
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {supportTopics.map((topic) => {
-              const Icon = topic.icon;
-              return (
-                <Card key={topic.title} className="text-center border-card-border">
-                  <CardHeader>
-                    <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Icon className="h-6 w-6 text-primary" />
+                    <div>
+                      <Label htmlFor="subject">Subject</Label>
+                      <Input
+                        id="subject"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleInputChange}
+                        required
+                      />
                     </div>
-                    <CardTitle className="text-lg">{topic.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                      {topic.description}
-                    </p>
-                    <a
-                      href={`mailto:${topic.contact}`}
-                      className="text-sm text-primary hover:underline font-medium"
-                    >
-                      {topic.contact}
-                    </a>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
 
-        {/* Global Offices */}
-        <div>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Our Global Offices
-            </h2>
-            <p className="text-muted-foreground">
-              Reach out to your nearest regional office for local support
-            </p>
-          </div>
+                    <div>
+                      <Label htmlFor="message">Message</Label>
+                      <Textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        rows={6}
+                        required
+                      />
+                    </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {offices.map((office) => (
-              <Card key={office.region} className="border-card-border">
+                    <Button type="submit" className="w-full" size="lg">
+                      Send Message
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Contact Information */}
+            <div className="space-y-8">
+              <Card className="border-card-border">
                 <CardHeader>
-                  <CardTitle className="text-lg">{office.region}</CardTitle>
-                  <p className="text-muted-foreground">{office.city}</p>
+                  <CardTitle className="flex items-center gap-3">
+                    <Building2 className="h-5 w-5 text-primary" />
+                    Global Headquarters
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3 text-sm">
-                  <div className="flex items-start gap-2">
-                    <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                    <span className="text-muted-foreground">{office.address}</span>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <span>Westlands Business District, Nairobi, Kenya</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Phone className="h-4 w-4 text-muted-foreground" />
-                    <a href={`tel:${office.phone}`} className="text-primary hover:underline">
-                      {office.phone}
+                    <a href="tel:+254700000000" className="text-primary hover:underline">
+                      +254 700 000 000
                     </a>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Mail className="h-4 w-4 text-muted-foreground" />
-                    <a href={`mailto:${office.email}`} className="text-primary hover:underline">
-                      {office.email}
+                    <a href="mailto:info@informationassetsworld.com" className="text-primary hover:underline">
+                      info@informationassetsworld.com
                     </a>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Clock className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-muted-foreground">{office.hours}</span>
+                    <span>8:00 AM - 6:00 PM EAT</span>
                   </div>
                 </CardContent>
               </Card>
-            ))}
+
+              <Card className="border-card-border">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3">
+                    <Globe className="h-5 w-5 text-primary" />
+                    24/7 Support
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">
+                    Need immediate assistance? Our global support team is available around the clock.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-muted-foreground" />
+                      <a href="mailto:support@informationassetsworld.com" className="text-primary hover:underline">
+                        support@informationassetsworld.com
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                      <span>Live Chat Available</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-card-border">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3">
+                    <Users className="h-5 w-5 text-primary" />
+                    Partnership Inquiries
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">
+                    Interested in partnering with us? Let's explore opportunities together.
+                  </p>
+                  <Button variant="outline" className="w-full">
+                    <Mail className="h-4 w-4 mr-2" />
+                    partnerships@informationassetsworld.com
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="mb-20">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                Quick Actions
+              </h2>
+              <p className="text-muted-foreground">
+                Looking for something specific? These shortcuts might help.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="text-center hover:shadow-lg transition-shadow border-card-border">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Calendar className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Event Registration</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Register for upcoming conferences and workshops
+                  </p>
+                  <Button>Browse Events</Button>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center hover:shadow-lg transition-shadow border-card-border">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Membership</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Join our global network of information professionals
+                  </p>
+                  <Button>Join Network</Button>
+                </CardContent>
+              </Card>
+
+              <Card className="text-center hover:shadow-lg transition-shadow border-card-border">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MessageSquare className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold mb-2">Media Inquiries</h3>
+                  <p className="text-muted-foreground mb-4">
+                    Press releases, interviews, and media resources
+                  </p>
+                  <Button>Media Center</Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Global Offices */}
+          <div>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                Our Global Offices
+              </h2>
+              <p className="text-muted-foreground">
+                Reach out to your nearest regional office for local support
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {offices.map((office) => (
+                <Card key={office.id} className="border-card-border">
+                  <CardHeader>
+                    <CardTitle className="text-lg">{office.region}</CardTitle>
+                    <p className="text-muted-foreground">{office.city}, {office.country}</p>
+                  </CardHeader>
+                  <CardContent className="space-y-3 text-sm">
+                    <OfficeContactInfo office={office} showAddress={true} />
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-muted-foreground">Business Hours: 9AM - 6PM Local</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-export default Contact;

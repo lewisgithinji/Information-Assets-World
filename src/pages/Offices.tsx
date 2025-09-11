@@ -2,17 +2,41 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Phone, Mail, Clock, Users, Building } from 'lucide-react';
-import { globalOffices } from '@/data/content';
+import { MapPin, Clock, Users, Building, Loader2 } from 'lucide-react';
+import { useOffices } from '@/hooks/useOffices';
+import OfficeContactInfo from '@/components/OfficeContactInfo';
 
 const Offices = () => {
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
+  const { data: offices = [], isLoading, error } = useOffices();
 
-  const regions = ['all', ...Array.from(new Set(globalOffices.map(office => office.region)))];
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2" />
+          <p className="text-muted-foreground">Loading offices...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-subtle flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive mb-4">Failed to load offices</p>
+          <Button onClick={() => window.location.reload()}>Retry</Button>
+        </div>
+      </div>
+    );
+  }
+
+  const regions = ['all', ...Array.from(new Set(offices.map(office => office.region)))];
 
   const filteredOffices = selectedRegion === 'all' 
-    ? globalOffices 
-    : globalOffices.filter(office => office.region === selectedRegion);
+    ? offices 
+    : offices.filter(office => office.region === selectedRegion);
 
   const getRegionColor = (region: string) => {
     const colors: Record<string, string> = {
@@ -57,7 +81,7 @@ const Offices = () => {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 max-w-4xl mx-auto">
           <div className="text-center">
-            <div className="text-3xl font-bold text-primary mb-2">{globalOffices.length}</div>
+            <div className="text-3xl font-bold text-primary mb-2">{offices.length}</div>
             <div className="text-muted-foreground">Global Offices</div>
           </div>
           <div className="text-center">
@@ -81,11 +105,6 @@ const Offices = () => {
               <CardHeader>
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-3 h-3 rounded-full ${getRegionColor(office.region)}`}></div>
-                  {office.isHeadquarters && (
-                    <Badge variant="default" className="text-xs">
-                      Headquarters
-                    </Badge>
-                  )}
                 </div>
                 <CardTitle className="text-xl flex items-center gap-2">
                   <Building className="h-5 w-5 text-primary" />
@@ -97,32 +116,7 @@ const Offices = () => {
               </CardHeader>
               
               <CardContent className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                  <div className="text-sm text-foreground/80">
-                    {office.address}
-                  </div>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 text-muted-foreground" />
-                  <a 
-                    href={`tel:${office.phone}`}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    {office.phone}
-                  </a>
-                </div>
-                
-                <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <a 
-                    href={`mailto:${office.email}`}
-                    className="text-sm text-primary hover:underline"
-                  >
-                    {office.email}
-                  </a>
-                </div>
+                <OfficeContactInfo office={office} />
                 
                 <div className="flex items-center gap-3">
                   <Clock className="h-4 w-4 text-muted-foreground" />
@@ -183,9 +177,8 @@ const Offices = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Array.from(new Set(globalOffices.map(office => office.region))).map((region) => {
-              const regionOffices = globalOffices.filter(office => office.region === region);
-              const headquarters = regionOffices.find(office => office.isHeadquarters);
+            {Array.from(new Set(offices.map(office => office.region))).map((region) => {
+              const regionOffices = offices.filter(office => office.region === region);
               
               return (
                 <Card key={region} className="text-center border-card-border">
@@ -201,9 +194,6 @@ const Offices = () => {
                       {regionOffices.map((office) => (
                         <div key={`${office.city}-${office.country}`} className="flex items-center justify-center gap-2">
                           <span>{office.city}, {office.country}</span>
-                          {office.isHeadquarters && (
-                            <Badge variant="outline" className="text-xs">HQ</Badge>
-                          )}
                         </div>
                       ))}
                     </div>
