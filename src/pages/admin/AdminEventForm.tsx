@@ -66,10 +66,22 @@ export default function AdminEventForm() {
 
   const onSubmit = async (data: EventFormData) => {
     try {
+      // Transform data to match database schema
+      const submitData = {
+        title: data.title,
+        description: data.description || null,
+        location: data.location,
+        start_date: data.start_date,
+        end_date: data.end_date,
+        theme: data.theme || null,
+        status: data.status,
+        image_url: data.image_url || null,
+      };
+
       if (isEditing) {
         const { error } = await supabase
           .from('events')
-          .update(data)
+          .update(submitData)
           .eq('id', id);
 
         if (error) throw error;
@@ -81,7 +93,7 @@ export default function AdminEventForm() {
       } else {
         const { error } = await supabase
           .from('events')
-          .insert(data);
+          .insert(submitData);
 
         if (error) throw error;
 

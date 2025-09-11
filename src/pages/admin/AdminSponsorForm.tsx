@@ -67,10 +67,18 @@ export default function AdminSponsorForm() {
 
   const onSubmit = async (data: SponsorFormData) => {
     try {
+      // Transform data to match database schema
+      const submitData = {
+        name: data.name,
+        logo_url: data.logo_url || null,
+        website_url: data.website_url || null,
+        tier: data.tier,
+      };
+
       if (isEditing) {
         const { error } = await supabase
           .from('sponsors')
-          .update(data)
+          .update(submitData)
           .eq('id', id);
 
         if (error) throw error;
@@ -82,7 +90,7 @@ export default function AdminSponsorForm() {
       } else {
         const { error } = await supabase
           .from('sponsors')
-          .insert(data);
+          .insert(submitData);
 
         if (error) throw error;
 

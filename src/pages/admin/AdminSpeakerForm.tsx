@@ -70,10 +70,19 @@ export default function AdminSpeakerForm() {
 
   const onSubmit = async (data: SpeakerFormData) => {
     try {
+      // Transform data to match database schema
+      const submitData = {
+        name: data.name,
+        title: data.title || null,
+        organization: data.organization || null,
+        bio: data.bio || null,
+        image_url: data.image_url || null,
+      };
+
       if (isEditing) {
         const { error } = await supabase
           .from('speakers')
-          .update(data)
+          .update(submitData)
           .eq('id', id);
 
         if (error) throw error;
@@ -85,7 +94,7 @@ export default function AdminSpeakerForm() {
       } else {
         const { error } = await supabase
           .from('speakers')
-          .insert(data);
+          .insert(submitData);
 
         if (error) throw error;
 

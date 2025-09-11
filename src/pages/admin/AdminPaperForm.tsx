@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FileText, ArrowLeft, Save, Plus, X } from 'lucide-react';
+import { FileText, ArrowLeft, Save } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
@@ -17,9 +17,8 @@ import { useQuery } from '@tanstack/react-query';
 const paperSchema = z.object({
   title: z.string().min(1, "Title is required"),
   abstract: z.string().default(""),
-  authors: z.array(z.string().min(1, "Author name is required")).min(1, "At least one author is required"),
+  authors: z.string().min(1, "At least one author is required"),
   category: z.string().default(""),
-  tags: z.array(z.string()).default([]),
   pdf_url: z.string().default(""),
   status: z.enum(['draft', 'under_review', 'published']).default('draft'),
   published_date: z.string().default(""),
@@ -54,28 +53,22 @@ export default function AdminPaperForm() {
     defaultValues: {
       title: '',
       abstract: '',
-      authors: [''],
+      authors: '',
       category: '',
-        tags: [],
       pdf_url: '',
       status: 'draft',
       published_date: '',
     },
   });
 
-  const { fields: authorFields, append: addAuthor, remove: removeAuthor } = useFieldArray({
-    control: form.control,
-    name: "authors",
-  });
-
   useEffect(() => {
     if (paper) {
+      const authorsString = Array.isArray(paper.authors) ? paper.authors.join(', ') : '';
       form.reset({
         title: paper.title,
         abstract: paper.abstract || '',
-        authors: paper.authors || [''],
+        authors: authorsString,
         category: paper.category || '',
-        tags: paper.tags || [],
         pdf_url: paper.pdf_url || '',
         status: paper.status as 'draft' | 'under_review' | 'published',
         published_date: paper.published_date || '',
@@ -85,10 +78,19 @@ export default function AdminPaperForm() {
 
   const onSubmit = async (data: PaperFormData) => {
     try {
+      // Convert authors string to array
+      const authorsArray = data.authors.split(',').map(author => author.trim()).filter(author => author);
+      
+      // Transform data to match database schema
       const submitData = {
-        ...data,
-        authors: data.authors.filter(author => author.trim() !== ''),
-        tags: data.tags?.filter(tag => tag.trim() !== '') || [],
+        title: data.title,
+        abstract: data.abstract || null,
+        authors: authorsArray,
+        category: data.category || null,
+        tags: [],
+        pdf_url: data.pdf_url || null,
+        status: data.status,
+        published_date: data.published_date || null,
       };
 
       if (isEditing) {
@@ -201,46 +203,22 @@ export default function AdminPaperForm() {
                   )}
                 />
 
-                <div>
-                  <FormLabel>Authors</FormLabel>
-                  <div className="space-y-2 mt-2">
-                    {authorFields.map((field, index) => (
-                      <div key={field.id} className="flex gap-2">
-                        <FormField
-                          control={form.control}
-                          name={`authors.${index}`}
-                          render={({ field }) => (
-                            <FormItem className="flex-1">
-                              <FormControl>
-                                <Input placeholder="Enter author name" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
+                <FormField
+                  control={form.control}
+                  name="authors"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Authors</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter authors separated by commas (e.g., John Doe, Jane Smith)" 
+                          {...field} 
                         />
-                        {authorFields.length > 1 && (
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => removeAuthor(index)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        )}
-                      </div>
-                    ))}
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => addAuthor('')}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Author
-                    </Button>
-                  </div>
-                </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}

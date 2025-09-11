@@ -83,11 +83,17 @@ export default function AdminOfficeForm() {
 
   const onSubmit = async (data: OfficeFormData) => {
     try {
+      // Transform data to match database schema
       const submitData = {
-        ...data,
+        region: data.region,
+        city: data.city,
+        country: data.country,
+        address: data.address || null,
+        email: data.email || null,
+        phone: data.phone || null,
         latitude: data.latitude ? parseFloat(data.latitude) : null,
         longitude: data.longitude ? parseFloat(data.longitude) : null,
-        email: data.email || null,
+        status: data.status,
       };
 
       if (isEditing) {
