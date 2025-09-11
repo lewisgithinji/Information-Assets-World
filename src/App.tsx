@@ -30,6 +30,7 @@ import AdminSponsorForm from "./pages/admin/AdminSponsorForm";
 import AdminOffices from "./pages/admin/AdminOffices";
 import AdminOfficeForm from "./pages/admin/AdminOfficeForm";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -55,22 +56,22 @@ const App = () => (
               <Route path="/contact" element={<Contact />} />
               <Route path="/advertising" element={<Advertising />} />
               <Route path="/auth" element={<Auth />} />
-              <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-              <Route path="/admin/events" element={<ProtectedRoute><AdminEvents /></ProtectedRoute>} />
-              <Route path="/admin/events/new" element={<ProtectedRoute><AdminEventForm /></ProtectedRoute>} />
-              <Route path="/admin/events/:id/edit" element={<ProtectedRoute><AdminEventForm /></ProtectedRoute>} />
-              <Route path="/admin/papers" element={<ProtectedRoute><AdminPapers /></ProtectedRoute>} />
-              <Route path="/admin/papers/new" element={<ProtectedRoute><AdminPaperForm /></ProtectedRoute>} />
-              <Route path="/admin/papers/:id/edit" element={<ProtectedRoute><AdminPaperForm /></ProtectedRoute>} />
-              <Route path="/admin/speakers" element={<ProtectedRoute><AdminSpeakers /></ProtectedRoute>} />
-              <Route path="/admin/speakers/new" element={<ProtectedRoute><AdminSpeakerForm /></ProtectedRoute>} />
-              <Route path="/admin/speakers/:id/edit" element={<ProtectedRoute><AdminSpeakerForm /></ProtectedRoute>} />
-              <Route path="/admin/sponsors" element={<ProtectedRoute><AdminSponsors /></ProtectedRoute>} />
-              <Route path="/admin/sponsors/new" element={<ProtectedRoute><AdminSponsorForm /></ProtectedRoute>} />
-              <Route path="/admin/sponsors/:id/edit" element={<ProtectedRoute><AdminSponsorForm /></ProtectedRoute>} />
-              <Route path="/admin/offices" element={<ProtectedRoute><AdminOffices /></ProtectedRoute>} />
-              <Route path="/admin/offices/new" element={<ProtectedRoute><AdminOfficeForm /></ProtectedRoute>} />
-              <Route path="/admin/offices/:id/edit" element={<ProtectedRoute><AdminOfficeForm /></ProtectedRoute>} />
+              <Route path="/admin" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
+              <Route path="/admin/events" element={<AdminProtectedRoute><AdminEvents /></AdminProtectedRoute>} />
+              <Route path="/admin/events/new" element={<AdminProtectedRoute><AdminEventForm /></AdminProtectedRoute>} />
+              <Route path="/admin/events/:id/edit" element={<AdminProtectedRoute><AdminEventForm /></AdminProtectedRoute>} />
+              <Route path="/admin/papers" element={<AdminProtectedRoute><AdminPapers /></AdminProtectedRoute>} />
+              <Route path="/admin/papers/new" element={<AdminProtectedRoute><AdminPaperForm /></AdminProtectedRoute>} />
+              <Route path="/admin/papers/:id/edit" element={<AdminProtectedRoute><AdminPaperForm /></AdminProtectedRoute>} />
+              <Route path="/admin/speakers" element={<AdminProtectedRoute><AdminSpeakers /></AdminProtectedRoute>} />
+              <Route path="/admin/speakers/new" element={<AdminProtectedRoute><AdminSpeakerForm /></AdminProtectedRoute>} />
+              <Route path="/admin/speakers/:id/edit" element={<AdminProtectedRoute><AdminSpeakerForm /></AdminProtectedRoute>} />
+              <Route path="/admin/sponsors" element={<AdminProtectedRoute><AdminSponsors /></AdminProtectedRoute>} />
+              <Route path="/admin/sponsors/new" element={<AdminProtectedRoute><AdminSponsorForm /></AdminProtectedRoute>} />
+              <Route path="/admin/sponsors/:id/edit" element={<AdminProtectedRoute><AdminSponsorForm /></AdminProtectedRoute>} />
+              <Route path="/admin/offices" element={<AdminProtectedRoute requiredRole="admin"><AdminOffices /></AdminProtectedRoute>} />
+              <Route path="/admin/offices/new" element={<AdminProtectedRoute requiredRole="admin"><AdminOfficeForm /></AdminProtectedRoute>} />
+              <Route path="/admin/offices/:id/edit" element={<AdminProtectedRoute requiredRole="admin"><AdminOfficeForm /></AdminProtectedRoute>} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
