@@ -2,19 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-<<<<<<< HEAD
 /* Information Assets World Design System
    Professional, trustworthy, global theme with blue primary
    All colors MUST be HSL.
-=======
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
->>>>>>> 4ad44833cf1c4b0d8c17dd9b28360661aa62e608
 */
 
 @layer base {
   :root {
-<<<<<<< HEAD
     /* Core Brand Colors */
     --background: 0 0% 100%;
     --foreground: 215 25% 27%;
@@ -54,33 +48,10 @@ All colors MUST be HSL.
     /* Teal Complement */
     --teal: 185 85% 45%;           /* Professional teal */
     --teal-light: 185 85% 75%;
-=======
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
->>>>>>> 4ad44833cf1c4b0d8c17dd9b28360661aa62e608
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-<<<<<<< HEAD
     /* Borders & Inputs */
     --border: 215 20% 85%;
     --input: 215 20% 85%;
@@ -113,13 +84,6 @@ All colors MUST be HSL.
   --text-shadow-hero: 0 2px 4px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
   --text-shadow-strong: 0 1px 3px rgba(0, 0, 0, 0.8), 0 2px 6px rgba(0, 0, 0, 0.6);
     --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-=======
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
->>>>>>> 4ad44833cf1c4b0d8c17dd9b28360661aa62e608
 
     --sidebar-background: 0 0% 98%;
 
@@ -183,7 +147,6 @@ All colors MUST be HSL.
   }
 
   body {
-<<<<<<< HEAD
     @apply bg-background text-foreground font-sans;
   }
   
@@ -356,8 +319,5 @@ All colors MUST be HSL.
   }
   50% {
     transform: translateY(-10px);
-=======
-    @apply bg-background text-foreground;
->>>>>>> 4ad44833cf1c4b0d8c17dd9b28360661aa62e608
   }
 }
