@@ -4,12 +4,14 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, ChevronDown, LogIn, LogOut, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useRole } from '@/hooks/useRole';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { user, signOut, loading } = useAuth();
+  const { role } = useRole();
 
   const navItems = [
     { name: 'Home', href: '/' },
@@ -99,11 +101,31 @@ const Navigation = () => {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
-                        <Link to="/admin">
+                        <Link to="/profile">
                           <User className="h-4 w-4 mr-2" />
-                          Admin Panel
+                          Profile Settings
                         </Link>
                       </DropdownMenuItem>
+                      {(role === 'admin' || role === 'editor') && (
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem asChild>
+                            <Link to="/admin">
+                              <User className="h-4 w-4 mr-2" />
+                              Admin Dashboard
+                            </Link>
+                          </DropdownMenuItem>
+                          {role === 'admin' && (
+                            <DropdownMenuItem asChild>
+                              <Link to="/admin/security">
+                                <User className="h-4 w-4 mr-2" />
+                                Security Center
+                              </Link>
+                            </DropdownMenuItem>
+                          )}
+                        </>
+                      )}
+                      <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={signOut}>
                         <LogOut className="h-4 w-4 mr-2" />
                         Sign Out
@@ -171,13 +193,33 @@ const Navigation = () => {
                     {user ? (
                       <>
                         <Link
-                          to="/admin"
+                          to="/profile"
                           onClick={() => setIsOpen(false)}
                           className="flex items-center px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                         >
                           <User className="h-4 w-4 mr-2" />
-                          Admin Panel
+                          Profile Settings
                         </Link>
+                        {(role === 'admin' || role === 'editor') && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <User className="h-4 w-4 mr-2" />
+                            Admin Dashboard
+                          </Link>
+                        )}
+                        {role === 'admin' && (
+                          <Link
+                            to="/admin/security"
+                            onClick={() => setIsOpen(false)}
+                            className="flex items-center px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <User className="h-4 w-4 mr-2" />
+                            Security Center
+                          </Link>
+                        )}
                         <Button
                           variant="outline"
                           className="w-full mt-2"

@@ -186,6 +186,14 @@ const Index = () => {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
+            <div className="mt-4">
+              <Button variant="outline" size="lg" asChild>
+                <Link to="/auth">
+                  Sign In / Create Account
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       </section>

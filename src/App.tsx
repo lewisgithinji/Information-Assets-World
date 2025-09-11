@@ -29,6 +29,9 @@ import AdminSponsors from "./pages/admin/AdminSponsors";
 import AdminSponsorForm from "./pages/admin/AdminSponsorForm";
 import AdminOffices from "./pages/admin/AdminOffices";
 import AdminOfficeForm from "./pages/admin/AdminOfficeForm";
+import AdminSecurity from "./pages/admin/AdminSecurity";
+import AdminUsers from "./pages/admin/AdminUsers";
+import UserProfile from "./pages/UserProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
@@ -56,7 +59,14 @@ const App = () => (
               <Route path="/contact" element={<Contact />} />
               <Route path="/advertising" element={<Advertising />} />
               <Route path="/auth" element={<Auth />} />
+              
+              {/* Protected Routes */}
+              <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+              
+              {/* Admin Routes */}
               <Route path="/admin" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
+              <Route path="/admin/security" element={<AdminProtectedRoute requiredRole="admin"><AdminSecurity /></AdminProtectedRoute>} />
+              <Route path="/admin/users" element={<AdminProtectedRoute requiredRole="admin"><AdminUsers /></AdminProtectedRoute>} />
               <Route path="/admin/events" element={<AdminProtectedRoute><AdminEvents /></AdminProtectedRoute>} />
               <Route path="/admin/events/new" element={<AdminProtectedRoute><AdminEventForm /></AdminProtectedRoute>} />
               <Route path="/admin/events/:id/edit" element={<AdminProtectedRoute><AdminEventForm /></AdminProtectedRoute>} />
