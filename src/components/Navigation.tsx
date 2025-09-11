@@ -37,8 +37,12 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="h-8 w-8 rounded gradient-primary"></div>
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png" 
+              alt="Information Assets World Logo" 
+              className="h-10 w-10"
+            />
             <span className="text-xl font-bold text-foreground">
               Information Assets World
             </span>

@@ -55,8 +55,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4 glass-effect rounded-lg p-6">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded gradient-primary animate-glow-pulse"></div>
+            <div className="flex items-center space-x-3">
+              <img 
+                src="/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png" 
+                alt="Information Assets World Logo" 
+                className="h-10 w-10 animate-glow-pulse"
+              />
               <span className="text-lg font-bold text-white">
                 Information Assets World
               </span>
