@@ -22,16 +22,17 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">
         <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-          {/* Main Content Container with Background */}
-          <div className="hero-content-bg rounded-2xl p-8 md:p-12 space-y-8">
-            <h1 className="text-5xl md:text-7xl font-bold leading-tight hero-text-strong">
-              Information Assets
-              <span className="block text-white font-extrabold tracking-wide">
-                World Network
-              </span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-white/95 max-w-3xl mx-auto leading-relaxed hero-text-shadow font-medium">
+          {/* Main Title - No Background */}
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight hero-text-strong mb-8">
+            Information Assets
+            <span className="block text-white font-extrabold tracking-wide">
+              World Network
+            </span>
+          </h1>
+          
+          {/* Description with Subtle Background */}
+          <div className="hero-content-subtle p-6 md:p-8 max-w-4xl mx-auto">
+            <p className="text-xl md:text-2xl text-white/95 leading-relaxed hero-text-shadow font-medium">
               Connecting global professionals in information and data management through 
               world-class conferences, cutting-edge research, and collaborative networks.
             </p>
