@@ -68,6 +68,39 @@ export type Database = {
           },
         ]
       }
+      event_categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          industry_sector: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          industry_sector?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          industry_sector?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       event_speakers: {
         Row: {
           event_id: string
@@ -128,45 +161,87 @@ export type Database = {
           },
         ]
       }
+      event_types: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       events: {
         Row: {
+          category: string | null
           created_at: string
           created_by: string | null
           description: string | null
           end_date: string
+          event_type: string | null
           id: string
           image_url: string | null
+          industry_sector: string | null
           location: string
           start_date: string
           status: string | null
+          tags: string[] | null
           theme: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          category?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           end_date: string
+          event_type?: string | null
           id?: string
           image_url?: string | null
+          industry_sector?: string | null
           location: string
           start_date: string
           status?: string | null
+          tags?: string[] | null
           theme?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          category?: string | null
           created_at?: string
           created_by?: string | null
           description?: string | null
           end_date?: string
+          event_type?: string | null
           id?: string
           image_url?: string | null
+          industry_sector?: string | null
           location?: string
           start_date?: string
           status?: string | null
+          tags?: string[] | null
           theme?: string | null
           title?: string
           updated_at?: string

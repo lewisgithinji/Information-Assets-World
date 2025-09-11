@@ -9,10 +9,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, ArrowLeft, Save } from 'lucide-react';
+import { Calendar, ArrowLeft, Save, Tag, Building, Map } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useEvent } from '@/hooks/useEvents';
+import { useEventCategories, useEventTypes } from '@/hooks/useEventCategories';
+import { TagInput } from '@/components/TagInput';
 
 const eventSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -21,6 +23,10 @@ const eventSchema = z.object({
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string().min(1, "End date is required"),
   theme: z.string().default(""),
+  event_type: z.enum(['conference', 'exhibition', 'gala', 'workshop', 'seminar', 'networking', 'webinar']).default('conference'),
+  category: z.string().optional(),
+  industry_sector: z.string().optional(),
+  tags: z.array(z.string()).default([]),
   status: z.enum(['draft', 'published', 'archived']).default('draft'),
   image_url: z.string().default(""),
 });
@@ -34,6 +40,8 @@ export default function AdminEventForm() {
   const isEditing = Boolean(id);
   
   const { data: event, isLoading } = useEvent(id || '');
+  const { data: eventCategories } = useEventCategories();
+  const { data: eventTypes } = useEventTypes();
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
@@ -44,6 +52,10 @@ export default function AdminEventForm() {
       start_date: '',
       end_date: '',
       theme: '',
+      event_type: 'conference',
+      category: '',
+      industry_sector: '',
+      tags: [],
       status: 'draft',
       image_url: '',
     },
@@ -58,6 +70,10 @@ export default function AdminEventForm() {
         start_date: event.start_date,
         end_date: event.end_date,
         theme: event.theme || '',
+        event_type: (event.event_type as any) || 'conference',
+        category: (event.category as any) || '',
+        industry_sector: (event.industry_sector as any) || '',
+        tags: (event.tags as string[]) || [],
         status: event.status as 'draft' | 'published' | 'archived',
         image_url: event.image_url || '',
       });
@@ -74,6 +90,10 @@ export default function AdminEventForm() {
         start_date: data.start_date,
         end_date: data.end_date,
         theme: data.theme || null,
+        event_type: data.event_type,
+        category: data.category || null,
+        industry_sector: data.industry_sector || null,
+        tags: data.tags.length > 0 ? data.tags : null,
         status: data.status,
         image_url: data.image_url || null,
       };
@@ -148,69 +168,89 @@ export default function AdminEventForm() {
         </div>
       </div>
 
-      <div className="max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Event Details</CardTitle>
+      <div className="max-w-4xl">
+        <Card className="shadow-lg border-card-border">
+          <CardHeader className="bg-gradient-primary text-white rounded-t-lg">
+            <CardTitle className="flex items-center gap-3 text-xl">
+              <Calendar className="h-6 w-6" />
+              Event Configuration
+            </CardTitle>
+            <p className="text-white/90 text-sm">
+              Configure event details, categorization, and settings
+            </p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Event Title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter event title" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                
+                {/* Event Type and Category Section */}
+                <div className="bg-secondary/30 p-6 rounded-lg space-y-6">
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Tag className="h-5 w-5 text-primary" />
+                    <h3 className="text-lg font-semibold">Event Classification</h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="event_type"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Event Type</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select event type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {eventTypes?.map((type) => (
+                                <SelectItem key={type.id} value={type.name}>
+                                  {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Enter event description"
-                          rows={4}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                    <FormField
+                      control={form.control}
+                      name="category"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Category</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="">No Category</SelectItem>
+                              {eventCategories?.map((category) => (
+                                <SelectItem key={category.id} value={category.name}>
+                                  {category.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Location</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter event location" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="start_date"
+                    name="industry_sector"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Start Date</FormLabel>
+                        <FormLabel>Industry Sector</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <Input placeholder="e.g., Financial Services, Technology" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -219,12 +259,16 @@ export default function AdminEventForm() {
 
                   <FormField
                     control={form.control}
-                    name="end_date"
+                    name="tags"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>End Date</FormLabel>
+                        <FormLabel>Tags</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <TagInput
+                            value={field.value}
+                            onChange={field.onChange}
+                            placeholder="Add relevant tags..."
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -232,65 +276,163 @@ export default function AdminEventForm() {
                   />
                 </div>
 
-                <FormField
-                  control={form.control}
-                  name="theme"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Theme</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter event theme" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="image_url"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Image URL</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter image URL" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Status</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                {/* Basic Event Information */}
+                <div className="bg-secondary/30 p-6 rounded-lg space-y-6">
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Building className="h-5 w-5 text-primary" />
+                    <h3 className="text-lg font-semibold">Event Information</h3>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Event Title</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
+                          <Input placeholder="Enter event title" className="text-lg" {...field} />
                         </FormControl>
-                        <SelectContent>
-                          <SelectItem value="draft">Draft</SelectItem>
-                          <SelectItem value="published">Published</SelectItem>
-                          <SelectItem value="archived">Archived</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <div className="flex gap-4 pt-6">
-                  <Button type="submit" className="shadow-primary">
-                    <Save className="h-4 w-4 mr-2" />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Enter event description"
+                            rows={4}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Location and Dates */}
+                <div className="bg-secondary/30 p-6 rounded-lg space-y-6">
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Map className="h-5 w-5 text-primary" />
+                    <h3 className="text-lg font-semibold">Location & Timing</h3>
+                  </div>
+
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter event location" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="start_date"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Start Date</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="end_date"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>End Date</FormLabel>
+                          <FormControl>
+                            <Input type="date" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="theme"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Theme</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter event theme" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="image_url"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Image URL</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter image URL" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Status and Settings */}
+                <div className="bg-secondary/30 p-6 rounded-lg">
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Publication Status</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select status" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="draft">Draft</SelectItem>
+                            <SelectItem value="published">Published</SelectItem>
+                            <SelectItem value="archived">Archived</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+
+                <div className="flex gap-4 pt-8 border-t border-border">
+                  <Button type="submit" size="lg" className="shadow-primary px-8">
+                    <Save className="h-5 w-5 mr-2" />
                     {isEditing ? 'Update Event' : 'Create Event'}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
+                    size="lg"
                     onClick={() => navigate('/admin/events')}
                   >
                     Cancel
