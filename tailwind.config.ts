@@ -21,19 +21,24 @@ export default {
         foreground: "hsl(var(--foreground))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
-<<<<<<< HEAD
           dark: "hsl(var(--primary-dark))",
           light: "hsl(var(--primary-light))",
           glow: "hsl(var(--primary-glow))",
-=======
->>>>>>> 4ad44833cf1c4b0d8c17dd9b28360661aa62e608
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
-<<<<<<< HEAD
           dark: "hsl(var(--secondary-dark))",
           foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          dark: "hsl(var(--muted-dark))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
           DEFAULT: "hsl(var(--accent))",
@@ -44,39 +49,13 @@ export default {
           DEFAULT: "hsl(var(--teal))",
           light: "hsl(var(--teal-light))",
         },
-=======
-          foreground: "hsl(var(--secondary-foreground))",
-        },
->>>>>>> 4ad44833cf1c4b0d8c17dd9b28360661aa62e608
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-<<<<<<< HEAD
-          dark: "hsl(var(--muted-dark))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          border: "hsl(var(--card-border))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-=======
-          foreground: "hsl(var(--muted-foreground))",
-        },
->>>>>>> 4ad44833cf1c4b0d8c17dd9b28360661aa62e608
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
         card: {
           DEFAULT: "hsl(var(--card))",
+          border: "hsl(var(--card-border))",
           foreground: "hsl(var(--card-foreground))",
         },
         sidebar: {
