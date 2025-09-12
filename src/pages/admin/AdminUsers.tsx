@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { maskEmail } from '@/utils/emailMasking';
 
 interface UserProfile {
   id: string;
@@ -175,7 +176,7 @@ export default function AdminUsers() {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-muted-foreground" />
-                      {user.email}
+                      <span className="font-mono text-sm">{maskEmail(user.email || '')}</span>
                     </div>
                   </TableCell>
                   <TableCell>

@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, LogIn, UserPlus } from 'lucide-react';
+import PasswordStrengthIndicator from '@/components/PasswordStrengthIndicator';
 
 export default function Auth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -178,6 +179,7 @@ export default function Auth() {
                       onChange={handleInputChange}
                       required
                     />
+                    <PasswordStrengthIndicator password={formData.password} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-confirm">Confirm Password</Label>
