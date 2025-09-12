@@ -1,3 +1,4 @@
+import PageHero from '@/components/PageHero';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -51,20 +52,13 @@ export default function Contact() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
-      {/* Hero Section */}
-      <section className="bg-gradient-hero py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center text-white">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 hero-text-shadow">
-              Get in Touch
-            </h1>
-            <p className="text-xl md:text-2xl opacity-90 hero-text-shadow">
-              Connect with our global team of information asset experts
-            </p>
-          </div>
-        </div>
-      </section>
+    <div>
+      {/* Hero Section with PageHero component */}
+      <PageHero
+        title="Get in Touch"
+        description="Connect with our global team of information asset experts"
+        gradient="purple"
+      />
 
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">

@@ -13,11 +13,11 @@
     --background: 0 0% 100%;
     --foreground: 215 25% 27%;
     
-    /* Professional Blue Theme */
-    --primary: 217 91% 60%;        /* #0B5FFF - Trust blue */
-    --primary-dark: 217 91% 45%;   /* Darker blue for depth */
-    --primary-light: 217 91% 75%;  /* Light blue for accents */
-    --primary-glow: 217 91% 85%;   /* Very light blue for glows */
+    /* Logo-Based Blue to Purple Theme */
+    --primary: 214 75% 56%;        /* #4A90E2 - Logo blue */
+    --primary-dark: 250 43% 52%;   /* #6B46C1 - Logo purple */
+    --primary-light: 214 75% 75%;  /* Light blue for accents */
+    --primary-glow: 214 75% 85%;   /* Very light blue for glows */
 
     /* Card & Surface Colors */
     --card: 0 0% 100%;
@@ -40,10 +40,10 @@
     --muted-foreground: 215 15% 55%;
     --muted-dark: 215 15% 75%;
 
-    /* Golden Accent for Awards/Gala */
-    --accent: 45 85% 55%;           /* Golden highlight */
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 45 85% 75%;
+    /* Yellow Accent from Logo */
+    --accent: 43 84% 65%;           /* #F59E0B - Logo yellow */
+    --accent-foreground: 0 0% 0%;   /* Dark text on yellow */
+    --accent-light: 43 84% 80%;     /* Light yellow variant */
     
     /* Teal Complement */
     --teal: 185 85% 45%;           /* Professional teal */
@@ -60,9 +60,10 @@
     /* Design System Enhancements */
     --radius: 0.5rem;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 45%));
-    --gradient-hero: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(185 85% 45%) 100%);
+    /* Logo-Based Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(214 75% 56%), hsl(250 43% 52%));
+    --gradient-hero: linear-gradient(135deg, hsl(214 75% 56%) 0%, hsl(250 43% 52%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(214 75% 56%) 0%, hsl(43 84% 65%) 100%);
     --gradient-footer: linear-gradient(135deg, hsl(220 30% 8%) 0%, hsl(220 20% 12%) 50%, hsl(220 25% 10%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(215 15% 98%) 100%);
     
@@ -191,8 +192,8 @@
     background: var(--gradient-primary);
   }
   
-  .gradient-hero {
-    background: var(--gradient-hero);
+  .gradient-accent {
+    background: var(--gradient-accent);
   }
   
   .gradient-footer {

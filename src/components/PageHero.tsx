@@ -5,7 +5,7 @@ interface PageHeroProps {
   title: string;
   description: string;
   backgroundImage?: string;
-  gradient?: 'blue' | 'teal' | 'primary' | 'custom';
+  gradient?: 'blue' | 'teal' | 'primary' | 'accent' | 'purple' | 'custom';
   customGradient?: string;
   children?: ReactNode;
   className?: string;
@@ -30,6 +30,10 @@ const PageHero = ({
         return 'bg-gradient-to-br from-teal-600 via-blue-600 to-blue-800';
       case 'primary':
         return 'bg-gradient-to-br from-primary via-primary-dark to-blue-800';
+      case 'accent':
+        return 'bg-gradient-to-br from-primary via-accent to-accent-light';
+      case 'purple':
+        return 'bg-gradient-to-br from-primary-dark via-purple-600 to-purple-800';
       default:
         return 'bg-gradient-to-br from-primary via-primary-dark to-blue-800';
     }
