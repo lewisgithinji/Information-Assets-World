@@ -11,6 +11,7 @@ export interface DatabaseEvent {
   theme: string;
   status: string;
   image_url: string | null;
+  featured: boolean;
   created_at: string;
   updated_at: string;
 }

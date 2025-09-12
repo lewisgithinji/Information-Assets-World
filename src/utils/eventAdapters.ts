@@ -49,7 +49,7 @@ export const adaptDatabaseEvent = (event: DatabaseEvent): UnifiedEvent => ({
   tags: (event as any).tags,
   status: event.status,
   image_url: event.image_url,
-  featured: false, // Database events don't have featured flag by default
+  featured: (event as any).featured || false,
   // Map to legacy format for compatibility
   slug: event.title.toLowerCase().replace(/\s+/g, '-'),
   type: (event as any).event_type || 'conference',

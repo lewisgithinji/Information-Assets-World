@@ -199,6 +199,7 @@ export type Database = {
           description: string | null
           end_date: string
           event_type: string | null
+          featured: boolean
           id: string
           image_url: string | null
           industry_sector: string | null
@@ -217,6 +218,7 @@ export type Database = {
           description?: string | null
           end_date: string
           event_type?: string | null
+          featured?: boolean
           id?: string
           image_url?: string | null
           industry_sector?: string | null
@@ -235,6 +237,7 @@ export type Database = {
           description?: string | null
           end_date?: string
           event_type?: string | null
+          featured?: boolean
           id?: string
           image_url?: string | null
           industry_sector?: string | null

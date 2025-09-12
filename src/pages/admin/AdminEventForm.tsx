@@ -9,7 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, ArrowLeft, Save, Tag, Building, Map } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Calendar, ArrowLeft, Save, Tag, Building, Map, Star } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useEvent } from '@/hooks/useEvents';
@@ -29,6 +30,7 @@ const eventSchema = z.object({
   industry_sector: z.string().optional(),
   tags: z.array(z.string()).default([]),
   status: z.enum(['draft', 'published', 'archived']).default('draft'),
+  featured: z.boolean().default(false),
   image_url: z.string().default(""),
 });
 
@@ -58,6 +60,7 @@ export default function AdminEventForm() {
       industry_sector: '',
       tags: [],
       status: 'draft',
+      featured: false,
       image_url: '',
     },
   });
@@ -76,6 +79,7 @@ export default function AdminEventForm() {
         industry_sector: (event.industry_sector as any) || '',
         tags: (event.tags as string[]) || [],
         status: event.status as 'draft' | 'published' | 'archived',
+        featured: (event as any).featured || false,
         image_url: event.image_url || '',
       });
     }
@@ -96,6 +100,7 @@ export default function AdminEventForm() {
         industry_sector: data.industry_sector || null,
         tags: data.tags.length > 0 ? data.tags : null,
         status: data.status,
+        featured: data.featured,
         image_url: data.image_url || null,
       };
 
@@ -399,29 +404,59 @@ export default function AdminEventForm() {
                 </div>
 
                 {/* Status and Settings */}
-                <div className="bg-secondary/30 p-6 rounded-lg">
-                  <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Publication Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <div className="bg-secondary/30 p-6 rounded-lg space-y-6">
+                  <div className="flex items-center gap-2 text-foreground">
+                    <Star className="h-5 w-5 text-primary" />
+                    <h3 className="text-lg font-semibold">Publication & Visibility</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Publication Status</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select status" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="draft">Draft</SelectItem>
+                              <SelectItem value="published">Published</SelectItem>
+                              <SelectItem value="archived">Archived</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="featured"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                          <div className="space-y-0.5">
+                            <FormLabel className="text-base">
+                              Featured Event
+                            </FormLabel>
+                            <div className="text-sm text-muted-foreground">
+                              Display this event in the Featured Events section on the homepage
+                            </div>
+                          </div>
                           <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                           </FormControl>
-                          <SelectContent>
-                            <SelectItem value="draft">Draft</SelectItem>
-                            <SelectItem value="published">Published</SelectItem>
-                            <SelectItem value="archived">Archived</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
 
 
