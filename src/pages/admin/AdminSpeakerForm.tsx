@@ -12,6 +12,7 @@ import { Users, ArrowLeft, Save } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
+import AdminLayout from '@/components/AdminLayout';
 
 const speakerSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -116,17 +117,17 @@ export default function AdminSpeakerForm() {
 
   if (isEditing && isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <AdminLayout>
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-2 text-muted-foreground">Loading speaker...</p>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <AdminLayout>
       <div className="mb-8">
         <Button
           variant="outline"
@@ -249,6 +250,6 @@ export default function AdminSpeakerForm() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }

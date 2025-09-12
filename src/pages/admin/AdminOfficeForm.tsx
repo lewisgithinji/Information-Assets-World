@@ -13,6 +13,7 @@ import { MapPin, ArrowLeft, Save } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
+import AdminLayout from '@/components/AdminLayout';
 
 const officeSchema = z.object({
   region: z.string().min(1, "Region is required"),
@@ -133,17 +134,17 @@ export default function AdminOfficeForm() {
 
   if (isEditing && isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <AdminLayout>
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
           <p className="mt-2 text-muted-foreground">Loading office...</p>
         </div>
-      </div>
+      </AdminLayout>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <AdminLayout>
       <div className="mb-8">
         <Button
           variant="outline"
@@ -348,6 +349,6 @@ export default function AdminOfficeForm() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }
