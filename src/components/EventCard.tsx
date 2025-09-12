@@ -1,9 +1,9 @@
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Users } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { Event } from '@/data/content';
+import { UnifiedEvent } from '@/utils/eventAdapters';
 
 interface EventCardProps {
   event: UnifiedEvent;
@@ -64,12 +64,12 @@ const EventCard = ({ event }: EventCardProps) => {
           
           <div className="flex items-center text-sm text-muted-foreground">
             <MapPin className="h-4 w-4 mr-2" />
-            <span>{event.city}, {event.country}</span>
+            <span>{event.location}</span>
           </div>
           
           <div className="flex items-center text-sm text-muted-foreground">
             <Users className="h-4 w-4 mr-2" />
-            <span>{event.speakers.length} Speakers</span>
+            <span>{event.speakers?.length || 0} Speakers</span>
           </div>
           
           <p className="text-sm text-foreground/80 line-clamp-3 mt-4">
@@ -80,7 +80,7 @@ const EventCard = ({ event }: EventCardProps) => {
       
       <CardFooter className="p-6 pt-0">
         <Button asChild className="w-full" variant="outline">
-          <Link to={`/events/${event.slug}`}>
+          <Link to={`/events/${event.id}`}>
             Learn More
           </Link>
         </Button>

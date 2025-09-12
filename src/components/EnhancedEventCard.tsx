@@ -70,7 +70,9 @@ const EnhancedEventCard = ({ event }: EnhancedEventCardProps) => {
               <span className="text-sm font-medium text-primary">Event Starts In:</span>
             </div>
             <CountdownTimer 
-              startDate={event.startDate} 
+              eventTitle={event.title}
+              startDate={event.startDate}
+              location={event.location}
               className="text-xs"
             />
           </div>
