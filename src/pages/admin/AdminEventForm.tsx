@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +10,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Calendar, ArrowLeft, Save, Tag, Building, Map, Star } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Calendar, ArrowLeft, Save, Tag, Building, Map, Star, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useEvent } from '@/hooks/useEvents';
@@ -26,13 +27,33 @@ const eventSchema = z.object({
   end_date: z.string().min(1, "End date is required"),
   theme: z.string().default(""),
   event_type: z.string().default('conference'),
-  category: z.string().optional(),
+  category: z.string().optional().transform(val => val === 'none' ? undefined : val),
   industry_sector: z.string().optional(),
   tags: z.array(z.string()).default([]),
   status: z.enum(['draft', 'published', 'archived']).default('draft'),
   featured: z.boolean().default(false),
   image_url: z.string().default(""),
 });
+
+// Utility function to parse Supabase errors
+const parseSupabaseError = (error: any): string => {
+  if (error?.code === '23505') {
+    return 'An event with this title already exists. Please choose a different title.';
+  }
+  if (error?.code === '23503') {
+    return 'Invalid category or event type selected. Please refresh and try again.';
+  }
+  if (error?.code === '42P01') {
+    return 'Database table not found. Please contact support.';
+  }
+  if (error?.message?.includes('permission')) {
+    return 'You do not have permission to perform this action.';
+  }
+  if (error?.message?.includes('network')) {
+    return 'Network error. Please check your connection and try again.';
+  }
+  return error?.message || 'An unexpected error occurred. Please try again.';
+};
 
 type EventFormData = z.infer<typeof eventSchema>;
 
@@ -41,6 +62,10 @@ export default function AdminEventForm() {
   const { id } = useParams();
   const { toast } = useToast();
   const isEditing = Boolean(id);
+  
+  // Error state management
+  const [formError, setFormError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { data: event, isLoading } = useEvent(id || '');
   const { data: eventCategories } = useEventCategories();
@@ -74,19 +99,27 @@ export default function AdminEventForm() {
         start_date: event.start_date,
         end_date: event.end_date,
         theme: event.theme || '',
-        event_type: (event.event_type as any) || 'conference',
-        category: (event.category as any) || '',
-        industry_sector: (event.industry_sector as any) || '',
-        tags: (event.tags as string[]) || [],
+        event_type: event.event_type || 'conference',
+        category: event.category || 'none',
+        industry_sector: event.industry_sector || '',
+        tags: event.tags || [],
         status: event.status as 'draft' | 'published' | 'archived',
-        featured: (event as any).featured || false,
+        featured: event.featured || false,
         image_url: event.image_url || '',
       });
     }
   }, [event, form]);
 
   const onSubmit = async (data: EventFormData) => {
+    setFormError(null);
+    setIsSubmitting(true);
+    
     try {
+      // Validate date logic
+      if (new Date(data.start_date) > new Date(data.end_date)) {
+        throw new Error('Start date must be before end date');
+      }
+      
       // Transform data to match database schema
       const submitData = {
         title: data.title,
@@ -104,38 +137,52 @@ export default function AdminEventForm() {
         image_url: data.image_url || null,
       };
 
+      console.log('Submitting event data:', submitData);
+
       if (isEditing) {
         const { error } = await supabase
           .from('events')
           .update(submitData)
           .eq('id', id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
 
         toast({
-          title: "Event updated",
-          description: "The event has been successfully updated.",
+          title: "Event updated successfully",
+          description: `"${data.title}" has been updated and is now ${data.status}.`,
         });
       } else {
         const { error } = await supabase
           .from('events')
           .insert(submitData);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
 
         toast({
-          title: "Event created",
-          description: "The new event has been successfully created.",
+          title: "Event created successfully",
+          description: `"${data.title}" has been created with ${data.status} status.`,
         });
       }
 
       navigate('/admin/events');
     } catch (error) {
+      console.error('Form submission error:', error);
+      const errorMessage = parseSupabaseError(error);
+      setFormError(errorMessage);
+      
       toast({
-        title: "Error",
-        description: `Failed to ${isEditing ? 'update' : 'create'} event. Please try again.`,
+        title: `Failed to ${isEditing ? 'update' : 'create'} event`,
+        description: errorMessage,
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -186,6 +233,24 @@ export default function AdminEventForm() {
             </p>
           </CardHeader>
           <CardContent className="p-8">
+            {formError && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>
+                  {formError}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="ml-4 h-auto p-0 text-destructive hover:text-destructive/80"
+                    onClick={() => setFormError(null)}
+                  >
+                    Dismiss
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
+            
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 
@@ -211,8 +276,8 @@ export default function AdminEventForm() {
                             </FormControl>
                             <SelectContent>
                               {eventTypes?.map((type) => (
-                                <SelectItem key={type.id} value={type.name.toLowerCase()}>
-                                  {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
+                                <SelectItem key={type.id} value={type.name}>
+                                  {type.name}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -235,9 +300,9 @@ export default function AdminEventForm() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="">No Category</SelectItem>
+                              <SelectItem value="none">No Category</SelectItem>
                               {eventCategories?.map((category) => (
-                                <SelectItem key={category.id} value={category.name.toLowerCase()}>
+                                <SelectItem key={category.id} value={category.name}>
                                   {category.name}
                                 </SelectItem>
                               ))}
@@ -461,15 +526,30 @@ export default function AdminEventForm() {
 
 
                 <div className="flex gap-4 pt-8 border-t border-border">
-                  <Button type="submit" size="lg" className="shadow-primary px-8">
-                    <Save className="h-5 w-5 mr-2" />
-                    {isEditing ? 'Update Event' : 'Create Event'}
+                  <Button 
+                    type="submit" 
+                    size="lg" 
+                    className="shadow-primary px-8"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        {isEditing ? 'Updating...' : 'Creating...'}
+                      </div>
+                    ) : (
+                      <>
+                        <Save className="h-5 w-5 mr-2" />
+                        {isEditing ? 'Update Event' : 'Create Event'}
+                      </>
+                    )}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     size="lg"
                     onClick={() => navigate('/admin/events')}
+                    disabled={isSubmitting}
                   >
                     Cancel
                   </Button>
