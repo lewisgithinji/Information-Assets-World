@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { Event } from '@/data/content';
 
 interface EventCardProps {
-  event: Event;
+  event: UnifiedEvent;
 }
 
 const EventCard = ({ event }: EventCardProps) => {

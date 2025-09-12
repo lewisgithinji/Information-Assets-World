@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useEvent } from '@/hooks/useEvents';
 import { useEventCategories, useEventTypes } from '@/hooks/useEventCategories';
 import { TagInput } from '@/components/TagInput';
+import AdminLayout from '@/components/AdminLayout';
 
 const eventSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -23,7 +24,7 @@ const eventSchema = z.object({
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string().min(1, "End date is required"),
   theme: z.string().default(""),
-  event_type: z.enum(['conference', 'exhibition', 'gala', 'workshop', 'seminar', 'networking', 'webinar']).default('conference'),
+  event_type: z.string().default('conference'),
   category: z.string().optional(),
   industry_sector: z.string().optional(),
   tags: z.array(z.string()).default([]),
@@ -145,7 +146,7 @@ export default function AdminEventForm() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <AdminLayout>
       <div className="mb-8">
         <Button
           variant="outline"
@@ -205,7 +206,7 @@ export default function AdminEventForm() {
                             </FormControl>
                             <SelectContent>
                               {eventTypes?.map((type) => (
-                                <SelectItem key={type.id} value={type.name}>
+                                <SelectItem key={type.id} value={type.name.toLowerCase()}>
                                   {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
                                 </SelectItem>
                               ))}
@@ -231,7 +232,7 @@ export default function AdminEventForm() {
                             <SelectContent>
                               <SelectItem value="">No Category</SelectItem>
                               {eventCategories?.map((category) => (
-                                <SelectItem key={category.id} value={category.name}>
+                                <SelectItem key={category.id} value={category.name.toLowerCase()}>
                                   {category.name}
                                 </SelectItem>
                               ))}
@@ -443,6 +444,6 @@ export default function AdminEventForm() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </AdminLayout>
   );
 }
