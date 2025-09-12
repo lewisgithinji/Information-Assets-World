@@ -1,30 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, ChevronDown, LogIn, LogOut, User } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useRole } from '@/hooks/useRole';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import MegaMenu from '@/components/MegaMenu';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const location = useLocation();
   const { user, signOut, loading } = useAuth();
   const { role } = useRole();
 
+  // Close mega menu on route change
+  useEffect(() => {
+    setIsMegaMenuOpen(false);
+  }, [location.pathname]);
+
   const navItems = [
     { name: 'Home', href: '/' },
-    { 
-      name: 'Events', 
-      href: '/events',
-      submenu: [
-        { name: 'All Events', href: '/events' },
-        { name: 'Conferences', href: '/events?type=conference' },
-        { name: 'Exhibitions', href: '/events?type=exhibition' },
-        { name: 'Gala Events', href: '/events?type=gala' },
-      ]
-    },
+    { name: 'Events', href: '/events', hasMegaMenu: true },
     { name: 'Research Papers', href: '/papers' },
     { name: 'About', href: '/about' },
     { name: 'Global Offices', href: '/offices' },
@@ -55,34 +53,42 @@ const Navigation = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <div key={item.name} className="relative group">
-                <Link
-                  to={item.href}
-                  className={`flex items-center space-x-1 px-3 py-2 text-sm font-medium transition-colors ${
-                    isActive(item.href)
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  <span>{item.name}</span>
-                  {item.submenu && <ChevronDown className="h-4 w-4" />}
-                </Link>
-                
-                {/* Submenu */}
-                {item.submenu && (
-                  <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <div className="bg-background border border-border rounded-lg shadow-lg py-2 min-w-48">
-                      {item.submenu.map((subItem) => (
-                        <Link
-                          key={subItem.name}
-                          to={subItem.href}
-                          className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                        >
-                          {subItem.name}
-                        </Link>
-                      ))}
+              <div key={item.name} className="relative">
+                {item.hasMegaMenu ? (
+                  <div className="relative">
+                    <button
+                      onMouseEnter={() => setIsMegaMenuOpen(true)}
+                      onMouseLeave={() => setIsMegaMenuOpen(false)}
+                      className={`flex items-center space-x-1 px-3 py-2 text-sm font-medium transition-colors ${
+                        isActive(item.href)
+                          ? 'text-primary'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <span>{item.name}</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                    <div 
+                      onMouseEnter={() => setIsMegaMenuOpen(true)}
+                      onMouseLeave={() => setIsMegaMenuOpen(false)}
+                    >
+                      <MegaMenu 
+                        isOpen={isMegaMenuOpen} 
+                        onClose={() => setIsMegaMenuOpen(false)} 
+                      />
                     </div>
                   </div>
+                ) : (
+                  <Link
+                    to={item.href}
+                    className={`flex items-center space-x-1 px-3 py-2 text-sm font-medium transition-colors ${
+                      isActive(item.href)
+                        ? 'text-primary'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <span>{item.name}</span>
+                  </Link>
                 )}
               </div>
             ))}
@@ -158,33 +164,18 @@ const Navigation = () => {
             <SheetContent side="right" className="w-[300px]">
               <div className="flex flex-col space-y-4 mt-8">
                 {navItems.map((item) => (
-                  <div key={item.name}>
-                    <Link
-                      to={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className={`block px-3 py-2 text-sm font-medium transition-colors ${
-                        isActive(item.href)
-                          ? 'text-primary'
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      {item.name}
-                    </Link>
-                    {item.submenu && (
-                      <div className="ml-4 mt-2 space-y-2">
-                        {item.submenu.map((subItem) => (
-                          <Link
-                            key={subItem.name}
-                            to={subItem.href}
-                            onClick={() => setIsOpen(false)}
-                            className="block px-3 py-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                          >
-                            {subItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`block px-3 py-2 text-sm font-medium transition-colors ${
+                      isActive(item.href)
+                        ? 'text-primary'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
                 ))}
                 
                 {/* Mobile Join Network - appears first */}

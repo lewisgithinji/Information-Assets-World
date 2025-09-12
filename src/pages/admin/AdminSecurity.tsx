@@ -2,12 +2,14 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Shield, Users, Activity, Settings } from 'lucide-react';
-import SecurityMonitor from '@/components/SecurityMonitor';
+import EnhancedSecurityMonitor from '@/components/EnhancedSecurityMonitor';
 import AdminUsers from './AdminUsers';
+import AdminLayout from '@/components/AdminLayout';
 
 export default function AdminSecurity() {
   return (
-    <div className="container mx-auto px-4 py-8">
+    <AdminLayout>
+      <div className="space-y-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">Security Center</h1>
         <p className="text-muted-foreground">Monitor and manage system security</p>
@@ -30,7 +32,7 @@ export default function AdminSecurity() {
         </TabsList>
 
         <TabsContent value="dashboard" className="space-y-6">
-          <SecurityMonitor />
+          <EnhancedSecurityMonitor />
         </TabsContent>
 
         <TabsContent value="users" className="space-y-6">
@@ -51,6 +53,7 @@ export default function AdminSecurity() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </AdminLayout>
   );
 }

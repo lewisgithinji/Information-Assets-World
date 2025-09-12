@@ -17,7 +17,7 @@ const Hero = () => {
       />
       
       {/* Lightened Overlay */}
-      <div className="absolute inset-0 z-0 bg-black/20" />
+      <div className="absolute inset-0 z-0 bg-black/10" />
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 text-center text-white">

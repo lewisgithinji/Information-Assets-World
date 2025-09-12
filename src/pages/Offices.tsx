@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { MapPin, Clock, Users, Building, Loader2 } from 'lucide-react';
 import { useOffices } from '@/hooks/useOffices';
 import OfficeContactInfo from '@/components/OfficeContactInfo';
+import PageHero from '@/components/PageHero';
 
 const Offices = () => {
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
@@ -51,18 +52,15 @@ const Offices = () => {
   };
 
   return (
-    <div className="py-12">
-      <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-            Our Global Offices
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            With offices across six continents, we provide local expertise and support 
-            to information professionals worldwide.
-          </p>
-        </div>
+    <div>
+      <PageHero
+        title="Our Global Offices"
+        description="With offices across six continents, we provide local expertise and support to information professionals worldwide"
+        gradient="purple"
+      />
+      
+      <div className="py-12">
+        <div className="container mx-auto px-4">
 
         {/* Region Filter */}
         <div className="flex flex-wrap justify-center gap-3 mb-12">
@@ -210,6 +208,7 @@ const Offices = () => {
               );
             })}
           </div>
+        </div>
         </div>
       </div>
     </div>

@@ -1,9 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar, Download, Filter, X, Search, MapPin, Users, Clock } from 'lucide-react';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import SearchBox from '@/components/SearchBox';
 import PageHero from '@/components/PageHero';
 import EnhancedEventCard from '@/components/EnhancedEventCard';
@@ -13,14 +14,39 @@ import { sampleEvents } from '@/data/content';
 import { adaptEvents, UnifiedEvent } from '@/utils/eventAdapters';
 
 const Events = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [categoryFilter, setCategoryFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('date');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
+  const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || 'all');
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get('category') || 'all');
+  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'date');
 
   const { data: databaseEvents, isLoading } = useEvents();
   const { data: eventCategories } = useEventCategories();
   const { data: eventTypes } = useEventTypes();
+
+  // Update URL params when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (searchQuery && searchQuery !== '') params.set('search', searchQuery);
+    if (typeFilter && typeFilter !== 'all') params.set('type', typeFilter);
+    if (categoryFilter && categoryFilter !== 'all') params.set('category', categoryFilter);
+    if (sortBy && sortBy !== 'date') params.set('sort', sortBy);
+    
+    const paramString = params.toString();
+    if (paramString !== searchParams.toString()) {
+      navigate(`?${paramString}`, { replace: true });
+    }
+  }, [searchQuery, typeFilter, categoryFilter, sortBy, navigate, searchParams]);
+
+  // Initialize from URL params
+  useEffect(() => {
+    setSearchQuery(searchParams.get('search') || '');
+    setTypeFilter(searchParams.get('type') || 'all');
+    setCategoryFilter(searchParams.get('category') || 'all');
+    setSortBy(searchParams.get('sort') || 'date');
+  }, [searchParams]);
 
   // Use adapter to unify event types
   const events = useMemo(() => adaptEvents(databaseEvents, sampleEvents), [databaseEvents]);
@@ -104,44 +130,35 @@ const Events = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Enhanced Header */}
-      <section className="relative bg-gradient-primary text-white py-20">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="container mx-auto px-4 relative">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="flex items-center justify-center mb-6">
-              <Calendar className="h-12 w-12 mr-4" />
-              <h1 className="text-5xl font-bold">Professional Events</h1>
+      <PageHero
+        title="Professional Events"
+        description="Join industry leaders at conferences, exhibitions, and networking events worldwide"
+        gradient="blue"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <div className="flex items-center justify-center mb-2">
+              <Calendar className="h-6 w-6 text-accent" />
             </div>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Join industry leaders at conferences, exhibitions, and networking events worldwide
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="flex items-center justify-center mb-2">
-                  <Calendar className="h-6 w-6 text-accent" />
-                </div>
-                <div className="text-2xl font-bold">{events.length}</div>
-                <div className="text-sm text-white/80">Total Events</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="flex items-center justify-center mb-2">
-                  <MapPin className="h-6 w-6 text-accent" />
-                </div>
-                <div className="text-2xl font-bold">{new Set(events.map(e => e.location)).size}</div>
-                <div className="text-sm text-white/80">Locations</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
-                <div className="flex items-center justify-center mb-2">
-                  <Users className="h-6 w-6 text-accent" />
-                </div>
-                <div className="text-2xl font-bold">10,000+</div>
-                <div className="text-sm text-white/80">Attendees</div>
-              </div>
+            <div className="text-2xl font-bold">{events.length}</div>
+            <div className="text-sm text-white/80">Total Events</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <div className="flex items-center justify-center mb-2">
+              <MapPin className="h-6 w-6 text-accent" />
             </div>
+            <div className="text-2xl font-bold">{new Set(events.map(e => e.location)).size}</div>
+            <div className="text-sm text-white/80">Locations</div>
+          </div>
+          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+            <div className="flex items-center justify-center mb-2">
+              <Users className="h-6 w-6 text-accent" />
+            </div>
+            <div className="text-2xl font-bold">10,000+</div>
+            <div className="text-sm text-white/80">Attendees</div>
           </div>
         </div>
-      </section>
+      </PageHero>
 
       {/* Enhanced Filters Section */}
       <section className="py-8 bg-secondary/30">
@@ -331,9 +348,11 @@ const Events = () => {
               Join our global network and reach thousands of information management professionals
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-glow">
-                <Calendar className="h-5 w-5 mr-2" />
-                Propose an Event
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-glow" asChild>
+                <Link to="/admin/events/new">
+                  <Calendar className="h-5 w-5 mr-2" />
+                  Propose an Event
+                </Link>
               </Button>
               <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
                 <Users className="h-5 w-5 mr-2" />

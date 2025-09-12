@@ -48,6 +48,11 @@ const AdminSidebar = () => {
       name: 'Offices',
       href: '/admin/offices',
       icon: Building
+    },
+    {
+      name: 'Event Categories',
+      href: '/admin/event-categories',
+      icon: Calendar
     }
   ];
 

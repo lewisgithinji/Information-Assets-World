@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { AuthProvider } from "@/hooks/useAuth";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
+import ChatBot from "./components/ChatBot";
 import Index from "./pages/Index";
 import Events from "./pages/Events";
 import EventDetails from "./pages/EventDetails";
@@ -32,6 +33,7 @@ import AdminOffices from "./pages/admin/AdminOffices";
 import AdminOfficeForm from "./pages/admin/AdminOfficeForm";
 import AdminSecurity from "./pages/admin/AdminSecurity";
 import AdminUsers from "./pages/admin/AdminUsers";
+import AdminEventCategories from "./pages/admin/AdminEventCategories";
 import UserProfile from "./pages/UserProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
@@ -95,11 +97,13 @@ const App = () => (
                 <Route path="/admin/offices" element={<AdminProtectedRoute requiredRole="admin"><AdminOffices /></AdminProtectedRoute>} />
                 <Route path="/admin/offices/new" element={<AdminProtectedRoute requiredRole="admin"><AdminOfficeForm /></AdminProtectedRoute>} />
                 <Route path="/admin/offices/:id/edit" element={<AdminProtectedRoute requiredRole="admin"><AdminOfficeForm /></AdminProtectedRoute>} />
+                <Route path="/admin/event-categories" element={<AdminProtectedRoute><AdminEventCategories /></AdminProtectedRoute>} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
             <Footer />
+            <ChatBot />
           </div>
         </BrowserRouter>
       </TooltipProvider>
