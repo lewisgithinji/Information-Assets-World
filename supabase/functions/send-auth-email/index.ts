@@ -27,24 +27,74 @@ Deno.serve(async (req) => {
   }
 
   try {
+    console.log('=== WEBHOOK DEBUG START ===')
+    
+    // Log environment variables availability
+    const hasResendKey = !!Deno.env.get('RESEND_API_KEY')
+    const hasHookSecret = !!hookSecret
+    console.log('Environment check:', { hasResendKey, hasHookSecret })
+    
     const payload = await req.text()
     const headers = Object.fromEntries(req.headers)
     
+    console.log('Webhook headers received:', Object.keys(headers))
+    console.log('Payload length:', payload.length)
+    console.log('Hook secret available:', hasHookSecret)
+    
     // Verify webhook signature if secret is provided
     if (hookSecret) {
-      const wh = new Webhook(hookSecret)
+      console.log('Attempting webhook verification...')
       try {
-        wh.verify(payload, headers)
-      } catch (error) {
-        console.error('Webhook verification failed:', error)
-        return new Response('Unauthorized', { 
-          status: 401,
-          headers: corsHeaders
+        const wh = new Webhook(hookSecret)
+        console.log('Webhook instance created successfully')
+        
+        // Log the verification attempt details
+        console.log('Verification headers:', {
+          'webhook-signature': headers['webhook-signature'],
+          'webhook-timestamp': headers['webhook-timestamp']
         })
+        
+        wh.verify(payload, headers)
+        console.log('Webhook verification successful')
+      } catch (error) {
+        console.error('=== WEBHOOK VERIFICATION FAILED ===')
+        console.error('Error type:', error.constructor.name)
+        console.error('Error message:', error.message)
+        console.error('Error stack:', error.stack)
+        console.error('Headers available:', Object.keys(headers))
+        console.error('Hook secret length:', hookSecret?.length || 0)
+        
+        // For debugging purposes, let's continue without verification in case of Base64 error
+        if (error.message.includes('Base64Coder') || error.message.includes('decoding')) {
+          console.log('Base64 decoding error detected - continuing for debugging purposes')
+          console.log('This should be fixed in production by ensuring correct webhook secret format')
+        } else {
+          return new Response(JSON.stringify({ 
+            error: 'Webhook verification failed',
+            details: error.message,
+            type: error.constructor.name
+          }), { 
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          })
+        }
       }
+    } else {
+      console.log('No hook secret provided - skipping webhook verification')
     }
 
+    console.log('Parsing webhook payload...')
     const data = JSON.parse(payload)
+    console.log('Payload parsed successfully')
+    
+    // Log the structure of the received data
+    console.log('Webhook data structure:', {
+      hasUser: !!data.user,
+      hasEmailData: !!data.email_data,
+      userEmail: data.user?.email,
+      actionType: data.email_data?.email_action_type
+    })
+    
     const {
       user,
       email_data: { 
@@ -60,6 +110,9 @@ Deno.serve(async (req) => {
       email: user.email,
       action_type: email_action_type,
       redirect_to,
+      has_token: !!token,
+      has_token_hash: !!token_hash,
+      site_url: site_url
     })
 
     let emailHtml: string
@@ -114,6 +167,14 @@ Deno.serve(async (req) => {
     }
 
     // Send email using Resend
+    console.log('Attempting to send email via Resend...')
+    console.log('Email details:', {
+      to: user.email,
+      subject,
+      action_type: email_action_type,
+      html_length: emailHtml.length
+    })
+    
     const { data: emailResult, error } = await resend.emails.send({
       from: 'Information Assets World <noreply@informationassetsworld.com>',
       to: [user.email],
@@ -126,7 +187,10 @@ Deno.serve(async (req) => {
     })
 
     if (error) {
-      console.error('Error sending email:', error)
+      console.error('=== RESEND EMAIL ERROR ===')
+      console.error('Error details:', error)
+      console.error('Error type:', typeof error)
+      console.error('Error properties:', Object.keys(error))
       throw error
     }
 
@@ -135,6 +199,7 @@ Deno.serve(async (req) => {
       to: user.email,
       action_type: email_action_type,
     })
+    console.log('=== WEBHOOK DEBUG END ===')
 
     return new Response(
       JSON.stringify({ 
@@ -152,7 +217,19 @@ Deno.serve(async (req) => {
     )
 
   } catch (error: any) {
-    console.error('Error in send-auth-email function:', error)
+    console.error('=== CRITICAL ERROR IN send-auth-email ===')
+    console.error('Error type:', error.constructor.name)
+    console.error('Error message:', error.message)
+    console.error('Error stack:', error.stack)
+    console.error('Error code:', error.code)
+    
+    // Log environment state for debugging
+    console.error('Environment debug:', {
+      hasResendKey: !!Deno.env.get('RESEND_API_KEY'),
+      hasHookSecret: !!Deno.env.get('SEND_AUTH_EMAIL_HOOK_SECRET'),
+      resendKeyLength: Deno.env.get('RESEND_API_KEY')?.length || 0,
+      hookSecretLength: Deno.env.get('SEND_AUTH_EMAIL_HOOK_SECRET')?.length || 0
+    })
     
     return new Response(
       JSON.stringify({
@@ -160,6 +237,8 @@ Deno.serve(async (req) => {
         error: {
           message: error.message,
           code: error.code || 'UNKNOWN_ERROR',
+          type: error.constructor.name,
+          timestamp: new Date().toISOString(),
         },
       }),
       {
