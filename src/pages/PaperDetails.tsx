@@ -4,17 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Download, Users, Calendar, Eye, ExternalLink, Share2, FileText, Quote } from 'lucide-react';
-import { samplePapers, sampleEvents } from '@/data/content';
+import { usePaper } from '@/hooks/usePapers';
 import { useToast } from '@/hooks/use-toast';
 
 const PaperDetails = () => {
-  const { slug } = useParams();
+  const { slug: id } = useParams();
   const { toast } = useToast();
-  const paper = samplePapers.find(p => p.slug === slug);
-  const relatedEvent = paper?.conferenceRef ? 
-    sampleEvents.find(e => e.slug === paper.conferenceRef) : null;
+  const { data: paper, isLoading, error } = usePaper(id || '');
 
-  if (!paper) {
+  if (isLoading) {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading paper...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !paper) {
     return (
       <div className="py-12">
         <div className="container mx-auto px-4 text-center">
@@ -77,7 +86,7 @@ const PaperDetails = () => {
     });
   };
 
-  const citationText = `${paper.authors.join(', ')}. (${new Date(paper.publishedDate).getFullYear()}). ${paper.title}. Information Assets World${relatedEvent ? `, ${relatedEvent.title}` : ''}.`;
+  const citationText = `${paper.authors.join(', ')}. (${paper.published_date ? new Date(paper.published_date).getFullYear() : 'N/A'}). ${paper.title}. Information Assets World.`;
 
   return (
     <div className="py-12">
@@ -86,17 +95,9 @@ const PaperDetails = () => {
           {/* Header */}
           <div className="mb-8">
             <div className="flex flex-wrap gap-2 mb-4">
-              <Badge className={getStatusColor(paper.peerReviewStatus)}>
-                {paper.peerReviewStatus.replace('_', ' ').toUpperCase()}
+              <Badge className={getStatusColor(paper.status)}>
+                {paper.status.replace('_', ' ').toUpperCase()}
               </Badge>
-                  {relatedEvent && (
-                    <Badge variant="outline" className="hover:bg-muted">
-                      <Link to={`/events/${relatedEvent.slug}`} className="flex items-center gap-1">
-                        <ExternalLink className="h-3 w-3" />
-                        {relatedEvent.title}
-                      </Link>
-                    </Badge>
-                  )}
             </div>
             
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
@@ -110,16 +111,12 @@ const PaperDetails = () => {
               </div>
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                <span>Published {formatDate(paper.publishedDate)}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Eye className="h-4 w-4" />
-                <span>{paper.downloadCount || 0} downloads</span>
+                <span>Published {paper.published_date ? formatDate(paper.published_date) : 'Date not available'}</span>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              {paper.peerReviewStatus === 'accepted' && (
+              {paper.pdf_url && (
                 <Button onClick={handleDownload} className="flex items-center gap-2">
                   <Download className="h-4 w-4" />
                   Download PDF
@@ -157,15 +154,19 @@ const PaperDetails = () => {
               {/* Keywords */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Keywords</CardTitle>
+                  <CardTitle>Tags</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
-                    {paper.keywords.map((keyword) => (
-                      <Badge key={keyword} variant="secondary" className="text-sm">
-                        {keyword}
-                      </Badge>
-                    ))}
+                    {paper.tags && paper.tags.length > 0 ? (
+                      paper.tags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="text-sm">
+                          {tag}
+                        </Badge>
+                      ))
+                    ) : (
+                      <p className="text-muted-foreground text-sm">No tags available</p>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -210,8 +211,8 @@ const PaperDetails = () => {
                 <CardContent className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Status</span>
-                    <Badge className={getStatusColor(paper.peerReviewStatus)}>
-                      {paper.peerReviewStatus.replace('_', ' ')}
+                    <Badge className={getStatusColor(paper.status)}>
+                      {paper.status.replace('_', ' ')}
                     </Badge>
                   </div>
                   <div className="flex justify-between">
@@ -219,16 +220,16 @@ const PaperDetails = () => {
                     <span>{paper.authors.length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Keywords</span>
-                    <span>{paper.keywords.length}</span>
+                    <span className="text-muted-foreground">Tags</span>
+                    <span>{paper.tags?.length || 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Downloads</span>
-                    <span>{paper.downloadCount || 0}</span>
+                    <span className="text-muted-foreground">Category</span>
+                    <span>{paper.category || 'General'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Published</span>
-                    <span>{new Date(paper.publishedDate).getFullYear()}</span>
+                    <span>{paper.published_date ? new Date(paper.published_date).getFullYear() : 'N/A'}</span>
                   </div>
                 </CardContent>
               </Card>
@@ -258,34 +259,21 @@ const PaperDetails = () => {
               </Card>
 
               {/* Related Event */}
-              {relatedEvent && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Presented At</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Link 
-                      to={`/events/${relatedEvent.slug}`}
-                      className="block p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      <div className="flex items-start gap-3">
-                        <Calendar className="h-5 w-5 text-primary mt-0.5" />
-                        <div>
-                          <h4 className="font-medium text-foreground hover:text-primary transition-colors">
-                            {relatedEvent.title}
-                          </h4>
-                          <p className="text-sm text-muted-foreground">
-                            {relatedEvent.city}, {relatedEvent.country}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {formatDate(relatedEvent.startDate)}
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
-                  </CardContent>
-                </Card>
-              )}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Need Help?</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-4">
+                    <p className="text-muted-foreground text-sm mb-4">
+                      Can't find what you're looking for?
+                    </p>
+                    <Button variant="outline" className="w-full">
+                      Contact Support
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Actions */}
               <Card>

@@ -4,15 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Calendar, MapPin, Users, Clock, ExternalLink, Download, Share2 } from 'lucide-react';
-import { sampleEvents } from '@/data/content';
+import { useEvent } from '@/hooks/useEvents';
 import { useToast } from '@/hooks/use-toast';
 
 const EventDetails = () => {
-  const { slug } = useParams();
+  const { slug: id } = useParams();
   const { toast } = useToast();
-  const event = sampleEvents.find(e => e.slug === slug);
+  const { data: event, isLoading, error } = useEvent(id || '');
 
-  if (!event) {
+  if (isLoading) {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading event...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !event) {
     return (
       <div className="py-12">
         <div className="container mx-auto px-4 text-center">
@@ -87,8 +98,8 @@ const EventDetails = () => {
           <div className="absolute inset-0 flex items-end">
             <div className="p-8 text-white">
               <div className="mb-4">
-                <Badge className={`${getTypeColor(event.type)} mb-2`}>
-                  {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
+                <Badge className={`${getTypeColor(event.event_type || 'conference')} mb-2`}>
+                  {(event.event_type || 'Conference').charAt(0).toUpperCase() + (event.event_type || 'conference').slice(1)}
                 </Badge>
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">{event.title}</h1>
                 <p className="text-xl opacity-90 max-w-2xl">{event.theme}</p>
@@ -115,9 +126,9 @@ const EventDetails = () => {
                     <div>
                       <p className="font-medium">Date & Time</p>
                       <p className="text-muted-foreground">
-                        {formatDate(event.startDate)}
-                        {event.startDate !== event.endDate && (
-                          <span> - {formatDate(event.endDate)}</span>
+                        {formatDate(event.start_date)}
+                        {event.start_date !== event.end_date && (
+                          <span> - {formatDate(event.end_date)}</span>
                         )}
                       </p>
                     </div>
@@ -128,8 +139,7 @@ const EventDetails = () => {
                     <div>
                       <p className="font-medium">Location</p>
                       <p className="text-muted-foreground">
-                        {event.venue}<br />
-                        {event.city}, {event.country}
+                        {event.location}
                       </p>
                     </div>
                   </div>
@@ -147,7 +157,7 @@ const EventDetails = () => {
             </Card>
 
             {/* Speakers */}
-            {event.speakers.length > 0 && (
+            {event.event_speakers && event.event_speakers.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -157,22 +167,22 @@ const EventDetails = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {event.speakers.map((speaker, index) => (
+                    {event.event_speakers.map((speakerData: any, index: number) => (
                       <div key={index} className="flex gap-4">
                         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
                           <Users className="h-8 w-8 text-primary" />
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-semibold">{speaker.name}</h4>
+                          <h4 className="font-semibold">{speakerData.speakers?.name}</h4>
                           <p className="text-sm text-muted-foreground">
-                            {speaker.title}
+                            {speakerData.speakers?.title}
                           </p>
                           <p className="text-sm font-medium text-primary">
-                            {speaker.organization}
+                            {speakerData.speakers?.organization}
                           </p>
-                          {speaker.bio && (
+                          {speakerData.speakers?.bio && (
                             <p className="text-sm text-foreground/70 mt-2">
-                              {speaker.bio}
+                              {speakerData.speakers.bio}
                             </p>
                           )}
                         </div>
@@ -184,7 +194,7 @@ const EventDetails = () => {
             )}
 
             {/* Agenda */}
-            {event.agenda.length > 0 && (
+            {event.agenda_items && event.agenda_items.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -194,16 +204,13 @@ const EventDetails = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {event.agenda.map((item, index) => (
+                    {event.agenda_items.map((item: any, index: number) => (
                       <div key={index} className="flex gap-4 pb-4 border-b border-border last:border-b-0 last:pb-0">
                         <div className="text-sm font-mono text-muted-foreground whitespace-nowrap">
-                          {item.time}
+                          {item.start_time} - {item.end_time}
                         </div>
                         <div className="flex-1">
                           <h4 className="font-semibold">{item.title}</h4>
-                          {item.speaker && (
-                            <p className="text-sm text-primary">{item.speaker}</p>
-                          )}
                           {item.description && (
                             <p className="text-sm text-muted-foreground mt-1">
                               {item.description}
@@ -228,7 +235,7 @@ const EventDetails = () => {
               <CardContent className="space-y-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold text-primary mb-1">
-                    {event.type === 'gala' ? '$299' : '$199'}
+                    {event.event_type === 'gala' ? '$299' : '$199'}
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Early Bird Price
@@ -260,52 +267,48 @@ const EventDetails = () => {
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Sector</span>
-                  <span>{event.sector}</span>
+                  <span className="text-muted-foreground">Category</span>
+                  <span>{event.category || 'General'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Speakers</span>
-                  <span>{event.speakers.length}</span>
+                  <span>{event.event_speakers?.length || 0}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Duration</span>
                   <span>
-                    {event.startDate === event.endDate ? '1 day' : 
-                     `${Math.ceil((new Date(event.endDate).getTime() - new Date(event.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1} days`}
+                    {event.start_date === event.end_date ? '1 day' : 
+                     `${Math.ceil((new Date(event.end_date).getTime() - new Date(event.start_date).getTime()) / (1000 * 60 * 60 * 24)) + 1} days`}
                   </span>
                 </div>
               </CardContent>
             </Card>
 
             {/* Sponsors */}
-            {event.sponsors.length > 0 && (
+            {event.event_sponsors && event.event_sponsors.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle>Sponsors</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {event.sponsors.map((sponsor, index) => (
-                      <a
+                    {event.event_sponsors.map((sponsorData: any, index: number) => (
+                      <div
                         key={index}
-                        href={sponsor.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-muted/50 transition-colors"
+                        className="flex items-center gap-3 p-3 border border-border rounded-lg"
                       >
                         <div className="w-8 h-8 bg-muted rounded flex items-center justify-center">
                           <span className="text-xs font-bold">
-                            {sponsor.name.charAt(0)}
+                            {sponsorData.sponsors?.name?.charAt(0) || 'S'}
                           </span>
                         </div>
                         <div className="flex-1">
-                          <p className="font-medium">{sponsor.name}</p>
+                          <p className="font-medium">{sponsorData.sponsors?.name}</p>
                           <Badge variant="outline" className="text-xs">
-                            {sponsor.tier}
+                            {sponsorData.sponsors?.tier}
                           </Badge>
                         </div>
-                        <ExternalLink className="h-4 w-4 text-muted-foreground" />
-                      </a>
+                      </div>
                     ))}
                   </div>
                 </CardContent>

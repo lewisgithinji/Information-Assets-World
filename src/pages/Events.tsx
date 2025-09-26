@@ -10,8 +10,7 @@ import PageHero from '@/components/PageHero';
 import EnhancedEventCard from '@/components/EnhancedEventCard';
 import { useEvents } from '@/hooks/useEvents';
 import { useEventCategories, useEventTypes } from '@/hooks/useEventCategories';
-import { sampleEvents } from '@/data/content';
-import { adaptEvents, UnifiedEvent } from '@/utils/eventAdapters';
+import { adaptDatabaseEvent, UnifiedEvent } from '@/utils/eventAdapters';
 
 const Events = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,8 +47,10 @@ const Events = () => {
     setSortBy(searchParams.get('sort') || 'date');
   }, [searchParams]);
 
-  // Use adapter to unify event types
-  const events = useMemo(() => adaptEvents(databaseEvents, sampleEvents), [databaseEvents]);
+  // Use only database events
+  const events = useMemo(() => {
+    return databaseEvents ? databaseEvents.map(adaptDatabaseEvent) : [];
+  }, [databaseEvents]);
 
   const filteredAndSortedEvents = useMemo(() => {
     let filtered = events.filter(event => {

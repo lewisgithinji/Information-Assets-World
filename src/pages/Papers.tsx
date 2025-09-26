@@ -5,58 +5,69 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import PaperCard from '@/components/PaperCard';
 import SearchBox from '@/components/SearchBox';
-import { samplePapers } from '@/data/content';
+import { usePapers } from '@/hooks/usePapers';
 import { FileText, Filter, SortAsc, Download } from 'lucide-react';
 
 const Papers = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('date');
+  
+  const { data: papers, isLoading } = usePapers();
 
   const filteredAndSortedPapers = useMemo(() => {
-    let filtered = samplePapers.filter(paper => {
+    if (!papers) return [];
+    
+    let filtered = papers.filter(paper => {
       const matchesSearch = searchQuery === '' || 
         paper.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         paper.authors.some(author => author.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        paper.keywords.some(keyword => keyword.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        paper.abstract.toLowerCase().includes(searchQuery.toLowerCase());
+        (paper.tags && paper.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))) ||
+        (paper.abstract && paper.abstract.toLowerCase().includes(searchQuery.toLowerCase()));
       
-      const matchesStatus = statusFilter === 'all' || paper.peerReviewStatus === statusFilter;
+      const matchesStatus = statusFilter === 'all' || paper.status === statusFilter;
       
-      return matchesSearch && matchesStatus && paper.published;
+      return matchesSearch && matchesStatus;
     });
 
     // Sort papers
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'date':
-          return new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime();
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         case 'title':
           return a.title.localeCompare(b.title);
-        case 'downloads':
-          return (b.downloadCount || 0) - (a.downloadCount || 0);
         default:
           return 0;
       }
     });
 
     return filtered;
-  }, [searchQuery, statusFilter, sortBy]);
+  }, [papers, searchQuery, statusFilter, sortBy]);
 
   const statusOptions = [
     { value: 'all', label: 'All Papers' },
-    { value: 'accepted', label: 'Accepted' },
-    { value: 'under_review', label: 'Under Review' },
-    { value: 'submitted', label: 'Submitted' },
+    { value: 'published', label: 'Published' },
+    { value: 'draft', label: 'Draft' },
   ];
 
   const sortOptions = [
     { value: 'date', label: 'Latest' },
     { value: 'title', label: 'Title' },
-    { value: 'downloads', label: 'Downloads' },
   ];
 
-  const totalDownloads = samplePapers.reduce((sum, paper) => sum + (paper.downloadCount || 0), 0);
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-2 text-muted-foreground">Loading papers...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -72,18 +83,20 @@ const Papers = () => {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{samplePapers.length}</div>
+              <div className="text-2xl font-bold text-primary">{papers?.length || 0}</div>
               <div className="text-sm text-muted-foreground">Total Papers</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{totalDownloads}</div>
-              <div className="text-sm text-muted-foreground">Downloads</div>
+              <div className="text-2xl font-bold text-primary">
+                {papers?.filter(p => p.status === 'published').length || 0}
+              </div>
+              <div className="text-sm text-muted-foreground">Published</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">
-                {samplePapers.filter(p => p.peerReviewStatus === 'accepted').length}
+                {papers?.filter(p => p.status === 'draft').length || 0}
               </div>
-              <div className="text-sm text-muted-foreground">Peer Reviewed</div>
+              <div className="text-sm text-muted-foreground">In Progress</div>
             </div>
           </div>
 

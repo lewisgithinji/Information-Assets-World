@@ -1,6 +1,5 @@
-// Event adapters to handle both DatabaseEvent and Event types
+// Event adapters to handle DatabaseEvent types
 import { DatabaseEvent } from '@/hooks/useEvents';
-import { Event } from '@/data/content';
 
 // Unified event interface for display purposes
 export interface UnifiedEvent {
@@ -67,48 +66,7 @@ export const adaptDatabaseEvent = (event: DatabaseEvent): UnifiedEvent => ({
   published: event.status === 'published',
 });
 
-export const adaptSampleEvent = (event: Event): UnifiedEvent => ({
-  id: event.id,
-  title: event.title,
-  description: event.description,
-  location: `${event.city}, ${event.country}`,
-  start_date: event.startDate,
-  end_date: event.endDate,
-  theme: event.theme,
-  event_type: event.type,
-  category: event.sector,
-  industry_sector: event.sector,
-  tags: [],
-  status: event.published ? 'published' : 'draft',
-  image_url: event.heroUrl,
-  featured: event.featured,
-  // Keep original Event properties
-  slug: event.slug,
-  type: event.type,
-  city: event.city,
-  country: event.country,
-  venue: event.venue,
-  startDate: event.startDate,
-  endDate: event.endDate,
-  sector: event.sector,
-  speakers: event.speakers,
-  agenda: event.agenda,
-  sponsors: event.sponsors,
-  heroUrl: event.heroUrl,
-  gallery: event.gallery,
-  published: event.published,
-});
-
-export const adaptEvents = (databaseEvents?: DatabaseEvent[], sampleEvents?: Event[]): UnifiedEvent[] => {
-  const adapted: UnifiedEvent[] = [];
-  
-  if (databaseEvents && databaseEvents.length > 0) {
-    adapted.push(...databaseEvents.map(adaptDatabaseEvent));
-  }
-  
-  if (sampleEvents && (!databaseEvents || databaseEvents.length === 0)) {
-    adapted.push(...sampleEvents.map(adaptSampleEvent));
-  }
-  
-  return adapted;
+// Simplified adapter function for database events only
+export const adaptEvents = (databaseEvents?: DatabaseEvent[]): UnifiedEvent[] => {
+  return databaseEvents ? databaseEvents.map(adaptDatabaseEvent) : [];
 };

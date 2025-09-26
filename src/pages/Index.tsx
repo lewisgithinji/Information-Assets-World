@@ -6,25 +6,23 @@ import { Link } from 'react-router-dom';
 import Hero from '@/components/Hero';
 import EventCard from '@/components/EventCard';
 import PaperCard from '@/components/PaperCard';
-import { sampleEvents, samplePapers, globalOffices } from '@/data/content';
 import { useEvents } from '@/hooks/useEvents';
 import { usePapers } from '@/hooks/usePapers';
-import { adaptEvents } from '@/utils/eventAdapters';
+import { useOffices } from '@/hooks/useOffices';
+import { adaptDatabaseEvent } from '@/utils/eventAdapters';
 import conferenceImage from '@/assets/conference-image.jpg';
 
 const Index = () => {
   const { data: databaseEvents } = useEvents();
   const { data: databasePapers } = usePapers();
+  const { data: offices } = useOffices();
   
-  // Use adapter to unify event types
-  const events = adaptEvents(databaseEvents, sampleEvents);
-  const papers = databasePapers && databasePapers.length > 0 ? databasePapers : samplePapers;
+  // Use only database events
+  const events = databaseEvents ? databaseEvents.map(adaptDatabaseEvent) : [];
+  const papers = databasePapers || [];
   
   const featuredEvents = events.filter(event => event.featured).slice(0, 3);
   const latestPapers = papers.slice(0, 3);
-  const sponsorLogos = [
-    'Microsoft', 'IBM', 'Oracle', 'SAP', 'Salesforce', 'Amazon'
-  ];
 
   return (
     <div>
@@ -153,9 +151,17 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {latestPapers.map((paper) => (
-              <PaperCard key={paper.id} paper={paper} />
-            ))}
+            {latestPapers.length > 0 ? (
+              latestPapers.map((paper) => (
+                <PaperCard key={paper.id} paper={paper} />
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">No Papers Available</h3>
+                <p className="text-muted-foreground">Research papers will be displayed here when available.</p>
+              </div>
+            )}
           </div>
           
           <div className="text-center">
@@ -182,26 +188,29 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {globalOffices.slice(0, 4).map((office) => (
-              <Card key={`${office.city}-${office.country}`} className="text-center border-card-border">
-                <CardHeader>
-                  <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Globe className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle className="text-lg">{office.region}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    {office.city}, {office.country}
-                  </p>
-                  {office.isHeadquarters && (
-                    <Badge className="mt-2" variant="secondary">
-                      Headquarters
-                    </Badge>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+            {offices && offices.length > 0 ? (
+              offices.slice(0, 4).map((office) => (
+                <Card key={office.id} className="text-center border-card-border">
+                  <CardHeader>
+                    <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Globe className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-lg">{office.region}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      {office.city}, {office.country}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <Globe className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">No Offices Available</h3>
+                <p className="text-muted-foreground">Office locations will be displayed here when available.</p>
+              </div>
+            )}
           </div>
           
           <div className="text-center">
@@ -289,21 +298,16 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Sponsors Section */}
+      {/* Partnership Section */}
       <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center">
             <h2 className="text-2xl font-bold text-foreground mb-4">
-              Trusted by Industry Leaders
+              Building Strategic Partnerships
             </h2>
-          </div>
-          
-          <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-            {sponsorLogos.map((sponsor) => (
-              <div key={sponsor} className="text-2xl font-bold text-muted-foreground">
-                {sponsor}
-              </div>
-            ))}
+            <p className="text-muted-foreground">
+              Connecting with leading organizations to advance information management excellence
+            </p>
           </div>
         </div>
       </section>
