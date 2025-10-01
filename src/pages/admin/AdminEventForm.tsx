@@ -18,6 +18,8 @@ import { useEvent } from '@/hooks/useEvents';
 import { useEventCategories, useEventTypes } from '@/hooks/useEventCategories';
 import { TagInput } from '@/components/TagInput';
 import AdminLayout from '@/components/AdminLayout';
+import ImageUploader from '@/components/ImageUploader';
+import EventFeesManager from '@/components/EventFeesManager';
 
 const eventSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -452,19 +454,13 @@ export default function AdminEventForm() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="image_url"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Image URL</FormLabel>
-                          <FormControl>
-                            <Input placeholder="Enter image URL" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="md:col-span-2">
+                      <ImageUploader
+                        currentImageUrl={form.watch('image_url')}
+                        onImageUploaded={(url) => form.setValue('image_url', url)}
+                        bucket="event-images"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -558,6 +554,21 @@ export default function AdminEventForm() {
             </Form>
           </CardContent>
         </Card>
+
+        {/* Event Fees Manager */}
+        {id && (
+          <div className="mt-6">
+            <EventFeesManager eventId={id} />
+          </div>
+        )}
+
+        {!id && (
+          <Alert className="mt-6">
+            <AlertDescription>
+              Save the event first to add fees and pricing options.
+            </AlertDescription>
+          </Alert>
+        )}
       </div>
     </AdminLayout>
   );

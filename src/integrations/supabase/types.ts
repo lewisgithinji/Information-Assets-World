@@ -101,6 +101,53 @@ export type Database = {
         }
         Relationships: []
       }
+      event_fees: {
+        Row: {
+          amount: number
+          available_until: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          event_id: string
+          fee_type: string
+          id: string
+          max_quantity: number | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          available_until?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          event_id: string
+          fee_type: string
+          id?: string
+          max_quantity?: number | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          available_until?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          event_id?: string
+          fee_type?: string
+          id?: string
+          max_quantity?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_fees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_speakers: {
         Row: {
           event_id: string

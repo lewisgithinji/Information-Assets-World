@@ -1,3 +1,4 @@
+import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,11 +7,44 @@ import { Separator } from '@/components/ui/separator';
 import { Calendar, MapPin, Users, Clock, ExternalLink, Download, Share2 } from 'lucide-react';
 import { useEvent } from '@/hooks/useEvents';
 import { useToast } from '@/hooks/use-toast';
+import CountdownTimer from '@/components/CountdownTimer';
+import { supabase } from '@/integrations/supabase/client';
+
+interface EventFee {
+  id: string;
+  fee_type: string;
+  amount: number;
+  currency: string;
+  description: string | null;
+  available_until: string | null;
+}
 
 const EventDetails = () => {
   const { slug: id } = useParams();
   const { toast } = useToast();
   const { data: event, isLoading, error } = useEvent(id || '');
+  const [fees, setFees] = React.useState<EventFee[]>([]);
+
+  React.useEffect(() => {
+    if (id) {
+      fetchFees();
+    }
+  }, [id]);
+
+  const fetchFees = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('event_fees')
+        .select('*')
+        .eq('event_id', id)
+        .order('amount', { ascending: true });
+
+      if (error) throw error;
+      setFees(data || []);
+    } catch (error) {
+      console.error('Error fetching fees:', error);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -233,14 +267,33 @@ const EventDetails = () => {
                 <CardTitle>Registration</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-1">
-                    {event.event_type === 'gala' ? '$299' : '$199'}
+                {fees.length > 0 && (
+                  <div className="space-y-3 mb-4">
+                    <p className="text-sm font-medium">Registration Fees:</p>
+                    {fees.map((fee) => (
+                      <div key={fee.id} className="flex justify-between items-start p-3 border border-border rounded-lg">
+                        <div>
+                          <p className="font-medium">
+                            {fee.fee_type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                          </p>
+                          {fee.description && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {fee.description}
+                            </p>
+                          )}
+                          {fee.available_until && (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Available until: {new Date(fee.available_until).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                        <span className="font-bold text-primary">
+                          {fee.currency} {fee.amount.toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Early Bird Price
-                  </p>
-                </div>
+                )}
                 
                 <Button className="w-full" size="lg">
                   Register Now
@@ -259,6 +312,15 @@ const EventDetails = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Countdown Timer */}
+            {new Date(event.start_date) > new Date() && (
+              <CountdownTimer
+                eventTitle={event.title}
+                startDate={event.start_date}
+                location={event.location}
+              />
+            )}
 
             {/* Quick Info */}
             <Card>

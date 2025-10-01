@@ -35,6 +35,8 @@ import AdminOfficeForm from "./pages/admin/AdminOfficeForm";
 import AdminSecurity from "./pages/admin/AdminSecurity";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminEventCategories from "./pages/admin/AdminEventCategories";
+import AdminEventCategoryForm from "./pages/admin/AdminEventCategoryForm";
+import AdminEventTypeForm from "./pages/admin/AdminEventTypeForm";
 import UserProfile from "./pages/UserProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
@@ -87,6 +89,11 @@ const App = () => (
                 <Route path="/admin/events" element={<AdminProtectedRoute><AdminEvents /></AdminProtectedRoute>} />
                 <Route path="/admin/events/new" element={<AdminProtectedRoute><AdminEventForm /></AdminProtectedRoute>} />
                 <Route path="/admin/events/:id/edit" element={<AdminProtectedRoute><AdminEventForm /></AdminProtectedRoute>} />
+                <Route path="/admin/event-categories" element={<AdminProtectedRoute><AdminEventCategories /></AdminProtectedRoute>} />
+                <Route path="/admin/event-categories/new" element={<AdminProtectedRoute><AdminEventCategoryForm /></AdminProtectedRoute>} />
+                <Route path="/admin/event-categories/:id/edit" element={<AdminProtectedRoute><AdminEventCategoryForm /></AdminProtectedRoute>} />
+                <Route path="/admin/event-types/new" element={<AdminProtectedRoute><AdminEventTypeForm /></AdminProtectedRoute>} />
+                <Route path="/admin/event-types/:id/edit" element={<AdminProtectedRoute><AdminEventTypeForm /></AdminProtectedRoute>} />
                 <Route path="/admin/papers" element={<AdminProtectedRoute><AdminPapers /></AdminProtectedRoute>} />
                 <Route path="/admin/papers/new" element={<AdminProtectedRoute><AdminPaperForm /></AdminProtectedRoute>} />
                 <Route path="/admin/papers/:id/edit" element={<AdminProtectedRoute><AdminPaperForm /></AdminProtectedRoute>} />
@@ -99,7 +106,6 @@ const App = () => (
                 <Route path="/admin/offices" element={<AdminProtectedRoute requiredRole="admin"><AdminOffices /></AdminProtectedRoute>} />
                 <Route path="/admin/offices/new" element={<AdminProtectedRoute requiredRole="admin"><AdminOfficeForm /></AdminProtectedRoute>} />
                 <Route path="/admin/offices/:id/edit" element={<AdminProtectedRoute requiredRole="admin"><AdminOfficeForm /></AdminProtectedRoute>} />
-                <Route path="/admin/event-categories" element={<AdminProtectedRoute><AdminEventCategories /></AdminProtectedRoute>} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
