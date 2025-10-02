@@ -162,18 +162,18 @@ export default function Contact() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-3">
                     <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span>Westlands Business District, Nairobi, Kenya</span>
+                    <span>Ridgeways, Nairobi, Kenya</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="h-4 w-4 text-muted-foreground" />
-                    <a href="tel:+254700000000" className="text-primary hover:underline">
-                      +254 700 000 000
+                    <a href="tel:+254721490862" className="text-primary hover:underline">
+                      ‪+254 721 490 862
                     </a>
                   </div>
                   <div className="flex items-center gap-3">
                     <Mail className="h-4 w-4 text-muted-foreground" />
-                    <a href="mailto:info@informationassetsworld.com" className="text-primary hover:underline">
-                      info@informationassetsworld.com
+                    <a href="mailto:hello@informationassetsworld.com" className="text-primary hover:underline">
+                      hello@informationassetsworld.com
                     </a>
                   </div>
                   <div className="flex items-center gap-3">
@@ -197,8 +197,8 @@ export default function Contact() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <Mail className="h-4 w-4 text-muted-foreground" />
-                      <a href="mailto:support@informationassetsworld.com" className="text-primary hover:underline">
-                        support@informationassetsworld.com
+                      <a href="mailto:hello@informationassetsworld.com" className="text-primary hover:underline">
+                        hello@informationassetsworld.com
                       </a>
                     </div>
                     <div className="flex items-center gap-3">
@@ -220,9 +220,11 @@ export default function Contact() {
                   <p className="text-muted-foreground mb-4">
                     Interested in partnering with us? Let's explore opportunities together.
                   </p>
-                  <Button variant="outline" className="w-full">
-                    <Mail className="h-4 w-4 mr-2" />
-                    partnerships@informationassetsworld.com
+                  <Button variant="outline" className="w-full" asChild>
+                    <a href="mailto:hello@informationassetsworld.com">
+                      <Mail className="h-4 w-4 mr-2" />
+                      hello@informationassetsworld.com
+                    </a>
                   </Button>
                 </CardContent>
               </Card>

@@ -22,6 +22,7 @@ export default function ImageUploader({
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState<string | null>(currentImageUrl || null);
   const [dragActive, setDragActive] = useState(false);
+  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
   const validateFile = (file: File) => {
     const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
@@ -48,18 +49,99 @@ export default function ImageUploader({
     return true;
   };
 
+  const resizeImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const maxWidth = 1200;
+        const maxHeight = 630;
+        let width = img.width;
+        let height = img.height;
+
+        // Calculate new dimensions maintaining aspect ratio
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = width * ratio;
+          height = height * ratio;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const resizedFile = new File([blob], file.name, {
+              type: file.type,
+              lastModified: Date.now(),
+            });
+            resolve(resizedFile);
+          } else {
+            resolve(file);
+          }
+        }, file.type, 0.85);
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const getImageDimensions = (file: File): Promise<{ width: number; height: number }> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+
+      img.onload = () => {
+        resolve({ width: img.width, height: img.height });
+      };
+
+      reader.readAsDataURL(file);
+    });
+  };
+
   const uploadFile = async (file: File) => {
     if (!validateFile(file)) return;
 
     setUploading(true);
     try {
-      const fileExt = file.name.split('.').pop();
+      // Get original dimensions
+      const dimensions = await getImageDimensions(file);
+      
+      // Resize if image is larger than recommended
+      let fileToUpload = file;
+      if (dimensions.width > 1200 || dimensions.height > 630) {
+        fileToUpload = await resizeImage(file);
+        const newDimensions = await getImageDimensions(fileToUpload);
+        setImageDimensions(newDimensions);
+        
+        toast({
+          title: 'Image Resized',
+          description: `Optimized from ${dimensions.width}x${dimensions.height}px to ${newDimensions.width}x${newDimensions.height}px`,
+        });
+      } else {
+        setImageDimensions(dimensions);
+      }
+
+      const fileExt = fileToUpload.name.split('.').pop();
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
       const filePath = path ? `${path}/${fileName}` : fileName;
 
       const { error: uploadError } = await supabase.storage
         .from(bucket)
-        .upload(filePath, file, {
+        .upload(filePath, fileToUpload, {
           cacheControl: '3600',
           upsert: false,
         });
@@ -122,24 +204,34 @@ export default function ImageUploader({
 
   return (
     <div className="space-y-2">
-      <Label>Event Image</Label>
+      <div className="flex items-center justify-between">
+        <Label>Event Image</Label>
+        <p className="text-xs text-muted-foreground">Recommended: 1200x630px (16:9 ratio)</p>
+      </div>
       
       {preview ? (
-        <div className="relative">
-          <img
-            src={preview}
-            alt="Preview"
-            className="w-full h-64 object-cover rounded-lg"
-          />
-          <Button
-            type="button"
-            variant="destructive"
-            size="icon"
-            className="absolute top-2 right-2"
-            onClick={removeImage}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+        <div className="space-y-2">
+          <div className="relative">
+            <img
+              src={preview}
+              alt="Preview"
+              className="w-full h-64 object-cover rounded-lg"
+            />
+            <Button
+              type="button"
+              variant="destructive"
+              size="icon"
+              className="absolute top-2 right-2"
+              onClick={removeImage}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          {imageDimensions && (
+            <p className="text-xs text-muted-foreground">
+              Image dimensions: {imageDimensions.width}x{imageDimensions.height}px
+            </p>
+          )}
         </div>
       ) : (
         <div

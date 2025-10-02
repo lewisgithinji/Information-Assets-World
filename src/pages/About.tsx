@@ -31,27 +31,17 @@ const About = () => {
 
   const milestones = [
     {
-      year: '2010',
+      year: '2023',
       title: 'Foundation',
-      description: 'Information Assets World was founded by Dr. Simon Gichuki in Nairobi, Kenya.'
-    },
-    {
-      year: '2015',
-      title: 'Global Expansion',
-      description: 'Opened regional offices in Bangkok, Brussels, and Columbus, establishing a global presence.'
-    },
-    {
-      year: '2018',
-      title: '10,000 Members',
-      description: 'Reached 10,000+ members worldwide, becoming the leading network in information management.'
-    },
-    {
-      year: '2020',
-      title: 'Digital Transformation',
-      description: 'Launched virtual conferences and digital research platform during the global pandemic.'
+      description: 'Information Assets World was founded with Head Office in Nairobi, Kenya.'
     },
     {
       year: '2024',
+      title: 'Digital Transformation',
+      description: 'Launched conferences and digital research platform'
+    },
+    {
+      year: '2025',
       title: 'Innovation Hub',
       description: 'Established the Global Information Innovation Hub for emerging technologies research.'
     }
@@ -59,22 +49,22 @@ const About = () => {
 
   const leadership = [
     {
-      name: 'Dr. Simon Gichuki',
-      title: 'Founder & CEO',
-      bio: 'Renowned expert in information management with over 20 years of experience in data governance, digital transformation, and organizational change management.',
-      expertise: ['Data Governance', 'Digital Strategy', 'Organizational Development']
+      name: 'Simon Gichuki',
+      title: 'Founder and CEO',
+      bio: 'Visionary leader with 20+ years in information management, data governance, and digital transformation. Founded Information Assets World in 2023 to create a global platform connecting information professionals and advancing industry best practices.',
+      expertise: ['Data Governance', 'Digital Strategy', 'Information Assets Management']
     },
     {
-      name: 'Dr. Maria Santos',
-      title: 'Chief Research Officer',
-      bio: 'Leading researcher in information science with expertise in AI applications for data management and privacy-preserving technologies.',
-      expertise: ['AI & Data Science', 'Privacy Engineering', 'Research Methodology']
-    },
-    {
-      name: 'James Chen',
+      name: 'Charty Kimwama',
       title: 'Global Events Director',
-      bio: 'International conference organizer with experience managing large-scale professional events across six continents.',
-      expertise: ['Event Management', 'Global Operations', 'Professional Networking']
+      bio: 'International events strategist with extensive experience in planning and executing world-class conferences across multiple continents. Specializes in creating immersive professional development experiences and fostering global collaboration.',
+      expertise: ['Event Management', 'Global Operations', 'Stakeholder Engagement']
+    },
+    {
+      name: 'Sylvia Mugure',
+      title: 'Chief Research Officer',
+      bio: 'Leading researcher in information science with expertise in AI applications, data analytics, and privacy-preserving technologies. Drives innovative research initiatives that shape the future of information management practices.',
+      expertise: ['AI & Data Science', 'Research Methodology', 'Information Security']
     }
   ];
 
