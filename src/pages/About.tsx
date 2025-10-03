@@ -301,15 +301,15 @@ const About = () => {
                   <div className="text-muted-foreground">Active Members</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-2">50+</div>
+                  <div className="text-3xl font-bold text-primary mb-2">78+</div>
                   <div className="text-muted-foreground">Annual Events</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-2">200+</div>
+                  <div className="text-3xl font-bold text-primary mb-2">90+</div>
                   <div className="text-muted-foreground">Research Papers</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-2">25</div>
+                  <div className="text-3xl font-bold text-primary mb-2">18+</div>
                   <div className="text-muted-foreground">Countries</div>
                 </div>
               </div>
