@@ -133,7 +133,7 @@ const About = () => {
                       <Users className="h-16 w-16 text-primary" />
                     </div>
                     <div className="text-center md:text-left">
-                      <h3 className="text-xl font-bold text-foreground">Dr. Simon Gichuki</h3>
+                      <h3 className="text-xl font-bold text-foreground">Simon Gichuki</h3>
                       <p className="text-muted-foreground">Founder & CEO</p>
                       <div className="flex flex-wrap gap-2 mt-3 justify-center md:justify-start">
                         <Badge variant="secondary">Data Governance</Badge>
