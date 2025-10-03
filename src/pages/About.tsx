@@ -143,7 +143,7 @@ const About = () => {
                   </div>
                   <div className="md:w-2/3">
                     <p className="text-foreground/80 leading-relaxed mb-4">
-                      "In 2010, I recognized that information management professionals lacked 
+                      "In 2023, I recognized that information management professionals lacked 
                       a global platform to share knowledge, collaborate on research, and advance 
                       the field together. Having worked with organizations across Africa, Europe, 
                       and Asia, I witnessed firsthand the challenges they faced in managing their 
@@ -297,19 +297,19 @@ const About = () => {
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-2">10,000+</div>
+                  <div className="text-3xl font-bold text-primary mb-2">5,000+</div>
                   <div className="text-muted-foreground">Active Members</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-2">78+</div>
+                  <div className="text-3xl font-bold text-primary mb-2">50+</div>
                   <div className="text-muted-foreground">Annual Events</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-2">90+</div>
+                  <div className="text-3xl font-bold text-primary mb-2">200+</div>
                   <div className="text-muted-foreground">Research Papers</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-2">18+</div>
+                  <div className="text-3xl font-bold text-primary mb-2">25</div>
                   <div className="text-muted-foreground">Countries</div>
                 </div>
               </div>
