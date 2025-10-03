@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Hero from '@/components/Hero';
 import EventCard from '@/components/EventCard';
 import PaperCard from '@/components/PaperCard';
+import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { useEvents } from '@/hooks/useEvents';
 import { usePapers } from '@/hooks/usePapers';
 import { useOffices } from '@/hooks/useOffices';
@@ -29,8 +30,25 @@ const Index = () => {
       <Hero />
       
       {/* Enhanced Statistics Section */}
-      <section className="py-20 bg-secondary/50">
-        <div className="container mx-auto px-4">
+      <section className="relative py-20 bg-gradient-to-br from-secondary via-background to-secondary overflow-hidden">
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5 gradient-animate" />
+        
+        {/* Floating shapes */}
+        <div className="absolute top-10 left-10 w-32 h-32 bg-primary/10 rounded-full blur-3xl floating-shape" />
+        <div className="absolute bottom-20 right-20 w-40 h-40 bg-accent/10 rounded-full blur-3xl floating-shape" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-primary-light/10 rounded-full blur-3xl floating-shape" style={{ animationDelay: '4s' }} />
+        
+        {/* Dot pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-5" 
+          style={{
+            backgroundImage: 'radial-gradient(circle, currentColor 1px, transparent 1px)',
+            backgroundSize: '30px 30px'
+          }} 
+        />
+        
+        <div className="relative z-10 container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-foreground mb-4">
               Our Global Impact
@@ -41,54 +59,102 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="text-center border-card-border shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <CardHeader>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                  <Calendar className="h-8 w-8 text-primary" />
+            <Card className="relative overflow-hidden text-center border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 glass-card group">
+              {/* Trend Indicator Badge */}
+              <Badge className="absolute top-3 right-3 bg-emerald-500/20 text-emerald-400 border-0 animate-pulse-subtle">
+                ↑ +15%
+              </Badge>
+              
+              {/* Gradient Background Blob */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <CardHeader className="relative z-10">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-primary/50">
+                  <Calendar className="h-10 w-10 text-white" />
                 </div>
-                <div className="text-3xl font-bold text-foreground mb-2">78+</div>
-                <CardTitle className="text-lg">Annual Events</CardTitle>
+                <div className="text-5xl font-extrabold mb-2 gradient-text-primary">
+                  <AnimatedCounter end={78} />+
+                </div>
+                <CardTitle className="text-lg relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">
+                  Annual Events
+                </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative z-10">
                 <p className="text-muted-foreground">Conferences, workshops, and networking events worldwide</p>
               </CardContent>
             </Card>
 
-            <Card className="text-center border-card-border shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <CardHeader>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-teal/10 flex items-center justify-center">
-                  <FileText className="h-8 w-8 text-teal" />
+            <Card className="relative overflow-hidden text-center border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 glass-card group">
+              {/* Trend Indicator Badge */}
+              <Badge className="absolute top-3 right-3 bg-emerald-500/20 text-emerald-400 border-0 animate-pulse-subtle">
+                ↑ +23%
+              </Badge>
+              
+              {/* Gradient Background Blob */}
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-cyan-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <CardHeader className="relative z-10">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-teal/50">
+                  <FileText className="h-10 w-10 text-white" />
                 </div>
-                <div className="text-3xl font-bold text-foreground mb-2">90+</div>
-                <CardTitle className="text-lg">Research Papers</CardTitle>
+                <div className="text-5xl font-extrabold mb-2 gradient-text-teal">
+                  <AnimatedCounter end={90} />+
+                </div>
+                <CardTitle className="text-lg relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-teal after:transition-all after:duration-300 group-hover:after:w-full">
+                  Research Papers
+                </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative z-10">
                 <p className="text-muted-foreground">Peer-reviewed research in information management</p>
               </CardContent>
             </Card>
 
-            <Card className="text-center border-card-border shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <CardHeader>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">
-                  <Users className="h-8 w-8 text-accent" />
+            <Card className="relative overflow-hidden text-center border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 glass-card group">
+              {/* Trend Indicator Badge */}
+              <Badge className="absolute top-3 right-3 bg-emerald-500/20 text-emerald-400 border-0 animate-pulse-subtle">
+                ↑ +42%
+              </Badge>
+              
+              {/* Gradient Background Blob */}
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-red-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <CardHeader className="relative z-10">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-accent to-orange-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-accent/50">
+                  <Users className="h-10 w-10 text-white" />
                 </div>
-                <div className="text-3xl font-bold text-foreground mb-2">5,000+</div>
-                <CardTitle className="text-lg">Global Members</CardTitle>
+                <div className="text-5xl font-extrabold mb-2 gradient-text-accent">
+                  <AnimatedCounter end={5} decimals={0} suffix="k" />+
+                </div>
+                <CardTitle className="text-lg relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-accent after:transition-all after:duration-300 group-hover:after:w-full">
+                  Global Members
+                </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative z-10">
                 <p className="text-muted-foreground">Professionals from leading organizations</p>
               </CardContent>
             </Card>
 
-            <Card className="text-center border-card-border shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <CardHeader>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary-light/20 flex items-center justify-center">
-                  <Globe className="h-8 w-8 text-primary" />
+            <Card className="relative overflow-hidden text-center border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 glass-card group">
+              {/* Trend Indicator Badge */}
+              <Badge className="absolute top-3 right-3 bg-emerald-500/20 text-emerald-400 border-0 animate-pulse-subtle">
+                ↑ +8%
+              </Badge>
+              
+              {/* Gradient Background Blob */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <CardHeader className="relative z-10">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-primary/50">
+                  <Globe className="h-10 w-10 text-white" />
                 </div>
-                <div className="text-3xl font-bold text-foreground mb-2">18+</div>
-                <CardTitle className="text-lg">Countries</CardTitle>
+                <div className="text-5xl font-extrabold mb-2 gradient-text-primary">
+                  <AnimatedCounter end={18} />+
+                </div>
+                <CardTitle className="text-lg relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 group-hover:after:w-full">
+                  Countries
+                </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="relative z-10">
                 <p className="text-muted-foreground">Spanning six continents with local expertise</p>
               </CardContent>
             </Card>
