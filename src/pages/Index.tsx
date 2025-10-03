@@ -46,7 +46,7 @@ const Index = () => {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
                   <Calendar className="h-8 w-8 text-primary" />
                 </div>
-                <div className="text-3xl font-bold text-foreground mb-2">150+</div>
+                <div className="text-3xl font-bold text-foreground mb-2">78+</div>
                 <CardTitle className="text-lg">Annual Events</CardTitle>
               </CardHeader>
               <CardContent>
@@ -59,7 +59,7 @@ const Index = () => {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-teal/10 flex items-center justify-center">
                   <FileText className="h-8 w-8 text-teal" />
                 </div>
-                <div className="text-3xl font-bold text-foreground mb-2">500+</div>
+                <div className="text-3xl font-bold text-foreground mb-2">90+</div>
                 <CardTitle className="text-lg">Research Papers</CardTitle>
               </CardHeader>
               <CardContent>
@@ -72,7 +72,7 @@ const Index = () => {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-accent/10 flex items-center justify-center">
                   <Users className="h-8 w-8 text-accent" />
                 </div>
-                <div className="text-3xl font-bold text-foreground mb-2">10,000+</div>
+                <div className="text-3xl font-bold text-foreground mb-2">5,000+</div>
                 <CardTitle className="text-lg">Global Members</CardTitle>
               </CardHeader>
               <CardContent>
@@ -85,7 +85,7 @@ const Index = () => {
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary-light/20 flex items-center justify-center">
                   <Globe className="h-8 w-8 text-primary" />
                 </div>
-                <div className="text-3xl font-bold text-foreground mb-2">50+</div>
+                <div className="text-3xl font-bold text-foreground mb-2">18+</div>
                 <CardTitle className="text-lg">Countries</CardTitle>
               </CardHeader>
               <CardContent>
