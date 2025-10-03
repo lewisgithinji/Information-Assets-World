@@ -241,19 +241,19 @@ const Membership = () => {
         <div className="mb-20 text-center">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
             <div className="space-y-2">
-              <div className="text-3xl font-bold text-primary">10,000+</div>
+              <div className="text-3xl font-bold text-primary">5,000+</div>
               <div className="text-muted-foreground">Global Members</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl font-bold text-primary">50+</div>
+              <div className="text-3xl font-bold text-primary">78+</div>
               <div className="text-muted-foreground">Annual Events</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl font-bold text-primary">200+</div>
+              <div className="text-3xl font-bold text-primary">90+</div>
               <div className="text-muted-foreground">Research Papers</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl font-bold text-primary">25</div>
+              <div className="text-3xl font-bold text-primary">18+</div>
               <div className="text-muted-foreground">Countries</div>
             </div>
           </div>
