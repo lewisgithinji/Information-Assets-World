@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import AdminSidebar from '@/components/AdminSidebar';
 import { useRole } from '@/hooks/useRole';
 import { Navigate } from 'react-router-dom';
+import { NotificationBell } from '@/components/notifications/NotificationBell';
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -26,11 +27,16 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full">
       <AdminSidebar />
-      <main className="flex-1 p-6">
-        {children}
-      </main>
+      <div className="flex-1 flex flex-col">
+        <header className="border-b px-6 py-3 flex justify-end bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <NotificationBell />
+        </header>
+        <main className="flex-1 p-6">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };

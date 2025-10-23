@@ -52,6 +52,9 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
+    --warning: 43 84% 65%;              /* Yellow warning color */
+    --warning-foreground: 0 0% 0%;
+
     /* Borders & Inputs */
     --border: 215 20% 85%;
     --input: 215 20% 85%;
@@ -127,6 +130,9 @@
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+
+    --warning: 43 84% 65%;
+    --warning-foreground: 0 0% 0%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
