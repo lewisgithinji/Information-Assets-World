@@ -8,7 +8,8 @@ import {
   Building,
   Shield,
   LayoutDashboard,
-  ChevronLeft
+  ChevronLeft,
+  ClipboardList
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRole } from '@/hooks/useRole';
@@ -53,6 +54,11 @@ const AdminSidebar = () => {
       name: 'Event Categories',
       href: '/admin/event-categories',
       icon: Calendar
+    },
+    {
+      name: 'All Leads',
+      href: '/admin/leads',
+      icon: ClipboardList
     }
   ];
 

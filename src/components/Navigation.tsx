@@ -27,6 +27,7 @@ const Navigation = () => {
     { name: 'About', href: '/about' },
     { name: 'Global Offices', href: '/offices' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Register Interest', href: '/register-interest' },
   ];
 
   const isActive = (href: string) => {

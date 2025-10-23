@@ -38,6 +38,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminEventCategories from "./pages/admin/AdminEventCategories";
 import AdminEventCategoryForm from "./pages/admin/AdminEventCategoryForm";
 import AdminEventTypeForm from "./pages/admin/AdminEventTypeForm";
+import AdminLeads from "./pages/admin/AdminLeads";
 import UserProfile from "./pages/UserProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
@@ -108,6 +109,10 @@ const App = () => (
                 <Route path="/admin/offices" element={<AdminProtectedRoute requiredRole="admin"><AdminOffices /></AdminProtectedRoute>} />
                 <Route path="/admin/offices/new" element={<AdminProtectedRoute requiredRole="admin"><AdminOfficeForm /></AdminProtectedRoute>} />
                 <Route path="/admin/offices/:id/edit" element={<AdminProtectedRoute requiredRole="admin"><AdminOfficeForm /></AdminProtectedRoute>} />
+                
+                {/* Lead Management Routes */}
+                <Route path="/admin/leads" element={<AdminProtectedRoute><AdminLeads /></AdminProtectedRoute>} />
+                
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
