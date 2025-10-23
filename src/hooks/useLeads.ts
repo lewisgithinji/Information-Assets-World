@@ -17,10 +17,7 @@ export const useLeads = (filters?: LeadFilters) => {
     queryFn: async () => {
       let query = supabase
         .from('leads')
-        .select(`
-          *,
-          assigned_user:profiles(full_name, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       // Apply filters
@@ -83,10 +80,31 @@ export const useLeads = (filters?: LeadFilters) => {
         }
       }
 
-      const { data, error } = await query;
+      const { data: leads, error } = await query;
       
       if (error) throw error;
-      return data;
+      
+      // Fetch assigned users separately if there are any leads with assigned_to
+      if (leads && leads.length > 0) {
+        const assignedUserIds = [...new Set(leads.map(lead => lead.assigned_to).filter(Boolean))];
+        
+        if (assignedUserIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from('profiles')
+            .select('user_id, full_name, email')
+            .in('user_id', assignedUserIds);
+          
+          // Map profiles to leads
+          const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
+          
+          return leads.map(lead => ({
+            ...lead,
+            assigned_user: lead.assigned_to ? profileMap.get(lead.assigned_to) : null
+          }));
+        }
+      }
+      
+      return leads;
     },
   });
 };

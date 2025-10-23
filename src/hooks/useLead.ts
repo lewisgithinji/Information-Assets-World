@@ -34,17 +34,29 @@ export const useLead = (leadId: string | undefined) => {
     queryFn: async () => {
       if (!leadId) throw new Error('Lead ID is required');
 
-      const { data, error } = await supabase
+      const { data: lead, error } = await supabase
         .from('leads')
-        .select(`
-          *,
-          assigned_user:profiles(user_id, full_name, email)
-        `)
+        .select('*')
         .eq('id', leadId)
         .single();
       
       if (error) throw error;
-      return data;
+      
+      // Fetch assigned user separately if exists
+      if (lead.assigned_to) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('user_id, full_name, email')
+          .eq('user_id', lead.assigned_to)
+          .single();
+        
+        return {
+          ...lead,
+          assigned_user: profile
+        };
+      }
+      
+      return lead;
     },
     enabled: !!leadId,
   });
