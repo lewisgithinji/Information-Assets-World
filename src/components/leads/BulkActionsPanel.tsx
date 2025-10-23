@@ -17,10 +17,11 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Input } from '@/components/ui/input';
-import { ChevronDown, Trash2, X } from 'lucide-react';
+import { ChevronDown, Trash2, X, Calendar } from 'lucide-react';
 import { useBulkOperations } from '@/hooks/useBulkOperations';
 import { useUsers } from '@/hooks/useUsers';
 import { STATUS_LABELS } from '@/utils/leadStatusWorkflow';
+import { ScheduleFollowUpDialog } from './ScheduleFollowUpDialog';
 
 interface BulkActionsPanelProps {
   selectedLeads: string[];
@@ -32,6 +33,7 @@ export const BulkActionsPanel: React.FC<BulkActionsPanelProps> = ({
   onClearSelection,
 }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const { bulkUpdateStatus, bulkAssignLeads, bulkUpdatePriority, bulkDeleteLeads } = useBulkOperations();
   const { data: users } = useUsers();
@@ -141,6 +143,15 @@ export const BulkActionsPanel: React.FC<BulkActionsPanelProps> = ({
                 </DropdownMenu>
 
                 <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowScheduleDialog(true)}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Schedule Follow-up
+                </Button>
+
+                <Button
                   variant="destructive"
                   size="sm"
                   onClick={() => setShowDeleteDialog(true)}
@@ -192,6 +203,14 @@ export const BulkActionsPanel: React.FC<BulkActionsPanelProps> = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <ScheduleFollowUpDialog
+        open={showScheduleDialog}
+        onOpenChange={setShowScheduleDialog}
+        leadId={selectedLeads[0]}
+        currentAction=""
+        currentDate=""
+      />
     </>
   );
 };

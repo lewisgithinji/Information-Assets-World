@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { StatusBadge } from './StatusBadge';
 import { PriorityBadge } from './PriorityBadge';
 import { VerificationBadge } from './VerificationBadge';
+import { FollowUpBadge } from './FollowUpBadge';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -68,19 +69,16 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
             <TableHead>Reference</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Organization</TableHead>
-            <TableHead>Country</TableHead>
-            <TableHead>Training Interest</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Follow-up</TableHead>
             <TableHead>Priority</TableHead>
-            <TableHead>Verification</TableHead>
-            <TableHead>Assigned To</TableHead>
             <TableHead>Created</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {leads.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={selectionMode ? 11 : 10} className="text-center py-8 text-muted-foreground">
+              <TableCell colSpan={selectionMode ? 8 : 7} className="text-center py-8 text-muted-foreground">
                 No leads found
               </TableCell>
             </TableRow>
@@ -106,36 +104,26 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
                     </TableCell>
                   )}
                   <TableCell className="font-mono text-xs">
-                  {lead.reference_number}
-                </TableCell>
-                <TableCell className="font-medium">{lead.full_name}</TableCell>
-                <TableCell>{lead.organization}</TableCell>
-                <TableCell>{lead.country}</TableCell>
-                <TableCell className="max-w-xs truncate">{lead.training_interest}</TableCell>
-                <TableCell>
-                  <StatusBadge status={lead.status} />
-                </TableCell>
-                <TableCell>
-                  <PriorityBadge priority={lead.priority} />
-                </TableCell>
-                <TableCell>
-                  <VerificationBadge
-                    verified={lead.verified}
-                    emailConfirmed={lead.email_confirmed}
-                  />
-                </TableCell>
-                <TableCell>
-                  {lead.assigned_user ? (
-                    <div className="text-sm">
-                      <div className="font-medium">{lead.assigned_user.full_name}</div>
-                    </div>
-                  ) : (
-                    <span className="text-muted-foreground text-sm">Unassigned</span>
-                  )}
-                </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {format(new Date(lead.created_at), 'MMM dd, yyyy')}
-                </TableCell>
+                    {lead.reference_number}
+                  </TableCell>
+                  <TableCell className="font-medium">{lead.full_name}</TableCell>
+                  <TableCell>{lead.organization}</TableCell>
+                  <TableCell>
+                    <StatusBadge status={lead.status} />
+                  </TableCell>
+                  <TableCell>
+                    <FollowUpBadge 
+                      nextActionDate={lead.next_action_date} 
+                      status={lead.status}
+                      compact
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <PriorityBadge priority={lead.priority} />
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {format(new Date(lead.created_at), 'MMM dd, yyyy')}
+                  </TableCell>
                 </TableRow>
               );
             })

@@ -1,8 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { UserPlus, Flag } from 'lucide-react';
+import { UserPlus, Flag, Calendar, Edit } from 'lucide-react';
 import { StatusTransitionButtons } from './StatusTransitionButtons';
+import { FollowUpBadge } from './FollowUpBadge';
+import { ScheduleFollowUpDialog } from './ScheduleFollowUpDialog';
 import { useState } from 'react';
 import { AssignUserDialog } from './AssignUserDialog';
 import { useLeadMutations } from '@/hooks/useLeadMutations';
@@ -13,6 +15,7 @@ interface LeadActionsPanelProps {
 
 export const LeadActionsPanel: React.FC<LeadActionsPanelProps> = ({ lead }) => {
   const [showAssignDialog, setShowAssignDialog] = useState(false);
+  const [showScheduleDialog, setShowScheduleDialog] = useState(false);
   const { updateLeadPriority } = useLeadMutations();
 
   const handlePriorityChange = (priority: string) => {
@@ -74,18 +77,48 @@ export const LeadActionsPanel: React.FC<LeadActionsPanelProps> = ({ lead }) => {
           </Select>
         </div>
 
-        {/* Next Action */}
-        {lead.next_action && (
-          <div>
-            <h3 className="text-sm font-semibold mb-2">Next Action</h3>
-            <p className="text-sm text-muted-foreground">{lead.next_action}</p>
-            {lead.next_action_date && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Due: {new Date(lead.next_action_date).toLocaleDateString()}
-              </p>
-            )}
-          </div>
-        )}
+        {/* Next Action / Follow-up */}
+        <div>
+          <h3 className="text-sm font-semibold mb-3">Next Follow-up</h3>
+          {lead.next_action ? (
+            <div className="p-3 bg-muted rounded-lg space-y-3">
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-sm flex-1">{lead.next_action}</p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowScheduleDialog(true)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </div>
+              {lead.next_action_date && (
+                <div className="flex items-center justify-between">
+                  <FollowUpBadge 
+                    nextActionDate={lead.next_action_date} 
+                    status={lead.status} 
+                  />
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => setShowScheduleDialog(true)}
+                  >
+                    Reschedule
+                  </Button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Button 
+              variant="outline" 
+              className="w-full justify-start"
+              onClick={() => setShowScheduleDialog(true)}
+            >
+              <Calendar className="h-4 w-4 mr-2" />
+              Schedule Follow-up
+            </Button>
+          )}
+        </div>
       </CardContent>
 
       <AssignUserDialog
@@ -93,6 +126,14 @@ export const LeadActionsPanel: React.FC<LeadActionsPanelProps> = ({ lead }) => {
         currentUserId={lead.assigned_to}
         open={showAssignDialog}
         onOpenChange={setShowAssignDialog}
+      />
+      
+      <ScheduleFollowUpDialog
+        open={showScheduleDialog}
+        onOpenChange={setShowScheduleDialog}
+        leadId={lead.id}
+        currentAction={lead.next_action}
+        currentDate={lead.next_action_date}
       />
     </Card>
   );

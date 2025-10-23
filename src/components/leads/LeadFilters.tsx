@@ -40,11 +40,20 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
     onFiltersChange({});
   };
 
+  const handleFollowUpToggle = (status: string) => {
+    const currentStatuses = filters.followUpStatus || [];
+    const newStatuses = currentStatuses.includes(status as any)
+      ? currentStatuses.filter((s) => s !== status)
+      : [...currentStatuses, status as any];
+    onFiltersChange({ ...filters, followUpStatus: newStatuses });
+  };
+
   const activeFilterCount = 
     (filters.status?.length || 0) +
     (filters.country?.length || 0) +
     (filters.training_interest ? 1 : 0) +
-    (filters.assigned_to ? 1 : 0);
+    (filters.assigned_to ? 1 : 0) +
+    (filters.followUpStatus?.length || 0);
 
   return (
     <Card>
@@ -156,6 +165,53 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
               </Select>
             </div>
           )}
+
+          {/* Follow-up Status Filter */}
+          <div>
+            <Label className="mb-3 block">Follow-up Status</Label>
+            <div className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="followup-overdue"
+                  checked={filters.followUpStatus?.includes('overdue')}
+                  onCheckedChange={() => handleFollowUpToggle('overdue')}
+                />
+                <label htmlFor="followup-overdue" className="text-sm cursor-pointer">
+                  Overdue
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="followup-today"
+                  checked={filters.followUpStatus?.includes('today')}
+                  onCheckedChange={() => handleFollowUpToggle('today')}
+                />
+                <label htmlFor="followup-today" className="text-sm cursor-pointer">
+                  Due Today
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="followup-week"
+                  checked={filters.followUpStatus?.includes('this_week')}
+                  onCheckedChange={() => handleFollowUpToggle('this_week')}
+                />
+                <label htmlFor="followup-week" className="text-sm cursor-pointer">
+                  Due This Week
+                </label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="followup-none"
+                  checked={filters.followUpStatus?.includes('none')}
+                  onCheckedChange={() => handleFollowUpToggle('none')}
+                />
+                <label htmlFor="followup-none" className="text-sm cursor-pointer">
+                  No Follow-up Scheduled
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

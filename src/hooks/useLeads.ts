@@ -8,6 +8,7 @@ export interface LeadFilters {
   assigned_to?: string;
   search?: string;
   dateRange?: [Date, Date];
+  followUpStatus?: ('overdue' | 'today' | 'this_week' | 'none')[];
 }
 
 export const useLeads = (filters?: LeadFilters) => {
@@ -53,6 +54,33 @@ export const useLeads = (filters?: LeadFilters) => {
         query = query
           .gte('created_at', start.toISOString())
           .lte('created_at', end.toISOString());
+      }
+
+      // Follow-up status filters
+      if (filters?.followUpStatus && filters.followUpStatus.length > 0) {
+        const today = new Date().toISOString().split('T')[0];
+        const nextWeek = new Date();
+        nextWeek.setDate(nextWeek.getDate() + 7);
+        const nextWeekStr = nextWeek.toISOString().split('T')[0];
+
+        const conditions: string[] = [];
+
+        if (filters.followUpStatus.includes('overdue')) {
+          conditions.push(`next_action_date.lt.${today}`);
+        }
+        if (filters.followUpStatus.includes('today')) {
+          conditions.push(`next_action_date.eq.${today}`);
+        }
+        if (filters.followUpStatus.includes('this_week')) {
+          conditions.push(`and(next_action_date.gt.${today},next_action_date.lte.${nextWeekStr})`);
+        }
+        if (filters.followUpStatus.includes('none')) {
+          conditions.push('next_action_date.is.null');
+        }
+
+        if (conditions.length > 0) {
+          query = query.or(conditions.join(','));
+        }
       }
 
       const { data, error } = await query;

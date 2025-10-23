@@ -5,15 +5,20 @@ export const useLeadStats = () => {
   return useQuery({
     queryKey: ['lead-stats'],
     queryFn: async () => {
+      // Get basic stats
       const { data: leads, error } = await supabase
         .from('leads')
-        .select('status, created_at');
+        .select('status, created_at, next_action_date');
       
       if (error) throw error;
 
       const now = new Date();
+      const today = new Date().toISOString().split('T')[0];
       const thisWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
       const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const nextWeek = new Date();
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      const nextWeekStr = nextWeek.toISOString().split('T')[0];
 
       const totalNew = leads.filter(l => l.status === 'new').length;
       const totalContacted = leads.filter(l => l.status === 'contacted').length;
@@ -28,6 +33,23 @@ export const useLeadStats = () => {
         ? ((confirmedThisMonth / leadsThisMonth) * 100).toFixed(1)
         : '0.0';
 
+      // Follow-up stats
+      const overdueFollowUps = leads.filter(
+        l => l.next_action_date && l.next_action_date < today && !['confirmed', 'lost'].includes(l.status)
+      ).length;
+
+      const todayFollowUps = leads.filter(
+        l => l.next_action_date === today && !['confirmed', 'lost'].includes(l.status)
+      ).length;
+
+      const upcomingFollowUps = leads.filter(
+        l => l.next_action_date && l.next_action_date > today && l.next_action_date <= nextWeekStr && !['confirmed', 'lost'].includes(l.status)
+      ).length;
+
+      const noFollowUpScheduled = leads.filter(
+        l => !l.next_action_date && ['new', 'contacted', 'qualified'].includes(l.status)
+      ).length;
+
       return {
         totalNew,
         totalContacted,
@@ -35,6 +57,10 @@ export const useLeadStats = () => {
         leadsThisWeek,
         leadsThisMonth,
         conversionRate: `${conversionRate}%`,
+        overdueFollowUps,
+        todayFollowUps,
+        upcomingFollowUps,
+        noFollowUpScheduled,
       };
     },
   });

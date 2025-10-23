@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { StatusBadge } from './StatusBadge';
 import { PriorityBadge } from './PriorityBadge';
 import { VerificationBadge } from './VerificationBadge';
+import { FollowUpBadge } from './FollowUpBadge';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -52,6 +53,12 @@ export const LeadHeader: React.FC<LeadHeaderProps> = ({ lead }) => {
           <div className="flex flex-wrap gap-2">
             <StatusBadge status={lead.status} />
             <PriorityBadge priority={lead.priority} />
+            {lead.next_action_date && (
+              <FollowUpBadge 
+                nextActionDate={lead.next_action_date} 
+                status={lead.status}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -4,12 +4,15 @@ import { useLeads, LeadFilters as LeadFiltersType } from '@/hooks/useLeads';
 import { useLeadStats } from '@/hooks/useLeadStats';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download, CheckSquare } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Download, CheckSquare, List, Calendar as CalendarIcon } from 'lucide-react';
 import { LeadFilters } from '@/components/leads/LeadFilters';
 import { LeadSearch } from '@/components/leads/LeadSearch';
 import { LeadTableView } from '@/components/leads/LeadTableView';
 import { ExportDialog } from '@/components/leads/ExportDialog';
 import { BulkActionsPanel } from '@/components/leads/BulkActionsPanel';
+import { FollowUpWidget } from '@/components/leads/FollowUpWidget';
+import { FollowUpCalendar } from '@/components/leads/FollowUpCalendar';
 
 export default function AdminLeads() {
   const [filters, setFilters] = useState<LeadFiltersType>({});
@@ -57,6 +60,9 @@ export default function AdminLeads() {
             </Button>
           </div>
         </div>
+
+        {/* Follow-up Widget */}
+        <FollowUpWidget />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -114,36 +120,55 @@ export default function AdminLeads() {
               resultCount={leads?.length}
             />
 
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>All Leads ({leads?.length || 0})</CardTitle>
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="text-center py-8 text-muted-foreground">Loading leads...</div>
-                ) : leads ? (
-                  <LeadTableView
-                    leads={leads}
-                    selectedLeads={selectedLeads}
-                    onSelectionChange={setSelectedLeads}
-                    selectionMode={selectionMode}
-                  />
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-muted-foreground">No leads found</p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Leads will appear here once they submit the inquiry form
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <Tabs defaultValue="list" className="w-full">
+              <TabsList className="grid w-full max-w-md grid-cols-2">
+                <TabsTrigger value="list" className="flex items-center gap-2">
+                  <List className="h-4 w-4" />
+                  List View
+                </TabsTrigger>
+                <TabsTrigger value="calendar" className="flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4" />
+                  Calendar View
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="list" className="mt-4">
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>All Leads ({leads?.length || 0})</CardTitle>
+                      <Button variant="outline" size="sm" onClick={() => setShowExportDialog(true)}>
+                        <Download className="h-4 w-4 mr-2" />
+                        Export
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    {isLoading ? (
+                      <div className="text-center py-8 text-muted-foreground">Loading leads...</div>
+                    ) : leads ? (
+                      <LeadTableView
+                        leads={leads}
+                        selectedLeads={selectedLeads}
+                        onSelectionChange={setSelectedLeads}
+                        selectionMode={selectionMode}
+                      />
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground">No leads found</p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          Leads will appear here once they submit the inquiry form
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="calendar" className="mt-4">
+                <FollowUpCalendar leads={leads} />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
