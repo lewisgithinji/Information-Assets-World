@@ -16,6 +16,7 @@ interface LeadConfirmationRequest {
   email: string;
   trainingInterest: string;
   referenceNumber: string;
+  verificationUrl?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -27,7 +28,7 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     console.log("Processing lead confirmation email request");
 
-    const { fullName, email, trainingInterest, referenceNumber }: LeadConfirmationRequest = await req.json();
+    const { fullName, email, trainingInterest, referenceNumber, verificationUrl }: LeadConfirmationRequest = await req.json();
 
     console.log(`Sending confirmation to ${email} for ${trainingInterest}`);
 
@@ -37,6 +38,7 @@ const handler = async (req: Request): Promise<Response> => {
         fullName,
         trainingInterest,
         referenceNumber,
+        verificationUrl,
       })
     );
 

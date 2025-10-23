@@ -16,12 +16,14 @@ interface ConfirmationEmailProps {
   fullName: string;
   trainingInterest: string;
   referenceNumber: string;
+  verificationUrl?: string;
 }
 
 export const ConfirmationEmail = ({
   fullName,
   trainingInterest,
   referenceNumber,
+  verificationUrl,
 }: ConfirmationEmailProps) => (
   <Html>
     <Head />
@@ -48,7 +50,27 @@ export const ConfirmationEmail = ({
           </Text>
           
           <Text style={text}>
-            We've received your inquiry for <strong>{trainingInterest}</strong> and our team will contact you within 24 hours to discuss:
+            We've received your inquiry for <strong>{trainingInterest}</strong>.
+          </Text>
+          
+          {verificationUrl && (
+            <>
+              <Text style={text}>
+                <strong>Please verify your email address to complete your registration:</strong>
+              </Text>
+              <Section style={{ textAlign: "center" as const, margin: "24px 0" }}>
+                <Link href={verificationUrl} style={button}>
+                  Verify Email Address
+                </Link>
+              </Section>
+              <Text style={{ ...text, fontSize: "12px", color: "#666" }}>
+                If the button doesn't work, copy and paste this link: {verificationUrl}
+              </Text>
+            </>
+          )}
+          
+          <Text style={text}>
+            Once verified, our team will contact you within 24 hours to discuss:
           </Text>
           
           <Text style={list}>
@@ -162,4 +184,16 @@ const footer = {
   lineHeight: "20px",
   textAlign: "center" as const,
   margin: "16px 0",
+};
+
+const button = {
+  backgroundColor: "#0B5FFF",
+  borderRadius: "5px",
+  color: "#fff",
+  fontSize: "16px",
+  fontWeight: "bold",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  padding: "12px 32px",
+  display: "inline-block",
 };
