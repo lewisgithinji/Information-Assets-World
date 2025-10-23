@@ -120,16 +120,16 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
             <div>
               <Label className="mb-2 block">Training Interest</Label>
               <Select
-                value={filters.training_interest || ''}
+                value={filters.training_interest || 'all'}
                 onValueChange={(value) =>
-                  onFiltersChange({ ...filters, training_interest: value || undefined })
+                  onFiltersChange({ ...filters, training_interest: value === 'all' ? undefined : value })
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="All training types" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All training types</SelectItem>
+                  <SelectItem value="all">All training types</SelectItem>
                   {trainingTypes.map((type) => (
                     <SelectItem key={type.id} value={type.name}>
                       {type.name}
@@ -145,16 +145,16 @@ export const LeadFilters: React.FC<LeadFiltersProps> = ({ filters, onFiltersChan
             <div>
               <Label className="mb-2 block">Assigned To</Label>
               <Select
-                value={filters.assigned_to || ''}
+                value={filters.assigned_to || 'all'}
                 onValueChange={(value) =>
-                  onFiltersChange({ ...filters, assigned_to: value || undefined })
+                  onFiltersChange({ ...filters, assigned_to: value === 'all' ? undefined : value })
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="All users" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All users</SelectItem>
+                  <SelectItem value="all">All users</SelectItem>
                   <SelectItem value="unassigned">Unassigned</SelectItem>
                   {users.map((user) => (
                     <SelectItem key={user.user_id} value={user.user_id}>

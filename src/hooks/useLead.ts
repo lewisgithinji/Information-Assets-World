@@ -38,7 +38,7 @@ export const useLead = (leadId: string | undefined) => {
         .from('leads')
         .select(`
           *,
-          assigned_user:profiles!leads_assigned_to_fkey(user_id, full_name, email)
+          assigned_user:profiles(user_id, full_name, email)
         `)
         .eq('id', leadId)
         .single();

@@ -19,7 +19,7 @@ export const useLeads = (filters?: LeadFilters) => {
         .from('leads')
         .select(`
           *,
-          assigned_user:profiles!leads_assigned_to_fkey(full_name, email)
+          assigned_user:profiles(full_name, email)
         `)
         .order('created_at', { ascending: false });
 
