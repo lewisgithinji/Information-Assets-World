@@ -103,14 +103,16 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
   }, []);
 
   const onSubmit = async (data: LeadFormData) => {
-    if (!captchaToken) {
-      toast({
-        title: "CAPTCHA Required",
-        description: "Please complete the CAPTCHA verification.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Temporarily allow submission without CAPTCHA for testing
+    // TODO: Enable after setting up production Cloudflare Turnstile
+    // if (!captchaToken) {
+    //   toast({
+    //     title: "CAPTCHA Required",
+    //     description: "Please complete the CAPTCHA verification.",
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
 
     setIsSubmitting(true);
 
@@ -118,7 +120,7 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
       const { data: result, error } = await supabase.functions.invoke("submit-lead", {
         body: {
           ...data,
-          captchaToken,
+          captchaToken: captchaToken || "TEST_BYPASS", // Allow testing without CAPTCHA
         },
       });
 
@@ -333,7 +335,7 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
             type="submit" 
             className="w-full" 
             size="lg"
-            disabled={isSubmitting || !captchaToken}
+            disabled={isSubmitting}
           >
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Submit Inquiry

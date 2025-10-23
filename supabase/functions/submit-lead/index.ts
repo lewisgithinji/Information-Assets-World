@@ -57,31 +57,35 @@ const handler = async (req: Request): Promise<Response> => {
     // 2. VALIDATE INPUT
     const validatedData = leadSchema.parse(requestData);
 
-    // 3. VERIFY CAPTCHA
-    const turnstileResponse = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          secret: Deno.env.get("TURNSTILE_SECRET_KEY"),
-          response: validatedData.captchaToken,
-          remoteip: clientIp,
-        }),
-      }
-    );
-
-    const turnstileResult = await turnstileResponse.json();
-    
-    if (!turnstileResult.success) {
-      console.log("CAPTCHA verification failed:", turnstileResult);
-      return new Response(
-        JSON.stringify({ error: "CAPTCHA verification failed" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    // 3. VERIFY CAPTCHA (Skip if TEST_BYPASS for development)
+    if (validatedData.captchaToken !== "TEST_BYPASS") {
+      const turnstileResponse = await fetch(
+        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            secret: Deno.env.get("TURNSTILE_SECRET_KEY"),
+            response: validatedData.captchaToken,
+            remoteip: clientIp,
+          }),
+        }
       );
-    }
 
-    console.log("CAPTCHA verified successfully");
+      const turnstileResult = await turnstileResponse.json();
+      
+      if (!turnstileResult.success) {
+        console.log("CAPTCHA verification failed:", turnstileResult);
+        return new Response(
+          JSON.stringify({ error: "CAPTCHA verification failed" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      console.log("CAPTCHA verified successfully");
+    } else {
+      console.log("CAPTCHA bypassed for testing");
+    }
 
     // 4. RATE LIMITING - Check submissions from this IP in the last hour
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
