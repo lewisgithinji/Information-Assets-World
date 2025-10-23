@@ -21,6 +21,7 @@ import Contact from "./pages/Contact";
 import Advertising from "./pages/Advertising";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import RegisterInterest from "./pages/RegisterInterest";
 import Admin from "./pages/Admin";
 import AdminEvents from "./pages/admin/AdminEvents";
 import AdminEventForm from "./pages/admin/AdminEventForm";
@@ -77,6 +78,7 @@ const App = () => (
                 <Route path="/offices" element={<Offices />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/advertising" element={<Advertising />} />
+                <Route path="/register-interest" element={<RegisterInterest />} />
                 <Route path="/auth" element={<Auth />} />
                 
                 {/* Protected Routes */}
