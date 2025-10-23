@@ -40,6 +40,7 @@ import AdminEventCategories from "./pages/admin/AdminEventCategories";
 import AdminEventCategoryForm from "./pages/admin/AdminEventCategoryForm";
 import AdminEventTypeForm from "./pages/admin/AdminEventTypeForm";
 import AdminLeads from "./pages/admin/AdminLeads";
+import AdminLeadDetail from "./pages/admin/AdminLeadDetail";
 import UserProfile from "./pages/UserProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
@@ -114,6 +115,7 @@ const App = () => (
                 
                 {/* Lead Management Routes */}
                 <Route path="/admin/leads" element={<AdminProtectedRoute><AdminLeads /></AdminProtectedRoute>} />
+                <Route path="/admin/leads/:id" element={<AdminProtectedRoute><AdminLeadDetail /></AdminProtectedRoute>} />
                 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
