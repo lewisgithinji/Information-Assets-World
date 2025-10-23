@@ -24,7 +24,7 @@ export const ScheduleFollowUpDialog: React.FC<ScheduleFollowUpDialogProps> = ({
   currentAction = '',
   currentDate,
 }) => {
-  const [nextAction, setNextAction] = useState(currentAction);
+  const [nextAction, setNextAction] = useState(currentAction || '');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     currentDate ? new Date(currentDate) : undefined
   );

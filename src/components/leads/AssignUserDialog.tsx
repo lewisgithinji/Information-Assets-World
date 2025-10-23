@@ -20,13 +20,13 @@ export const AssignUserDialog: React.FC<AssignUserDialogProps> = ({
 }) => {
   const { data: users, isLoading } = useUsers();
   const { assignLead } = useLeadMutations();
-  const [selectedUserId, setSelectedUserId] = useState<string>(currentUserId || '');
+  const [selectedUserId, setSelectedUserId] = useState<string>(currentUserId || 'unassigned');
 
   const handleAssign = () => {
     assignLead.mutate(
       {
         leadId,
-        userId: selectedUserId || null,
+        userId: selectedUserId === 'unassigned' ? null : selectedUserId,
       },
       {
         onSuccess: () => {
@@ -49,7 +49,7 @@ export const AssignUserDialog: React.FC<AssignUserDialogProps> = ({
               <SelectValue placeholder={isLoading ? 'Loading users...' : 'Select a user'} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Unassigned</SelectItem>
+              <SelectItem value="unassigned">Unassigned</SelectItem>
               {users?.map((user) => (
                 <SelectItem key={user.user_id} value={user.user_id}>
                   {user.full_name} ({user.email})
