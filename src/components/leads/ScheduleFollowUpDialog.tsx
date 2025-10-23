@@ -36,27 +36,30 @@ export const ScheduleFollowUpDialog: React.FC<ScheduleFollowUpDialogProps> = ({
   const handleSubmit = async () => {
     if (!nextAction || !selectedDate) return;
 
-    const dateString = format(selectedDate, 'yyyy-MM-dd');
-    
-    await updateNextAction.mutateAsync({
-      leadId,
-      nextAction,
-      nextActionDate: dateString,
-    });
-
-    if (createActivity) {
-      await addActivity.mutateAsync({
+    try {
+      const dateString = format(selectedDate, 'yyyy-MM-dd');
+      
+      await updateNextAction.mutateAsync({
         leadId,
-        activityType: 'follow_up_scheduled',
-        summary: 'Follow-up scheduled',
-        details: `Next action: ${nextAction}\nScheduled for: ${format(selectedDate, 'MMM dd, yyyy')}`,
-        followUpDate: dateString,
+        nextAction,
+        nextActionDate: dateString,
       });
-    }
 
-    onOpenChange(false);
-    setNextAction('');
-    setSelectedDate(undefined);
+      if (createActivity) {
+        await addActivity.mutateAsync({
+          leadId,
+          activityType: 'follow_up_scheduled',
+          summary: 'Follow-up scheduled',
+          details: `Next action: ${nextAction}\nScheduled for: ${format(selectedDate, 'MMM dd, yyyy')}`,
+        });
+      }
+
+      onOpenChange(false);
+      setNextAction('');
+      setSelectedDate(undefined);
+    } catch (error) {
+      console.error('Error scheduling follow-up:', error);
+    }
   };
 
   const setQuickDate = (days: number) => {
