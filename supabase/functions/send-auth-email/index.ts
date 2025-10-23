@@ -1,6 +1,6 @@
 // Imports
 import { serve } from 'https://deno.land/std@0.192.0/http/server.ts';
-import { Webhook } from 'npm:@standard-api/webhooks';
+import { Webhook } from 'https://esm.sh/standardwebhooks@1.0.0';
 import { Resend } from 'npm:resend@4.0.0';
 import { renderAsync } from 'npm:@react-email/components@0.0.22';
 import { SignupConfirmationEmail } from './_templates/signup-confirmation.tsx';
