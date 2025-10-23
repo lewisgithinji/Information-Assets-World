@@ -14,6 +14,50 @@ export type Database = {
   }
   public: {
     Tables: {
+      activities: {
+        Row: {
+          activity_type: string
+          created_at: string | null
+          details: string | null
+          follow_up_date: string | null
+          id: string
+          lead_id: string
+          logged_by: string | null
+          next_action: string | null
+          summary: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string | null
+          details?: string | null
+          follow_up_date?: string | null
+          id?: string
+          lead_id: string
+          logged_by?: string | null
+          next_action?: string | null
+          summary: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string | null
+          details?: string | null
+          follow_up_date?: string | null
+          id?: string
+          lead_id?: string
+          logged_by?: string | null
+          next_action?: string | null
+          summary?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agenda_items: {
         Row: {
           created_at: string
@@ -67,6 +111,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      countries_config: {
+        Row: {
+          code: string | null
+          created_at: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+        }
+        Relationships: []
       }
       event_categories: {
         Row: {
@@ -298,6 +369,78 @@ export type Database = {
         }
         Relationships: []
       }
+      leads: {
+        Row: {
+          assigned_to: string | null
+          country: string
+          created_at: string | null
+          document_sent: boolean | null
+          email: string
+          email_confirmed: boolean | null
+          full_name: string
+          id: string
+          internal_notes: string | null
+          message: string | null
+          next_action: string | null
+          next_action_date: string | null
+          organization: string
+          phone: string
+          priority: string | null
+          quote_sent: boolean | null
+          reference_number: string
+          source: string | null
+          status: string | null
+          training_interest: string
+          updated_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          country: string
+          created_at?: string | null
+          document_sent?: boolean | null
+          email: string
+          email_confirmed?: boolean | null
+          full_name: string
+          id?: string
+          internal_notes?: string | null
+          message?: string | null
+          next_action?: string | null
+          next_action_date?: string | null
+          organization: string
+          phone: string
+          priority?: string | null
+          quote_sent?: boolean | null
+          reference_number: string
+          source?: string | null
+          status?: string | null
+          training_interest: string
+          updated_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          country?: string
+          created_at?: string | null
+          document_sent?: boolean | null
+          email?: string
+          email_confirmed?: boolean | null
+          full_name?: string
+          id?: string
+          internal_notes?: string | null
+          message?: string | null
+          next_action?: string | null
+          next_action_date?: string | null
+          organization?: string
+          phone?: string
+          priority?: string | null
+          quote_sent?: boolean | null
+          reference_number?: string
+          source?: string | null
+          status?: string | null
+          training_interest?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       offices: {
         Row: {
           address: string | null
@@ -481,6 +624,36 @@ export type Database = {
         }
         Relationships: []
       }
+      training_types: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -510,6 +683,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_reference_number: { Args: never; Returns: string }
       get_public_office_locations: {
         Args: never
         Returns: {
