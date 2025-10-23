@@ -37,6 +37,22 @@ export const useLeadSubmission = () => {
         details: `Lead submitted from website inquiry form. Training interest: ${data.training_interest}`,
       }]);
 
+      // Send confirmation email via edge function
+      try {
+        await supabase.functions.invoke('send-lead-confirmation', {
+          body: {
+            fullName: data.full_name,
+            email: data.email,
+            trainingInterest: data.training_interest,
+            referenceNumber: lead.reference_number,
+          },
+        });
+        console.log('Confirmation email sent successfully');
+      } catch (emailError) {
+        console.error('Failed to send confirmation email:', emailError);
+        // Don't throw - we still want to show success to user even if email fails
+      }
+
       return lead;
     },
     onSuccess: (lead) => {
