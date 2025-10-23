@@ -369,6 +369,35 @@ export type Database = {
         }
         Relationships: []
       }
+      lead_submissions: {
+        Row: {
+          id: string
+          ip_address: string
+          lead_id: string | null
+          submitted_at: string
+        }
+        Insert: {
+          id?: string
+          ip_address: string
+          lead_id?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          id?: string
+          ip_address?: string
+          lead_id?: string | null
+          submitted_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_submissions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       leads: {
         Row: {
           assigned_to: string | null
@@ -392,6 +421,9 @@ export type Database = {
           status: string | null
           training_interest: string
           updated_at: string | null
+          verification_sent_at: string | null
+          verification_token: string | null
+          verified: boolean | null
         }
         Insert: {
           assigned_to?: string | null
@@ -415,6 +447,9 @@ export type Database = {
           status?: string | null
           training_interest: string
           updated_at?: string | null
+          verification_sent_at?: string | null
+          verification_token?: string | null
+          verified?: boolean | null
         }
         Update: {
           assigned_to?: string | null
@@ -438,6 +473,9 @@ export type Database = {
           status?: string | null
           training_interest?: string
           updated_at?: string | null
+          verification_sent_at?: string | null
+          verification_token?: string | null
+          verified?: boolean | null
         }
         Relationships: []
       }
