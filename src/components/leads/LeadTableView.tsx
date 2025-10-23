@@ -6,6 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
 import { StatusBadge } from './StatusBadge';
 import { PriorityBadge } from './PriorityBadge';
 import { VerificationBadge } from './VerificationBadge';
@@ -14,16 +15,56 @@ import { format } from 'date-fns';
 
 interface LeadTableViewProps {
   leads: any[];
+  selectedLeads?: string[];
+  onSelectionChange?: (selectedIds: string[]) => void;
+  selectionMode?: boolean;
 }
 
-export const LeadTableView: React.FC<LeadTableViewProps> = ({ leads }) => {
+export const LeadTableView: React.FC<LeadTableViewProps> = ({
+  leads,
+  selectedLeads = [],
+  onSelectionChange,
+  selectionMode = false,
+}) => {
   const navigate = useNavigate();
+
+  const handleSelectAll = (checked: boolean) => {
+    if (onSelectionChange) {
+      onSelectionChange(checked ? leads.map(lead => lead.id) : []);
+    }
+  };
+
+  const handleSelectLead = (leadId: string, checked: boolean) => {
+    if (onSelectionChange) {
+      if (checked) {
+        onSelectionChange([...selectedLeads, leadId]);
+      } else {
+        onSelectionChange(selectedLeads.filter(id => id !== leadId));
+      }
+    }
+  };
+
+  const allSelected = leads.length > 0 && selectedLeads.length === leads.length;
+  const someSelected = selectedLeads.length > 0 && selectedLeads.length < leads.length;
 
   return (
     <div className="border rounded-lg">
       <Table>
         <TableHeader>
           <TableRow>
+            {selectionMode && (
+              <TableHead className="w-12">
+                <Checkbox
+                  checked={allSelected}
+                  ref={(el) => {
+                    if (el) {
+                      (el as any).indeterminate = someSelected;
+                    }
+                  }}
+                  onCheckedChange={handleSelectAll}
+                />
+              </TableHead>
+            )}
             <TableHead>Reference</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Organization</TableHead>
@@ -39,18 +80,32 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({ leads }) => {
         <TableBody>
           {leads.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={10} className="text-center py-8 text-muted-foreground">
+              <TableCell colSpan={selectionMode ? 11 : 10} className="text-center py-8 text-muted-foreground">
                 No leads found
               </TableCell>
             </TableRow>
           ) : (
-            leads.map((lead) => (
-              <TableRow
-                key={lead.id}
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={() => navigate(`/admin/leads/${lead.id}`)}
-              >
-                <TableCell className="font-mono text-xs">
+            leads.map((lead) => {
+              const isSelected = selectedLeads.includes(lead.id);
+              return (
+                <TableRow
+                  key={lead.id}
+                  className={`cursor-pointer hover:bg-muted/50 ${isSelected ? 'bg-primary/5' : ''}`}
+                  onClick={(e) => {
+                    if (!(e.target as HTMLElement).closest('.checkbox-cell')) {
+                      navigate(`/admin/leads/${lead.id}`);
+                    }
+                  }}
+                >
+                  {selectionMode && (
+                    <TableCell className="checkbox-cell" onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={isSelected}
+                        onCheckedChange={(checked) => handleSelectLead(lead.id, checked as boolean)}
+                      />
+                    </TableCell>
+                  )}
+                  <TableCell className="font-mono text-xs">
                   {lead.reference_number}
                 </TableCell>
                 <TableCell className="font-medium">{lead.full_name}</TableCell>
@@ -81,8 +136,9 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({ leads }) => {
                 <TableCell className="text-sm text-muted-foreground">
                   {format(new Date(lead.created_at), 'MMM dd, yyyy')}
                 </TableCell>
-              </TableRow>
-            ))
+                </TableRow>
+              );
+            })
           )}
         </TableBody>
       </Table>

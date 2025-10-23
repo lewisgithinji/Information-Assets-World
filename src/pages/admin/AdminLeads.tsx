@@ -4,18 +4,29 @@ import { useLeads, LeadFilters as LeadFiltersType } from '@/hooks/useLeads';
 import { useLeadStats } from '@/hooks/useLeadStats';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Download } from 'lucide-react';
+import { Download, CheckSquare } from 'lucide-react';
 import { LeadFilters } from '@/components/leads/LeadFilters';
 import { LeadSearch } from '@/components/leads/LeadSearch';
 import { LeadTableView } from '@/components/leads/LeadTableView';
+import { ExportDialog } from '@/components/leads/ExportDialog';
+import { BulkActionsPanel } from '@/components/leads/BulkActionsPanel';
 
 export default function AdminLeads() {
   const [filters, setFilters] = useState<LeadFiltersType>({});
+  const [selectedLeads, setSelectedLeads] = useState<string[]>([]);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [showExportDialog, setShowExportDialog] = useState(false);
+  
   const { data: leads, isLoading } = useLeads(filters);
   const { data: stats } = useLeadStats();
 
   const handleSearchChange = (search: string) => {
     setFilters({ ...filters, search: search || undefined });
+  };
+
+  const handleClearSelection = () => {
+    setSelectedLeads([]);
+    setSelectionMode(false);
   };
 
   return (
@@ -28,7 +39,19 @@ export default function AdminLeads() {
             <p className="text-muted-foreground">Manage training inquiries and follow-ups</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button
+              variant={selectionMode ? 'default' : 'outline'}
+              onClick={() => {
+                setSelectionMode(!selectionMode);
+                if (selectionMode) {
+                  setSelectedLeads([]);
+                }
+              }}
+            >
+              <CheckSquare className="h-4 w-4 mr-2" />
+              {selectionMode ? 'Done' : 'Select'}
+            </Button>
+            <Button variant="outline" onClick={() => setShowExportDialog(true)}>
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>
@@ -105,7 +128,12 @@ export default function AdminLeads() {
                 {isLoading ? (
                   <div className="text-center py-8 text-muted-foreground">Loading leads...</div>
                 ) : leads ? (
-                  <LeadTableView leads={leads} />
+                  <LeadTableView
+                    leads={leads}
+                    selectedLeads={selectedLeads}
+                    onSelectionChange={setSelectedLeads}
+                    selectionMode={selectionMode}
+                  />
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-muted-foreground">No leads found</p>
@@ -119,6 +147,20 @@ export default function AdminLeads() {
           </div>
         </div>
       </div>
+
+      {selectedLeads.length > 0 && (
+        <BulkActionsPanel
+          selectedLeads={selectedLeads}
+          onClearSelection={handleClearSelection}
+        />
+      )}
+
+      <ExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        leads={leads || []}
+        filters={filters}
+      />
     </AdminLayout>
   );
 }
