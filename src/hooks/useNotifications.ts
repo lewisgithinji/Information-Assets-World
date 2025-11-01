@@ -72,15 +72,37 @@ export const useNotifications = () => {
 
   const markAsRead = useMutation({
     mutationFn: async (notificationId: string) => {
+      console.log('Attempting to mark notification as read:', notificationId);
+      console.log('Current user:', user?.id);
+
       const { error } = await supabase
         .from('notifications')
         .update({ is_read: true, read_at: new Date().toISOString() })
         .eq('id', notificationId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error marking notification as read:', {
+          error,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code,
+        });
+        throw error;
+      }
+
+      console.log('Successfully marked notification as read');
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications', user?.id] });
+    },
+    onError: (error: any) => {
+      console.error('Failed to mark notification as read:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to mark notification as read. Please check RLS policies.',
+        variant: 'destructive',
+      });
     },
   });
 
@@ -94,12 +116,24 @@ export const useNotifications = () => {
         .eq('user_id', user.id)
         .eq('is_read', false);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error marking all notifications as read:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications', user?.id] });
       toast({
-        title: 'All notifications marked as read',
+        title: 'Success',
+        description: 'All notifications marked as read',
+      });
+    },
+    onError: (error) => {
+      console.error('Failed to mark all notifications as read:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to mark all notifications as read',
+        variant: 'destructive',
       });
     },
   });

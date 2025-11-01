@@ -38,12 +38,16 @@ export const NotificationItem = ({ notification, onMarkAsRead }: NotificationIte
     }
   };
 
-  const handleClick = () => {
-    if (!notification.is_read) {
-      onMarkAsRead(notification.id);
-    }
-    if (notification.lead_id) {
-      navigate(`/admin/leads/${notification.lead_id}`);
+  const handleClick = async () => {
+    try {
+      if (!notification.is_read) {
+        await onMarkAsRead(notification.id);
+      }
+      if (notification.lead_id) {
+        navigate(`/admin/leads/${notification.lead_id}`);
+      }
+    } catch (error) {
+      console.error('Error handling notification click:', error);
     }
   };
 

@@ -13,10 +13,13 @@ import { useCountries } from "@/hooks/useCountries";
 import { leadFormSchema, type LeadFormData } from "@/utils/leadValidation";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { checkDuplicateLead, formatDuplicateMessage } from "@/utils/leadDeduplicate";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface LeadFormProps {
   onSuccess?: (referenceNumber: string) => void;
+  initialEventId?: string;
 }
 
 declare global {
@@ -34,13 +37,15 @@ declare global {
   }
 }
 
-export function LeadForm({ onSuccess }: LeadFormProps) {
+export function LeadForm({ onSuccess, initialEventId }: LeadFormProps) {
   const { toast } = useToast();
   const { data: trainingTypes, isLoading: isLoadingTypes } = useTrainingTypes();
   const { data: countries, isLoading: isLoadingCountries } = useCountries();
   const [captchaToken, setCaptchaToken] = useState<string>("");
   const [turnstileWidgetId, setTurnstileWidgetId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [duplicateWarning, setDuplicateWarning] = useState<string>("");
+  const [checkingDuplicate, setCheckingDuplicate] = useState(false);
 
   const {
     register,
@@ -65,6 +70,16 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
 
   const phoneValue = watch("phone");
 
+  // Pre-select event if initialEventId is provided
+  useEffect(() => {
+    if (initialEventId && trainingTypes) {
+      const event = trainingTypes.find(t => t.id === initialEventId);
+      if (event) {
+        setValue("training_interest", event.name);
+      }
+    }
+  }, [initialEventId, trainingTypes, setValue]);
+
   // Load Cloudflare Turnstile script
   useEffect(() => {
     const script = document.createElement("script");
@@ -75,8 +90,9 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
 
     script.onload = () => {
       if (window.turnstile) {
+        const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY || "0x4AAAAAAAzVBpFE1RqG3rJi"; // Fallback to test key
         const widgetId = window.turnstile.render("#turnstile-widget", {
-          sitekey: "0x4AAAAAAAzVBpFE1RqG3rJi", // Public Cloudflare Turnstile test key
+          sitekey: siteKey,
           callback: (token: string) => {
             setCaptchaToken(token);
           },
@@ -102,6 +118,22 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
     };
   }, []);
 
+  // Check for duplicate email on blur
+  const handleEmailBlur = async (email: string) => {
+    if (!email || !email.includes("@")) return;
+
+    setCheckingDuplicate(true);
+    setDuplicateWarning("");
+
+    const duplicateCheck = await checkDuplicateLead(email);
+
+    if (duplicateCheck.isDuplicate && duplicateCheck.existingLead) {
+      setDuplicateWarning(formatDuplicateMessage(duplicateCheck.existingLead));
+    }
+
+    setCheckingDuplicate(false);
+  };
+
   const onSubmit = async (data: LeadFormData) => {
     // Temporarily allow submission without CAPTCHA for testing
     // TODO: Enable after setting up production Cloudflare Turnstile
@@ -113,6 +145,18 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
     //   });
     //   return;
     // }
+
+    // Check for duplicate one more time before submission
+    const duplicateCheck = await checkDuplicateLead(data.email);
+    if (duplicateCheck.isDuplicate) {
+      setDuplicateWarning(formatDuplicateMessage(duplicateCheck.existingLead));
+      toast({
+        title: "Duplicate Submission",
+        description: "This email has already been registered. Please contact us if you need to update your information.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -213,7 +257,17 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
               type="email"
               {...register("email")}
               placeholder="john.doe@example.com"
+              onBlur={(e) => handleEmailBlur(e.target.value)}
             />
+            {checkingDuplicate && (
+              <p className="text-sm text-muted-foreground">Checking for existing submission...</p>
+            )}
+            {duplicateWarning && (
+              <Alert variant="destructive" className="mt-2">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{duplicateWarning}</AlertDescription>
+              </Alert>
+            )}
             {errors.email && (
               <p className="text-sm text-destructive">{errors.email.message}</p>
             )}
@@ -267,7 +321,10 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="training_interest">Training Interest *</Label>
-            <Select onValueChange={(value) => setValue("training_interest", value)}>
+            <Select
+              onValueChange={(value) => setValue("training_interest", value)}
+              value={watch("training_interest")}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select your training interest" />
               </SelectTrigger>
@@ -309,11 +366,11 @@ export function LeadForm({ onSuccess }: LeadFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="message">Additional Message (Optional)</Label>
+            <Label htmlFor="message">Tell us about your training needs *</Label>
             <Textarea
               id="message"
               {...register("message")}
-              placeholder="Any specific requirements or questions?"
+              placeholder="Please describe your training requirements, number of participants, preferred dates, or any specific questions..."
               rows={4}
             />
             {errors.message && (

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, Users, Activity, Settings } from 'lucide-react';
+import { Shield, Users, Activity, Settings, Monitor } from 'lucide-react';
 import EnhancedSecurityMonitor from '@/components/EnhancedSecurityMonitor';
-import AdminUsers from './AdminUsers';
 import AdminLayout from '@/components/AdminLayout';
+import ActivityLogTable from '@/components/admin/ActivityLogTable';
+import UserManagementTable from '@/components/admin/UserManagementTable';
+import SessionManagementTable from '@/components/admin/SessionManagementTable';
 
 export default function AdminSecurity() {
   return (
@@ -16,7 +18,7 @@ export default function AdminSecurity() {
       </div>
 
       <Tabs defaultValue="dashboard" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="dashboard" className="flex items-center gap-2">
             <Shield className="h-4 w-4" />
             Dashboard
@@ -24,6 +26,10 @@ export default function AdminSecurity() {
           <TabsTrigger value="users" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             User Management
+          </TabsTrigger>
+          <TabsTrigger value="sessions" className="flex items-center gap-2">
+            <Monitor className="h-4 w-4" />
+            Sessions
           </TabsTrigger>
           <TabsTrigger value="activity" className="flex items-center gap-2">
             <Activity className="h-4 w-4" />
@@ -36,7 +42,31 @@ export default function AdminSecurity() {
         </TabsContent>
 
         <TabsContent value="users" className="space-y-6">
-          <AdminUsers />
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                User Management
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <UserManagementTable />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="sessions" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Monitor className="h-5 w-5" />
+                Session Management
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SessionManagementTable />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="activity" className="space-y-6">
@@ -48,7 +78,7 @@ export default function AdminSecurity() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Activity logging will be implemented in a future update.</p>
+              <ActivityLogTable />
             </CardContent>
           </Card>
         </TabsContent>

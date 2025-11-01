@@ -11,7 +11,7 @@ import { useState } from 'react';
 export const NotificationBell = () => {
   const [open, setOpen] = useState(false);
   const {
-    unreadNotifications,
+    notifications,
     unreadCount,
     isLoading,
     markAsRead,
@@ -38,7 +38,7 @@ export const NotificationBell = () => {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-auto p-0">
         <NotificationDropdown
-          notifications={unreadNotifications}
+          notifications={notifications}
           onMarkAsRead={markAsRead}
           onMarkAllAsRead={markAllAsRead}
           isLoading={isLoading}

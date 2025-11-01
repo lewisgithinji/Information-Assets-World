@@ -2,15 +2,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 import { canTransitionTo } from '@/utils/leadStatusWorkflow';
+import type { LeadStatus, LeadPriority } from '@/types/lead';
 
 export const useLeadMutations = () => {
   const queryClient = useQueryClient();
 
   const updateLeadStatus = useMutation({
-    mutationFn: async ({ leadId, newStatus, currentStatus, reason }: { 
-      leadId: string; 
-      newStatus: string; 
-      currentStatus: string;
+    mutationFn: async ({ leadId, newStatus, currentStatus, reason }: {
+      leadId: string;
+      newStatus: LeadStatus;
+      currentStatus: LeadStatus;
       reason?: string;
     }) => {
       if (!canTransitionTo(currentStatus, newStatus)) {
@@ -63,7 +64,7 @@ export const useLeadMutations = () => {
   });
 
   const updateLeadPriority = useMutation({
-    mutationFn: async ({ leadId, priority }: { leadId: string; priority: string }) => {
+    mutationFn: async ({ leadId, priority }: { leadId: string; priority: LeadPriority }) => {
       const { data, error } = await supabase
         .from('leads')
         .update({ priority, updated_at: new Date().toISOString() })

@@ -49,10 +49,10 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
   const someSelected = selectedLeads.length > 0 && selectedLeads.length < leads.length;
 
   return (
-    <div className="border rounded-lg">
+    <div className="border rounded-lg overflow-hidden shadow-sm">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="bg-gradient-to-r from-muted/50 to-muted/20 hover:from-muted/60 hover:to-muted/30">
             {selectionMode && (
               <TableHead className="w-12">
                 <Checkbox
@@ -66,13 +66,13 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
                 />
               </TableHead>
             )}
-            <TableHead>Reference</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Organization</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Follow-up</TableHead>
-            <TableHead>Priority</TableHead>
-            <TableHead>Created</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Reference</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Name</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Organization</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Status</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Follow-up</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Priority</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Created</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -88,7 +88,12 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
               return (
                 <TableRow
                   key={lead.id}
-                  className={`cursor-pointer hover:bg-muted/50 ${isSelected ? 'bg-primary/5' : ''}`}
+                  className={`
+                    cursor-pointer transition-all duration-150
+                    hover:bg-gradient-to-r hover:from-muted/40 hover:to-transparent
+                    hover:shadow-sm
+                    ${isSelected ? 'bg-primary/5 border-l-4 border-l-primary' : 'border-l-4 border-l-transparent'}
+                  `}
                   onClick={(e) => {
                     if (!(e.target as HTMLElement).closest('.checkbox-cell')) {
                       navigate(`/admin/leads/${lead.id}`);
@@ -103,17 +108,17 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
                       />
                     </TableCell>
                   )}
-                  <TableCell className="font-mono text-xs">
+                  <TableCell className="font-mono text-xs font-semibold text-muted-foreground bg-muted/20">
                     {lead.reference_number}
                   </TableCell>
-                  <TableCell className="font-medium">{lead.full_name}</TableCell>
-                  <TableCell>{lead.organization}</TableCell>
+                  <TableCell className="font-semibold">{lead.full_name}</TableCell>
+                  <TableCell className="text-muted-foreground">{lead.organization}</TableCell>
                   <TableCell>
                     <StatusBadge status={lead.status} />
                   </TableCell>
                   <TableCell>
-                    <FollowUpBadge 
-                      nextActionDate={lead.next_action_date} 
+                    <FollowUpBadge
+                      nextActionDate={lead.next_action_date}
                       status={lead.status}
                       compact
                     />
@@ -121,7 +126,7 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
                   <TableCell>
                     <PriorityBadge priority={lead.priority} />
                   </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
+                  <TableCell className="text-sm text-muted-foreground font-medium">
                     {format(new Date(lead.created_at), 'MMM dd, yyyy')}
                   </TableCell>
                 </TableRow>

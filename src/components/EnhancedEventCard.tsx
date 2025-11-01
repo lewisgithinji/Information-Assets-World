@@ -119,11 +119,14 @@ const EnhancedEventCard = ({ event }: EnhancedEventCardProps) => {
           </Button>
           
           {isUpcoming && (
-            <Button 
-              variant="outline" 
+            <Button
+              asChild
+              variant="outline"
               className="flex-1 hover:bg-primary hover:text-primary-foreground transition-all"
             >
-              Register Now
+              <Link to={`/register-interest?event=${event.id}`}>
+                Register Now
+              </Link>
             </Button>
           )}
         </div>

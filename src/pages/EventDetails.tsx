@@ -295,8 +295,10 @@ const EventDetails = () => {
                   </div>
                 )}
                 
-                <Button className="w-full" size="lg">
-                  Register Now
+                <Button asChild className="w-full" size="lg">
+                  <Link to={`/register-interest?event=${id}`}>
+                    Register Now
+                  </Link>
                 </Button>
                 
                 <div className="space-y-2">

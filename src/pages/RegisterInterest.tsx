@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Navigation from '@/components/Navigation';
-import Footer from '@/components/Footer';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { LeadForm } from '@/components/leads/LeadForm';
 import { CheckCircle2, Phone, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,11 +8,13 @@ export default function RegisterInterest() {
   const [submitted, setSubmitted] = useState(false);
   const [referenceNumber, setReferenceNumber] = useState('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const eventId = searchParams.get('event');
 
   const handleSuccess = (refNumber: string) => {
     setReferenceNumber(refNumber);
     setSubmitted(true);
-    
+
     // Redirect to home after 5 seconds
     setTimeout(() => {
       navigate('/');
@@ -22,24 +22,21 @@ export default function RegisterInterest() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navigation />
-      
-      <main className="flex-1 py-12 px-4">
+    <main className="flex-1 py-12 px-4">
         <div className="container mx-auto max-w-4xl">
           {/* Hero Section */}
           <div className="text-center mb-12">
-            <img 
-              src="https://informationassetsworld.com/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png" 
-              alt="RIMEA Logo" 
+            <img
+              src="https://informationassetsworld.com/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png"
+              alt="Information Assets World Logo"
               className="h-20 mx-auto mb-6"
             />
             <h1 className="text-4xl font-bold mb-4">
-              Register Your Interest in RIMEA Training
+              Register Your Interest in Training
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Join professionals across East Africa in enhancing their skills in Records Management, 
-              Information Governance, and Data Protection.
+              Join professionals across East Africa in enhancing their skills in Records Management,
+              Information Governance, and Data Protection with Information Assets World.
             </p>
           </div>
 
@@ -95,12 +92,12 @@ export default function RegisterInterest() {
                       <span>+254 721 490 862</span>
                     </a>
                   </div>
-                  <a 
-                    href="mailto:training@rimeastafrica.org" 
+                  <a
+                    href="mailto:info@informationassetsworld.com"
                     className="flex items-center gap-2 justify-center text-primary hover:underline"
                   >
                     <Mail className="h-4 w-4" />
-                    <span>training@rimeastafrica.org</span>
+                    <span>info@informationassetsworld.com</span>
                   </a>
                 </div>
 
@@ -117,15 +114,12 @@ export default function RegisterInterest() {
             </div>
           ) : (
             /* Form State */
-            <LeadForm onSuccess={handleSuccess} />
+            <LeadForm onSuccess={handleSuccess} initialEventId={eventId || undefined} />
           )}
 
           {/* Contact Info */}
           {!submitted && (
             <div className="mt-12 text-center space-y-4">
-              <p className="text-muted-foreground">
-                <strong>NITA Registered:</strong> NITA/TRN/01484
-              </p>
               <div className="flex flex-wrap gap-6 justify-center text-sm">
                 <a href="tel:+254770694598" className="flex items-center gap-2 text-primary hover:underline">
                   <Phone className="h-4 w-4" />
@@ -135,17 +129,14 @@ export default function RegisterInterest() {
                   <Phone className="h-4 w-4" />
                   <span>+254 721 490 862</span>
                 </a>
-                <a href="mailto:training@rimeastafrica.org" className="flex items-center gap-2 text-primary hover:underline">
+                <a href="mailto:info@informationassetsworld.com" className="flex items-center gap-2 text-primary hover:underline">
                   <Mail className="h-4 w-4" />
-                  <span>training@rimeastafrica.org</span>
+                  <span>info@informationassetsworld.com</span>
                 </a>
               </div>
             </div>
           )}
         </div>
       </main>
-
-      <Footer />
-    </div>
   );
 }
