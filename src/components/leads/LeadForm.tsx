@@ -8,9 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PhoneInput } from "./PhoneInput";
-import { useTrainingTypes } from "@/hooks/useTrainingTypes";
-import { useCountries } from "@/hooks/useCountries";
+import { CountrySelect } from "./CountrySelect";
+import { useUpcomingEvents } from "@/hooks/useUpcomingEvents";
 import { leadFormSchema, type LeadFormData } from "@/utils/leadValidation";
+import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, AlertCircle } from "lucide-react";
@@ -39,8 +40,7 @@ declare global {
 
 export function LeadForm({ onSuccess, initialEventId }: LeadFormProps) {
   const { toast } = useToast();
-  const { data: trainingTypes, isLoading: isLoadingTypes } = useTrainingTypes();
-  const { data: countries, isLoading: isLoadingCountries } = useCountries();
+  const { data: upcomingEvents, isLoading: isLoadingEvents } = useUpcomingEvents();
   const [captchaToken, setCaptchaToken] = useState<string>("");
   const [turnstileWidgetId, setTurnstileWidgetId] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -62,7 +62,8 @@ export function LeadForm({ onSuccess, initialEventId }: LeadFormProps) {
       phone: "",
       organization: "",
       country: "",
-      training_interest: "",
+      event_id: "",
+      inquiry_type: "contact_discuss",
       source: "Website",
       message: "",
     },
@@ -72,13 +73,13 @@ export function LeadForm({ onSuccess, initialEventId }: LeadFormProps) {
 
   // Pre-select event if initialEventId is provided
   useEffect(() => {
-    if (initialEventId && trainingTypes) {
-      const event = trainingTypes.find(t => t.id === initialEventId);
+    if (initialEventId && upcomingEvents) {
+      const event = upcomingEvents.find(e => e.id === initialEventId);
       if (event) {
-        setValue("training_interest", event.name);
+        setValue("event_id", event.id);
       }
     }
-  }, [initialEventId, trainingTypes, setValue]);
+  }, [initialEventId, upcomingEvents, setValue]);
 
   // Load Cloudflare Turnstile script
   useEffect(() => {
@@ -298,50 +299,133 @@ export function LeadForm({ onSuccess, initialEventId }: LeadFormProps) {
 
           <div className="space-y-2">
             <Label htmlFor="country">Country *</Label>
-            <Select onValueChange={(value) => setValue("country", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a country" />
-              </SelectTrigger>
-              <SelectContent>
-                {isLoadingCountries ? (
-                  <SelectItem value="loading" disabled>Loading countries...</SelectItem>
-                ) : (
-                  countries?.map((country) => (
-                    <SelectItem key={country.id} value={country.name}>
-                      {country.name}
-                    </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+            <CountrySelect
+              value={watch("country")}
+              onValueChange={(value) => setValue("country", value)}
+            />
             {errors.country && (
               <p className="text-sm text-destructive">{errors.country.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="training_interest">Training Interest *</Label>
+            <Label htmlFor="event_id">Select Event *</Label>
             <Select
-              onValueChange={(value) => setValue("training_interest", value)}
-              value={watch("training_interest")}
+              onValueChange={(value) => setValue("event_id", value)}
+              value={watch("event_id")}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select your training interest" />
+                <SelectValue placeholder="Select an event to register for" />
               </SelectTrigger>
               <SelectContent>
-                {isLoadingTypes ? (
-                  <SelectItem value="loading" disabled>Loading training types...</SelectItem>
-                ) : (
-                  trainingTypes?.map((type) => (
-                    <SelectItem key={type.id} value={type.name}>
-                      {type.name}
+                {isLoadingEvents ? (
+                  <SelectItem value="loading" disabled>Loading events...</SelectItem>
+                ) : upcomingEvents && upcomingEvents.length > 0 ? (
+                  upcomingEvents.map((event) => (
+                    <SelectItem key={event.id} value={event.id}>
+                      <div className="flex flex-col">
+                        <span className="font-semibold">{event.title}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {format(new Date(event.start_date), 'MMM dd, yyyy')} • {event.location}
+                        </span>
+                      </div>
                     </SelectItem>
                   ))
+                ) : (
+                  <SelectItem value="no-events" disabled>No upcoming events available</SelectItem>
                 )}
               </SelectContent>
             </Select>
-            {errors.training_interest && (
-              <p className="text-sm text-destructive">{errors.training_interest.message}</p>
+            {errors.event_id && (
+              <p className="text-sm text-destructive">{errors.event_id.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="inquiry_type">What would you like us to do? *</Label>
+            <Select
+              onValueChange={(value) => setValue("inquiry_type", value as any)}
+              defaultValue="contact_discuss"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select your preference" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="send_writeup">
+                  <div className="flex items-center gap-2">
+                    <span>📧</span>
+                    <div>
+                      <div className="font-semibold">Send me the Event Writeup/Invitation</div>
+                      <div className="text-xs text-muted-foreground">
+                        Receive detailed event information via email
+                      </div>
+                    </div>
+                  </div>
+                </SelectItem>
+
+                <SelectItem value="contact_discuss">
+                  <div className="flex items-center gap-2">
+                    <span>📞</span>
+                    <div>
+                      <div className="font-semibold">Contact Me to Discuss the Event</div>
+                      <div className="text-xs text-muted-foreground">
+                        Speak with our team about the event
+                      </div>
+                    </div>
+                  </div>
+                </SelectItem>
+
+                <SelectItem value="register_now">
+                  <div className="flex items-center gap-2">
+                    <span>✅</span>
+                    <div>
+                      <div className="font-semibold">Ready to Register Now</div>
+                      <div className="text-xs text-muted-foreground">
+                        I'm ready to proceed with registration
+                      </div>
+                    </div>
+                  </div>
+                </SelectItem>
+
+                <SelectItem value="group_registration">
+                  <div className="flex items-center gap-2">
+                    <span>👥</span>
+                    <div>
+                      <div className="font-semibold">Group Registration (3+ People)</div>
+                      <div className="text-xs text-muted-foreground">
+                        Register multiple people from your organization
+                      </div>
+                    </div>
+                  </div>
+                </SelectItem>
+
+                <SelectItem value="corporate_training">
+                  <div className="flex items-center gap-2">
+                    <span>🏢</span>
+                    <div>
+                      <div className="font-semibold">Request Custom Corporate Training</div>
+                      <div className="text-xs text-muted-foreground">
+                        Tailored training for your organization
+                      </div>
+                    </div>
+                  </div>
+                </SelectItem>
+
+                <SelectItem value="just_browsing">
+                  <div className="flex items-center gap-2">
+                    <span>📰</span>
+                    <div>
+                      <div className="font-semibold">Just Browsing/Stay Updated</div>
+                      <div className="text-xs text-muted-foreground">
+                        Add me to your event updates list
+                      </div>
+                    </div>
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.inquiry_type && (
+              <p className="text-sm text-destructive">{errors.inquiry_type.message}</p>
             )}
           </div>
 
@@ -366,13 +450,17 @@ export function LeadForm({ onSuccess, initialEventId }: LeadFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="message">Tell us about your training needs *</Label>
+            <Label htmlFor="message">Additional Details (Optional)</Label>
             <Textarea
               id="message"
               {...register("message")}
-              placeholder="Please describe your training requirements, number of participants, preferred dates, or any specific questions..."
-              rows={4}
+              placeholder="Any specific questions or requirements? (optional)"
+              rows={3}
+              maxLength={500}
             />
+            <p className="text-xs text-muted-foreground">
+              {watch("message")?.length || 0}/500 characters
+            </p>
             {errors.message && (
               <p className="text-sm text-destructive">{errors.message.message}</p>
             )}

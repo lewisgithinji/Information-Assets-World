@@ -11,6 +11,7 @@ import { StatusBadge } from './StatusBadge';
 import { PriorityBadge } from './PriorityBadge';
 import { VerificationBadge } from './VerificationBadge';
 import { FollowUpBadge } from './FollowUpBadge';
+import { InquiryTypeBadge } from './InquiryTypeBadge';
 import { useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
 
@@ -69,6 +70,8 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
             <TableHead className="font-bold text-xs uppercase tracking-wider">Reference</TableHead>
             <TableHead className="font-bold text-xs uppercase tracking-wider">Name</TableHead>
             <TableHead className="font-bold text-xs uppercase tracking-wider">Organization</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Event</TableHead>
+            <TableHead className="font-bold text-xs uppercase tracking-wider">Inquiry</TableHead>
             <TableHead className="font-bold text-xs uppercase tracking-wider">Status</TableHead>
             <TableHead className="font-bold text-xs uppercase tracking-wider">Follow-up</TableHead>
             <TableHead className="font-bold text-xs uppercase tracking-wider">Priority</TableHead>
@@ -78,7 +81,7 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
         <TableBody>
           {leads.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={selectionMode ? 8 : 7} className="text-center py-8 text-muted-foreground">
+              <TableCell colSpan={selectionMode ? 10 : 9} className="text-center py-8 text-muted-foreground">
                 No leads found
               </TableCell>
             </TableRow>
@@ -113,6 +116,27 @@ export const LeadTableView: React.FC<LeadTableViewProps> = ({
                   </TableCell>
                   <TableCell className="font-semibold">{lead.full_name}</TableCell>
                   <TableCell className="text-muted-foreground">{lead.organization}</TableCell>
+                  <TableCell className="max-w-[200px]">
+                    {lead.event ? (
+                      <div className="text-sm">
+                        <p className="font-medium truncate text-xs">{lead.event.title}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {format(new Date(lead.event.start_date), 'MMM dd, yyyy')}
+                        </p>
+                      </div>
+                    ) : lead.training_interest ? (
+                      <span className="text-xs text-muted-foreground italic">Legacy</span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {lead.inquiry_type ? (
+                      <InquiryTypeBadge inquiryType={lead.inquiry_type} compact />
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <StatusBadge status={lead.status} />
                   </TableCell>

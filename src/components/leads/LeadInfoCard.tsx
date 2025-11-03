@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MapPin, GraduationCap, FileText, Globe, User2, StickyNote } from 'lucide-react';
+import { Mail, Phone, MapPin, Calendar, FileText, Globe, User2, StickyNote } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { useLeadMutations } from '@/hooks/useLeadMutations';
+import { InquiryTypeBadge } from './InquiryTypeBadge';
+import { format } from 'date-fns';
 import type { Lead } from '@/types/lead';
 
 interface LeadInfoCardProps {
@@ -32,84 +34,83 @@ export const LeadInfoCard: React.FC<LeadInfoCardProps> = ({ lead }) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 pt-6 relative">
-        {/* Contact Information */}
+        {/* Contact Information - Compact Grid Layout */}
         <div className="space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-            <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
             Contact Details
-            <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
           </h3>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group">
-              <div className="p-2 rounded-md bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors">
-                <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-              </div>
-              <a href={`mailto:${lead.email}`} className="text-sm hover:underline hover:text-primary transition-colors font-medium">
+          <div className="grid grid-cols-1 gap-2">
+            <div className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 transition-colors">
+              <Mail className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+              <a href={`mailto:${lead.email}`} className="text-sm hover:underline hover:text-primary transition-colors font-medium truncate">
                 {lead.email}
               </a>
             </div>
-            <div className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group">
-              <div className="p-2 rounded-md bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
-                <Phone className="h-4 w-4 text-green-600 dark:text-green-400" />
-              </div>
+            <div className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 transition-colors">
+              <Phone className="h-3.5 w-3.5 text-green-600 dark:text-green-400 flex-shrink-0" />
               <a href={`tel:${lead.phone}`} className="text-sm hover:underline hover:text-primary transition-colors font-medium">
                 {lead.phone}
               </a>
             </div>
-            <div className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group">
-              <div className="p-2 rounded-md bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
-                <MapPin className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-              </div>
+            <div className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 transition-colors">
+              <MapPin className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 flex-shrink-0" />
               <span className="text-sm font-medium">{lead.country}</span>
             </div>
           </div>
         </div>
 
-        {/* Training Interest */}
+        {/* Event & Inquiry Type - Compact Side by Side */}
         <div className="space-y-3">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-            <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
-            Training Interest
-            <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            Registration Details
           </h3>
-          <div className="flex items-start gap-3 p-3 rounded-md bg-gradient-to-r from-orange-500/5 to-transparent border border-orange-500/20">
-            <div className="p-2 rounded-md bg-orange-500/10">
-              <GraduationCap className="h-4 w-4 text-orange-600 dark:text-orange-400" />
-            </div>
-            <span className="text-sm font-medium pt-1.5">{lead.training_interest}</span>
+          <div className="space-y-2">
+            {/* Event Information */}
+            {lead.event ? (
+              <div className="flex items-start gap-2 p-2.5 rounded-md bg-gradient-to-r from-orange-500/5 to-transparent border border-orange-500/20">
+                <Calendar className="h-3.5 w-3.5 text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold">{lead.event.title}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {format(new Date(lead.event.start_date), 'MMM dd, yyyy')} • {lead.event.location}
+                  </p>
+                </div>
+              </div>
+            ) : lead.training_interest ? (
+              <div className="flex items-center gap-2 p-2 rounded-md bg-muted/30">
+                <span className="text-xs text-muted-foreground">Legacy: {lead.training_interest}</span>
+              </div>
+            ) : null}
+
+            {/* Inquiry Type */}
+            {lead.inquiry_type && (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Type:</span>
+                <InquiryTypeBadge inquiryType={lead.inquiry_type} />
+              </div>
+            )}
+
+            {/* Source - Inline */}
+            {lead.source && (
+              <div className="flex items-center gap-2 p-2 rounded-md hover:bg-muted/50 transition-colors">
+                <Globe className="h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400 flex-shrink-0" />
+                <span className="text-xs">
+                  <span className="text-muted-foreground">Source:</span> <span className="font-medium">{lead.source}</span>
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Source */}
-        {lead.source && (
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-              <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
-              Source
-              <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
-            </h3>
-            <div className="flex items-center gap-3 p-2 rounded-md hover:bg-muted/50 transition-colors group">
-              <div className="p-2 rounded-md bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-colors">
-                <Globe className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
-              </div>
-              <span className="text-sm font-medium">{lead.source}</span>
-            </div>
-          </div>
-        )}
-
-        {/* Message */}
+        {/* Message - Only if exists */}
         {lead.message && (
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-              <div className="h-px flex-1 bg-gradient-to-r from-border to-transparent" />
-              Inquiry Message
-              <div className="h-px flex-1 bg-gradient-to-l from-border to-transparent" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Additional Notes
             </h3>
-            <div className="flex items-start gap-3 p-3 rounded-md bg-muted/30 border">
-              <div className="p-2 rounded-md bg-slate-500/10 flex-shrink-0">
-                <FileText className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-              </div>
-              <p className="text-sm whitespace-pre-wrap leading-relaxed pt-1">{lead.message}</p>
+            <div className="flex items-start gap-2 p-2.5 rounded-md bg-muted/30 border">
+              <FileText className="h-3.5 w-3.5 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5" />
+              <p className="text-sm whitespace-pre-wrap leading-relaxed">{lead.message}</p>
             </div>
           </div>
         )}

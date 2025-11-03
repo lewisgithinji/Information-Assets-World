@@ -22,14 +22,28 @@ export const leadFormSchema = z.object({
   country: z.string()
     .min(1, "Please select a country"),
 
-  training_interest: z.string()
-    .min(1, "Please select a training interest"),
+  // New: Event ID replaces training_interest
+  event_id: z.string()
+    .uuid("Please select an event"),
+
+  // New: Inquiry type dropdown
+  inquiry_type: z.enum([
+    'send_writeup',
+    'contact_discuss',
+    'group_registration',
+    'corporate_training',
+    'register_now',
+    'just_browsing',
+  ], {
+    errorMap: () => ({ message: "Please select what you'd like us to do" })
+  }),
 
   source: z.string().optional(),
 
+  // Message is now optional (max 500 chars)
   message: z.string()
-    .min(10, "Please provide more details (at least 10 characters)")
-    .max(1000, "Message must be less than 1000 characters"),
+    .max(500, "Message must be less than 500 characters")
+    .optional(),
 });
 
 export type LeadFormData = z.infer<typeof leadFormSchema>;

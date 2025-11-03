@@ -39,7 +39,9 @@ export interface Lead {
   phone: string;
   organization: string;
   country: string;
-  training_interest: string;
+  training_interest: string; // Legacy field - replaced by event_id and inquiry_type
+  event_id?: string; // Reference to events table
+  inquiry_type?: string; // Type of inquiry: send_writeup, contact_discuss, register_now, etc.
   status: LeadStatus;
   priority: LeadPriority;
   verified: boolean;
@@ -91,10 +93,14 @@ export interface LeadStats {
 export interface LeadFilters {
   status?: LeadStatus[];
   country?: string[];
-  training_interest?: string;
+  training_interest?: string; // Legacy - keeping for backward compatibility
+  event_id?: string; // Filter by specific event
+  inquiry_type?: string[]; // Filter by inquiry types (multi-select)
   assigned_to?: string;
   follow_up_status?: 'overdue' | 'today' | 'this_week' | 'none';
+  followUpStatus?: ('overdue' | 'today' | 'this_week' | 'none')[]; // Array version for multi-select
   date_from?: string;
   date_to?: string;
+  dateRange?: [Date, Date]; // Date range tuple
   search?: string;
 }

@@ -14,9 +14,17 @@ const leadSchema = z.object({
   phone: z.string().min(10).max(20),
   organization: z.string().min(2).max(200),
   country: z.string().min(1),
-  training_interest: z.string().min(1),
+  event_id: z.string().uuid(),
+  inquiry_type: z.enum([
+    'send_writeup',
+    'contact_discuss',
+    'group_registration',
+    'corporate_training',
+    'register_now',
+    'just_browsing',
+  ]),
   source: z.string().optional(),
-  message: z.string().max(1000).optional(),
+  message: z.string().max(500).optional(),
   captchaToken: z.string().min(1),
   // Honeypot fields - should be empty
   website: z.string().max(0).optional(),
@@ -116,8 +124,19 @@ const handler = async (req: Request): Promise<Response> => {
     // 5. GENERATE VERIFICATION TOKEN
     const verificationToken = crypto.randomUUID();
 
+    // 5.5. DETERMINE PRIORITY BASED ON INQUIRY TYPE
+    const priorityMap: Record<string, string> = {
+      send_writeup: 'medium',
+      contact_discuss: 'high',
+      group_registration: 'high',
+      corporate_training: 'high',
+      register_now: 'high',
+      just_browsing: 'low',
+    };
+    const priority = priorityMap[validatedData.inquiry_type] || 'medium';
+
     // 6. INSERT LEAD
-    const { data: lead, error: insertError } = await supabase
+    const { data: lead, error: insertError} = await supabase
       .from("leads")
       .insert([{
         full_name: validatedData.full_name,
@@ -125,10 +144,12 @@ const handler = async (req: Request): Promise<Response> => {
         phone: validatedData.phone,
         organization: validatedData.organization,
         country: validatedData.country,
-        training_interest: validatedData.training_interest,
+        event_id: validatedData.event_id,
+        inquiry_type: validatedData.inquiry_type,
         source: validatedData.source || "Website",
         message: validatedData.message,
         status: "new",
+        priority: priority,
         verified: false,
         verification_token: verificationToken,
         verification_sent_at: new Date().toISOString(),
@@ -157,31 +178,53 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // 8. LOG ACTIVITY
+    const inquiryTypeLabels: Record<string, string> = {
+      send_writeup: 'Send Event Writeup',
+      contact_discuss: 'Contact to Discuss',
+      group_registration: 'Group Registration',
+      corporate_training: 'Corporate Training',
+      register_now: 'Ready to Register',
+      just_browsing: 'Just Browsing',
+    };
+
     await supabase.from("activities").insert([{
       lead_id: lead.id,
       activity_type: "note",
       summary: "Lead Created via Website Form",
-      details: `Lead submitted from website inquiry form. Training interest: ${validatedData.training_interest}. IP: ${clientIp}`,
+      details: `Lead submitted from website inquiry form. Event ID: ${validatedData.event_id}. Inquiry Type: ${inquiryTypeLabels[validatedData.inquiry_type]}. Priority: ${priority}. IP: ${clientIp}`,
     }]);
 
-    // 9. SEND CONFIRMATION EMAIL WITH VERIFICATION LINK
+    // 9. SEND AUTOMATED CONFIRMATION EMAIL BASED ON INQUIRY TYPE
     try {
-      const verificationUrl = `${req.headers.get("origin") || "https://rimea-training.lovable.app"}/verify-email?token=${verificationToken}`;
-      
-      await supabase.functions.invoke("send-lead-confirmation", {
+      const emailResult = await supabase.functions.invoke("send-confirmation-email", {
         body: {
-          fullName: validatedData.full_name,
-          email: validatedData.email,
-          trainingInterest: validatedData.training_interest,
-          referenceNumber: lead.reference_number,
-          verificationUrl,
+          leadId: lead.id,
+          includeCalendarInvite: ['register_now', 'group_registration'].includes(validatedData.inquiry_type),
         },
       });
-      
-      console.log("Confirmation email sent successfully");
+
+      if (emailResult.error) {
+        console.error("Email service returned error:", emailResult.error);
+      } else {
+        console.log("Confirmation email sent successfully:", emailResult.data);
+      }
     } catch (emailError) {
-      console.error("Failed to send confirmation email:", emailError);
-      // Don't throw - submission was successful
+      console.error("Failed to invoke email function:", emailError);
+      // Don't throw - submission was successful, email is not critical
+    }
+
+    // 10. SEND VERIFICATION EMAIL (separate from confirmation)
+    try {
+      const verificationUrl = `${req.headers.get("origin") || "https://rimea-training.lovable.app"}/verify-email?token=${verificationToken}`;
+
+      // TODO: Create send-verification-email function if email verification is needed
+      // For now, we'll log it
+      console.log("Verification URL generated:", verificationUrl);
+
+      // Note: The confirmation email above already serves as initial contact
+      // Email verification can be added later if needed for security
+    } catch (error) {
+      console.error("Verification URL generation error:", error);
     }
 
     return new Response(

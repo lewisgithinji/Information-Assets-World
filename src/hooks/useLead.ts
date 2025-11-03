@@ -36,7 +36,10 @@ export const useLead = (leadId: string | undefined) => {
 
       const { data: lead, error } = await supabase
         .from('leads')
-        .select('*')
+        .select(`
+          *,
+          event:events(id, title, start_date, end_date, location, event_type, category)
+        `)
         .eq('id', leadId)
         .single();
       

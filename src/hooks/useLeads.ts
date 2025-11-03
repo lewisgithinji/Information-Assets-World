@@ -4,7 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 export interface LeadFilters {
   status?: string[];
   country?: string[];
-  training_interest?: string;
+  event_id?: string;
+  inquiry_type?: string[];
   assigned_to?: string;
   search?: string;
   dateRange?: [Date, Date];
@@ -17,7 +18,10 @@ export const useLeads = (filters?: LeadFilters) => {
     queryFn: async () => {
       let query = supabase
         .from('leads')
-        .select('*')
+        .select(`
+          *,
+          event:events(id, title, start_date, end_date, location, event_type)
+        `)
         .order('created_at', { ascending: false });
 
       // Apply filters
@@ -28,11 +32,15 @@ export const useLeads = (filters?: LeadFilters) => {
       if (filters?.country && filters.country.length > 0) {
         query = query.in('country', filters.country);
       }
-      
-      if (filters?.training_interest) {
-        query = query.eq('training_interest', filters.training_interest);
+
+      if (filters?.event_id) {
+        query = query.eq('event_id', filters.event_id);
       }
-      
+
+      if (filters?.inquiry_type && filters.inquiry_type.length > 0) {
+        query = query.in('inquiry_type', filters.inquiry_type);
+      }
+
       if (filters?.assigned_to) {
         query = query.eq('assigned_to', filters.assigned_to);
       }
