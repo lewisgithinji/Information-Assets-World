@@ -22,7 +22,7 @@ const MegaMenu = ({ isOpen, onClose }: MegaMenuProps) => {
     },
     {
       name: 'Register for Event',
-      href: '/events',
+      href: '/register-interest',
       icon: UserPlus,
       description: 'Sign up for a conference'
     },
