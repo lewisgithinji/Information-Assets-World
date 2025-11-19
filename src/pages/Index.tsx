@@ -27,7 +27,16 @@ const Index = () => {
   const events = databaseEvents ? databaseEvents.map(adaptDatabaseEvent) : [];
   const papers = databasePapers || [];
 
-  const featuredEvents = events.filter(event => event.featured).slice(0, 3);
+  // Filter featured events to only show upcoming events (exclude past events)
+  const now = new Date();
+  const featuredEvents = events
+    .filter(event => {
+      // Only show featured events that haven't ended yet
+      const eventEndDate = new Date(event.endDate || event.startDate);
+      return event.featured && eventEndDate >= now;
+    })
+    .slice(0, 3);
+
   const latestPapers = papers.slice(0, 3);
 
   return (
