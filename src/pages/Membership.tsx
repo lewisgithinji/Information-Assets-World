@@ -4,8 +4,14 @@ import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Check, Star, Users, Globe, Calendar, FileText, Award, Network, Crown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '@/components/SEO';
+import { generateBreadcrumbSchema } from '@/utils/seo-schemas';
 
 const Membership = () => {
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://informationassetsworld.com/' },
+    { name: 'Membership', url: 'https://informationassetsworld.com/membership' }
+  ]);
   const membershipTiers = [
     {
       name: 'Individual',
@@ -127,6 +133,13 @@ const Membership = () => {
 
   return (
     <div className="py-12">
+      <SEO
+        title="Membership Plans - Join Information Assets World Network"
+        description="Join 10,000+ professionals with Individual ($99/year), Professional ($299/year), or Corporate ($999/year) membership. Access conferences, research papers, exclusive networking, and priority support."
+        keywords="membership, professional network, information management membership, records management association, data governance membership, conference access, research library"
+        url="/membership"
+        schema={breadcrumbSchema}
+      />
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16">

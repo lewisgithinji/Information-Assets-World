@@ -11,6 +11,8 @@ import EnhancedEventCard from '@/components/EnhancedEventCard';
 import { useEvents } from '@/hooks/useEvents';
 import { useEventCategories, useEventTypes } from '@/hooks/useEventCategories';
 import { adaptDatabaseEvent, UnifiedEvent } from '@/utils/eventAdapters';
+import SEO from '@/components/SEO';
+import { generateBreadcrumbSchema } from '@/utils/seo-schemas';
 
 const Events = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -129,8 +131,20 @@ const Events = () => {
     );
   }
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://informationassetsworld.com/' },
+    { name: 'Events', url: 'https://informationassetsworld.com/events' }
+  ]);
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Professional Events & Conferences - Information Assets World"
+        description="Browse 78+ annual conferences, workshops, and networking events for information management professionals. Filter by type, category, and location. Register for upcoming events worldwide."
+        keywords="information management conferences, records management events, data governance workshops, professional networking, industry conferences, training events"
+        url="/events"
+        schema={breadcrumbSchema}
+      />
       <PageHero
         title="Professional Events"
         description="Join industry leaders at conferences, exhibitions, and networking events worldwide"

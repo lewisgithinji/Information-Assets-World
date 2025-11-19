@@ -15,6 +15,8 @@ import { useFeaturedBlogPosts } from '@/hooks/useBlogPosts';
 import { useSponsors } from '@/hooks/useSponsors';
 import { adaptDatabaseEvent } from '@/utils/eventAdapters';
 import conferenceImage from '@/assets/conference-image.jpg';
+import SEO from '@/components/SEO';
+import { organizationSchema, generateWebsiteSchema } from '@/utils/seo-schemas';
 
 const Index = () => {
   const { data: databaseEvents } = useEvents();
@@ -41,6 +43,13 @@ const Index = () => {
 
   return (
     <div>
+      <SEO
+        title="Information Assets World - Global Conference & Research Network"
+        description="Join the world's leading network for information asset management, records management, and data governance professionals. Access 78+ annual conferences, 200+ research papers, and connect with 10,000+ global members."
+        keywords="information assets, records management, data governance, compliance, digital transformation, conference, research papers, networking, professional development"
+        url="/"
+        schema={generateWebsiteSchema}
+      />
       <Hero />
       
       {/* Enhanced Statistics Section */}
