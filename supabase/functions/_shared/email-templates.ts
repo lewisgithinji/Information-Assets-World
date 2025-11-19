@@ -416,6 +416,206 @@ export const justBrowsingTemplate = (data: EmailData): EmailTemplate => {
 };
 
 /**
+ * TEMPLATE 7: Membership Individual
+ */
+export const membershipIndividualTemplate = (data: EmailData): EmailTemplate => {
+  const content = `
+    <p>Thank you for your interest in joining Information Assets World Network!</p>
+
+    <p>We're excited that you're considering our <strong>Individual Membership</strong> at <strong>$99/year</strong>.</p>
+
+    <div style="background-color: #dbeafe; border-left: 4px solid #2563eb; padding: 20px; margin: 20px 0; border-radius: 4px;">
+      <strong style="color: #1e40af;">👤 Individual Membership Benefits:</strong>
+      <ul style="margin: 10px 0 0 0; line-height: 1.8;">
+        <li>Access to all conferences and events</li>
+        <li>Research paper library access</li>
+        <li>Monthly newsletters with industry insights</li>
+        <li>Basic networking directory</li>
+        <li>Event recordings (90 days access)</li>
+        <li>Email support</li>
+      </ul>
+    </div>
+
+    <div class="reference">
+      <strong>Reference Number:</strong> ${data.referenceNumber}<br>
+      <small>Please quote this number in all future correspondence.</small>
+    </div>
+
+    <h3 style="color: #1e40af; margin-top: 30px;">📋 Next Steps:</h3>
+    <ol style="line-height: 2;">
+      <li><strong>Verification Call:</strong> Our membership team will contact you within 24 hours</li>
+      <li><strong>Membership Agreement:</strong> Review and sign your membership agreement</li>
+      <li><strong>Payment:</strong> Complete payment to activate your membership</li>
+      <li><strong>Welcome Kit:</strong> Receive your login credentials and member benefits guide</li>
+    </ol>
+
+    <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 20px; margin: 25px 0; border-radius: 4px;">
+      <strong style="color: #059669;">✨ What Happens After Activation:</strong><br>
+      <ul style="margin: 10px 0 0 0;">
+        <li>Immediate access to member portal</li>
+        <li>Welcome email with login credentials</li>
+        <li>Exclusive member-only resources</li>
+        <li>Event registration with member discounts</li>
+      </ul>
+    </div>
+
+    <p style="margin-top: 20px;">
+      If you have any questions about the membership or would like to discuss upgrading to Professional or Corporate tier, feel free to reply to this email.
+    </p>
+
+    <p style="font-weight: 600; color: #2563eb;">
+      We look forward to welcoming you to our global community!
+    </p>
+  `;
+
+  return {
+    subject: `Individual Membership Application - Information Assets World`,
+    html: emailWrapper(content, data.leadName),
+    text: `Dear ${data.leadName},\n\nThank you for your Individual Membership application ($99/year).\n\nOur team will contact you within 24 hours to complete your membership activation.\n\nReference Number: ${data.referenceNumber}\n\nBest regards,\nInformation Assets World Membership Team`,
+  };
+};
+
+/**
+ * TEMPLATE 8: Membership Professional
+ */
+export const membershipProfessionalTemplate = (data: EmailData): EmailTemplate => {
+  const content = `
+    <p>Thank you for your interest in joining Information Assets World Network!</p>
+
+    <p>Excellent choice! Our <strong>Professional Membership</strong> at <strong>$299/year</strong> provides enhanced access perfect for industry professionals.</p>
+
+    <div style="background-color: #ede9fe; border-left: 4px solid #8b5cf6; padding: 20px; margin: 20px 0; border-radius: 4px;">
+      <strong style="color: #7c3aed;">⭐ Professional Membership Benefits:</strong>
+      <ul style="margin: 10px 0 0 0; line-height: 1.8;">
+        <li><strong>Everything in Individual tier, plus:</strong></li>
+        <li>Priority event registration (book before public release)</li>
+        <li>Exclusive member webinars with industry experts</li>
+        <li>Advanced networking tools and member directory</li>
+        <li>Event recordings (1 year access)</li>
+        <li>Research collaboration tools</li>
+        <li>Professional certificate programs</li>
+        <li>Phone & email support</li>
+      </ul>
+    </div>
+
+    <div class="reference">
+      <strong>Reference Number:</strong> ${data.referenceNumber}<br>
+      <small>Please quote this number in all future correspondence.</small>
+    </div>
+
+    <h3 style="color: #1e40af; margin-top: 30px;">📋 Next Steps:</h3>
+    <ol style="line-height: 2;">
+      <li><strong>Welcome Call:</strong> Our senior membership advisor will contact you today</li>
+      <li><strong>Membership Agreement:</strong> Review and sign your professional membership agreement</li>
+      <li><strong>Payment Processing:</strong> Complete payment to activate your membership</li>
+      <li><strong>Onboarding:</strong> Receive personalized onboarding and feature walkthrough</li>
+    </ol>
+
+    <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 20px; margin: 25px 0; border-radius: 4px;">
+      <strong style="color: #059669;">🚀 Your Professional Member Journey:</strong><br>
+      <ul style="margin: 10px 0 0 0;">
+        <li>Immediate access to professional member portal</li>
+        <li>Priority registration for upcoming conferences</li>
+        <li>Access to exclusive professional development webinars</li>
+        <li>Advanced networking and collaboration features</li>
+        <li>Certificate program enrollment</li>
+      </ul>
+    </div>
+
+    <p style="margin-top: 20px;">
+      <strong>💡 Upgrade Tip:</strong> If you manage a team of 3+ professionals, consider our Corporate Membership ($999/year for up to 10 members) for even more value!
+    </p>
+
+    <p style="font-weight: 600; color: #8b5cf6;">
+      We're thrilled to have you join our professional community!
+    </p>
+  `;
+
+  return {
+    subject: `Professional Membership Application - Information Assets World`,
+    html: emailWrapper(content, data.leadName),
+    text: `Dear ${data.leadName},\n\nThank you for your Professional Membership application ($299/year).\n\nOur senior membership advisor will contact you today to complete your membership activation.\n\nReference Number: ${data.referenceNumber}\n\nBest regards,\nInformation Assets World Membership Team`,
+  };
+};
+
+/**
+ * TEMPLATE 9: Membership Corporate
+ */
+export const membershipCorporateTemplate = (data: EmailData): EmailTemplate => {
+  const content = `
+    <p>Thank you for your interest in our <strong>Corporate Membership</strong> for <strong>${data.organizationName}</strong>!</p>
+
+    <p>Excellent decision! Our Corporate Membership at <strong>$999/year</strong> provides comprehensive solutions for organizations.</p>
+
+    <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 20px 0; border-radius: 4px;">
+      <strong style="color: #d97706;">👑 Corporate Membership Benefits:</strong>
+      <ul style="margin: 10px 0 0 0; line-height: 1.8;">
+        <li><strong>Everything in Professional tier, plus:</strong></li>
+        <li><strong>Up to 10 team members</strong> - Add your entire team</li>
+        <li>Custom training programs tailored to your organization</li>
+        <li>Dedicated account manager for personalized support</li>
+        <li>Branded research portal with your company logo</li>
+        <li>Speaking opportunities at our events</li>
+        <li>Sponsorship discounts (20% off event sponsorships)</li>
+        <li>Priority support with guaranteed response times</li>
+        <li>Custom integrations and API access</li>
+      </ul>
+    </div>
+
+    <div class="reference">
+      <strong>Reference Number:</strong> ${data.referenceNumber}<br>
+      <small>Please quote this number in all future correspondence.</small>
+    </div>
+
+    <h3 style="color: #1e40af; margin-top: 30px;">📋 Corporate Onboarding Process:</h3>
+    <ol style="line-height: 2;">
+      <li><strong>Consultation Call:</strong> Our corporate partnerships manager will contact you today</li>
+      <li><strong>Needs Assessment:</strong> Discuss your organization's specific requirements</li>
+      <li><strong>Custom Proposal:</strong> Receive tailored membership package and pricing</li>
+      <li><strong>Agreement:</strong> Review and sign corporate membership agreement</li>
+      <li><strong>Payment:</strong> Flexible payment terms available (quarterly/annual)</li>
+      <li><strong>Team Setup:</strong> Add your team members and configure access</li>
+      <li><strong>Dedicated Onboarding:</strong> Personal training session for your team</li>
+    </ol>
+
+    <div style="background-color: #ecfdf5; border-left: 4px solid #10b981; padding: 20px; margin: 25px 0; border-radius: 4px;">
+      <strong style="color: #059669;">🏢 What Your Organization Gets:</strong><br>
+      <ul style="margin: 10px 0 0 0;">
+        <li>Centralized team management dashboard</li>
+        <li>Bulk event registration with corporate discounts</li>
+        <li>Dedicated account manager (direct phone/email)</li>
+        <li>Quarterly business reviews and usage reports</li>
+        <li>Custom training aligned with your objectives</li>
+        <li>Branding opportunities at events</li>
+      </ul>
+    </div>
+
+    <h3 style="color: #1e40af; margin-top: 30px;">💼 Included with Corporate Membership:</h3>
+    <ul style="line-height: 1.8;">
+      <li>Dedicated account manager available via phone and email</li>
+      <li>Priority support with 4-hour response time SLA</li>
+      <li>Quarterly strategy sessions to maximize ROI</li>
+      <li>Custom reporting and analytics</li>
+      <li>Volume discounts on additional services</li>
+    </ul>
+
+    <p style="margin-top: 20px;">
+      Our corporate partnerships manager will contact you shortly to schedule a consultation where we'll discuss your organization's specific needs and customize the perfect package for you.
+    </p>
+
+    <p style="font-weight: 600; color: #f59e0b;">
+      We look forward to partnering with ${data.organizationName}!
+    </p>
+  `;
+
+  return {
+    subject: `Corporate Membership Application - ${data.organizationName}`,
+    html: emailWrapper(content, data.leadName),
+    text: `Dear ${data.leadName},\n\nThank you for your Corporate Membership application for ${data.organizationName} ($999/year for up to 10 members).\n\nOur corporate partnerships manager will contact you today to discuss your organization's specific requirements.\n\nReference Number: ${data.referenceNumber}\n\nBest regards,\nInformation Assets World Corporate Partnerships Team`,
+  };
+};
+
+/**
  * Get email template based on inquiry type
  */
 export const getEmailTemplate = (
@@ -435,6 +635,12 @@ export const getEmailTemplate = (
       return corporateTrainingTemplate(data);
     case 'just_browsing':
       return justBrowsingTemplate(data);
+    case 'membership_individual':
+      return membershipIndividualTemplate(data);
+    case 'membership_professional':
+      return membershipProfessionalTemplate(data);
+    case 'membership_corporate':
+      return membershipCorporateTemplate(data);
     default:
       // Fallback to send_writeup template
       return sendWriteupTemplate(data);

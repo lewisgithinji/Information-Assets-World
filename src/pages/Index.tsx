@@ -166,22 +166,35 @@ const Index = () => {
           </div>
         </div>
       </section>
-      {/* Enhanced Featured Events Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
+      {/* Enhanced Featured Events Section - DARK */}
+      <section className="relative py-20 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-hidden">
+        {/* Animated grid pattern */}
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
+            backgroundSize: '50px 50px'
+          }}
+        />
+
+        {/* Gradient orbs */}
+        <div className="absolute top-20 right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+
+        <div className="relative z-10 container mx-auto px-4">
           <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 px-4 py-2">
+            <Badge className="mb-4 px-4 py-2 bg-blue-500/20 text-blue-200 border-blue-400/30">
               <Clock className="h-4 w-4 mr-2" />
               Upcoming Events
             </Badge>
-            <h2 className="text-4xl font-bold text-foreground mb-6">
+            <h2 className="text-4xl font-bold mb-6">
               Featured Professional Events
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
               Join industry leaders at our premier conferences and networking events worldwide
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {featuredEvents.length > 0 ? (
               featuredEvents.map((event) => (
@@ -191,15 +204,15 @@ const Index = () => {
               ))
             ) : (
               <div className="col-span-full text-center py-12">
-                <Calendar className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">No Events Available</h3>
-                <p className="text-muted-foreground">Featured events will be displayed here when available.</p>
+                <Calendar className="h-16 w-16 mx-auto mb-4 text-blue-300/50" />
+                <h3 className="text-xl font-semibold mb-2">No Events Available</h3>
+                <p className="text-blue-200/70">Featured events will be displayed here when available.</p>
               </div>
             )}
           </div>
-          
+
           <div className="text-center">
-            <Button asChild size="lg" className="shadow-primary">
+            <Button asChild size="lg" className="bg-white text-slate-900 hover:bg-blue-50 shadow-xl">
               <Link to="/events">
                 View All Events
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -209,10 +222,19 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Latest Research Section */}
-      <section className="py-20 bg-secondary">
-        <div className="container mx-auto px-4">
+      {/* Latest Research Section - Light with Warm Gradient Mesh */}
+      <section className="relative py-20 bg-gradient-to-br from-orange-50 via-yellow-50 to-pink-50 overflow-hidden">
+        {/* Gradient mesh blobs */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-radial from-orange-200/40 to-transparent blur-3xl animate-float" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-radial from-pink-200/40 to-transparent blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 w-80 h-80 bg-gradient-radial from-yellow-200/30 to-transparent blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+
+        <div className="relative z-10 container mx-auto px-4">
           <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4 px-4 py-2 border-orange-300 text-orange-700">
+              <FileText className="h-4 w-4 mr-2" />
+              Research Library
+            </Badge>
             <h2 className="text-4xl font-bold text-foreground mb-4">
               Latest Research Papers
             </h2>
@@ -236,7 +258,7 @@ const Index = () => {
           </div>
 
           <div className="text-center">
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="border-orange-300 hover:bg-orange-50">
               <Link to="/papers">
                 Explore Research Library
                 <FileText className="ml-2 h-5 w-5" />
@@ -246,18 +268,31 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Blog Posts Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
+      {/* Featured Blog Posts Section - DARK Purple/Indigo */}
+      <section className="relative py-20 bg-gradient-to-br from-indigo-950 via-purple-900 to-indigo-950 text-white overflow-hidden">
+        {/* Animated background pattern */}
+        <div
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)',
+            backgroundSize: '40px 40px'
+          }}
+        />
+
+        {/* Floating gradient orbs */}
+        <div className="absolute top-10 left-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-drift" />
+        <div className="absolute bottom-10 right-10 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl animate-drift" style={{ animationDelay: '3s' }} />
+
+        <div className="relative z-10 container mx-auto px-4">
           <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 px-4 py-2">
+            <Badge className="mb-4 px-4 py-2 bg-purple-500/20 text-purple-200 border-purple-400/30">
               <Newspaper className="h-4 w-4 mr-2" />
               Latest Insights
             </Badge>
-            <h2 className="text-4xl font-bold text-foreground mb-6">
+            <h2 className="text-4xl font-bold mb-6">
               Featured Blog Posts
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-purple-100 max-w-2xl mx-auto">
               Expert insights, industry trends, and best practices in information security
             </p>
           </div>
@@ -276,15 +311,15 @@ const Index = () => {
               ))
             ) : (
               <div className="col-span-full text-center py-12">
-                <Newspaper className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-xl font-semibold text-foreground mb-2">No Blog Posts Available</h3>
-                <p className="text-muted-foreground">Featured blog posts will be displayed here when available.</p>
+                <Newspaper className="h-16 w-16 mx-auto mb-4 text-purple-300/50" />
+                <h3 className="text-xl font-semibold mb-2">No Blog Posts Available</h3>
+                <p className="text-purple-200/70">Featured blog posts will be displayed here when available.</p>
               </div>
             )}
           </div>
 
           <div className="text-center">
-            <Button asChild size="lg" className="shadow-primary">
+            <Button asChild size="lg" className="bg-white text-indigo-900 hover:bg-purple-50 shadow-xl">
               <Link to="/blog">
                 View All Blog Posts
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -294,10 +329,19 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Global Network Section */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
+      {/* Global Network Section - Light with Cool Gradient Accents */}
+      <section className="relative py-20 bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 overflow-hidden">
+        {/* Cool gradient mesh blobs */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-gradient-radial from-cyan-200/30 to-transparent blur-3xl animate-float" />
+        <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-gradient-radial from-teal-200/30 to-transparent blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 right-1/3 w-72 h-72 bg-gradient-radial from-blue-200/25 to-transparent blur-3xl animate-float" style={{ animationDelay: '4s' }} />
+
+        <div className="relative z-10 container mx-auto px-4">
           <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4 px-4 py-2 border-cyan-300 text-cyan-700">
+              <Globe className="h-4 w-4 mr-2" />
+              Worldwide Presence
+            </Badge>
             <h2 className="text-4xl font-bold text-foreground mb-4">
               Our Global Network
             </h2>
@@ -305,14 +349,14 @@ const Index = () => {
               With offices across six continents, we connect professionals worldwide
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {offices && offices.length > 0 ? (
               offices.slice(0, 4).map((office) => (
-                <Card key={office.id} className="text-center border-card-border">
+                <Card key={office.id} className="text-center border-cyan-200/50 hover:shadow-lg transition-shadow backdrop-blur-sm bg-white/80">
                   <CardHeader>
-                    <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Globe className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-gradient-to-br from-cyan-500 to-teal-500 flex items-center justify-center shadow-lg">
+                      <Globe className="h-6 w-6 text-white" />
                     </div>
                     <CardTitle className="text-lg">{office.region}</CardTitle>
                   </CardHeader>
@@ -331,9 +375,9 @@ const Index = () => {
               </div>
             )}
           </div>
-          
+
           <div className="text-center">
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="border-cyan-300 hover:bg-cyan-50">
               <Link to="/offices">
                 View All Offices
                 <Globe className="ml-2 h-5 w-5" />

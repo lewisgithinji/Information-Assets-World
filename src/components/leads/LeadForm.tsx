@@ -21,6 +21,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 interface LeadFormProps {
   onSuccess?: (referenceNumber: string) => void;
   initialEventId?: string;
+  membershipTier?: string;
 }
 
 declare global {
@@ -38,7 +39,7 @@ declare global {
   }
 }
 
-export function LeadForm({ onSuccess, initialEventId }: LeadFormProps) {
+export function LeadForm({ onSuccess, initialEventId, membershipTier }: LeadFormProps) {
   const { toast } = useToast();
   const { data: upcomingEvents, isLoading: isLoadingEvents } = useUpcomingEvents();
   const [captchaToken, setCaptchaToken] = useState<string>("");
@@ -80,6 +81,13 @@ export function LeadForm({ onSuccess, initialEventId }: LeadFormProps) {
       }
     }
   }, [initialEventId, upcomingEvents, setValue]);
+
+  // Set inquiry_type based on membership tier
+  useEffect(() => {
+    if (membershipTier) {
+      setValue("inquiry_type", `membership_${membershipTier}` as any);
+    }
+  }, [membershipTier, setValue]);
 
   // Load Cloudflare Turnstile script
   useEffect(() => {

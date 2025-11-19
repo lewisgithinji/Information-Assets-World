@@ -10,6 +10,7 @@ export default function RegisterInterest() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const eventId = searchParams.get('event');
+  const tier = searchParams.get('tier');
 
   const handleSuccess = (refNumber: string) => {
     setReferenceNumber(refNumber);
@@ -32,11 +33,13 @@ export default function RegisterInterest() {
               className="h-20 mx-auto mb-6"
             />
             <h1 className="text-4xl font-bold mb-4">
-              Register Your Interest in Training
+              {tier ? 'Join Our Membership Network' : 'Register Your Interest in Training'}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Join professionals across East Africa in enhancing their skills in Records Management,
-              Information Governance, and Data Protection with Information Assets World.
+              {tier
+                ? `Complete the form below to start your ${tier.charAt(0).toUpperCase() + tier.slice(1)} membership application. Our team will contact you within 24 hours to finalize your membership.`
+                : 'Join professionals across East Africa in enhancing their skills in Records Management, Information Governance, and Data Protection with Information Assets World.'
+              }
             </p>
           </div>
 
@@ -114,7 +117,11 @@ export default function RegisterInterest() {
             </div>
           ) : (
             /* Form State */
-            <LeadForm onSuccess={handleSuccess} initialEventId={eventId || undefined} />
+            <LeadForm
+              onSuccess={handleSuccess}
+              initialEventId={eventId || undefined}
+              membershipTier={tier || undefined}
+            />
           )}
 
           {/* Contact Info */}

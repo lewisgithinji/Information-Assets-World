@@ -3,11 +3,13 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Check, Star, Users, Globe, Calendar, FileText, Award, Network, Crown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Membership = () => {
   const membershipTiers = [
     {
       name: 'Individual',
+      slug: 'individual',
       price: 99,
       period: 'year',
       description: 'Perfect for individual professionals',
@@ -24,6 +26,7 @@ const Membership = () => {
     },
     {
       name: 'Professional',
+      slug: 'professional',
       price: 299,
       period: 'year',
       description: 'Enhanced access for industry professionals',
@@ -42,6 +45,7 @@ const Membership = () => {
     },
     {
       name: 'Corporate',
+      slug: 'corporate',
       price: 999,
       period: 'year',
       description: 'Complete solution for organizations',
@@ -190,12 +194,15 @@ const Membership = () => {
                   </CardContent>
                   
                   <CardFooter className="px-6 pb-6 mt-auto">
-                    <Button 
+                    <Button
                       className={`w-full ${tier.popular ? 'shadow-lg' : ''}`}
                       variant={tier.popular ? 'default' : 'outline'}
                       size="lg"
+                      asChild
                     >
-                      Get Started
+                      <Link to={`/register-interest?tier=${tier.slug}`}>
+                        Get Started
+                      </Link>
                     </Button>
                   </CardFooter>
                 </Card>
@@ -295,11 +302,15 @@ const Membership = () => {
               with professionals shaping the future of information management.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90">
-                Start Membership
+              <Button size="lg" className="bg-white text-primary hover:bg-white/90" asChild>
+                <Link to="/register-interest?tier=professional">
+                  Start Membership
+                </Link>
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-                Schedule Demo
+              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10" asChild>
+                <Link to="/contact">
+                  Schedule Demo
+                </Link>
               </Button>
             </div>
           </div>
