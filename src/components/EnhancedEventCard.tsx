@@ -33,7 +33,13 @@ const EnhancedEventCard = ({ event }: EnhancedEventCardProps) => {
     return colors[type.toLowerCase()] || 'bg-gray-100 text-gray-800 border-gray-200';
   };
 
-  const isUpcoming = new Date(event.startDate) > new Date();
+  const now = new Date();
+  const startDate = new Date(event.startDate);
+  const endDate = new Date(event.endDate);
+
+  const isUpcoming = startDate > now;
+  const isOngoing = startDate <= now && endDate >= now;
+  const isPast = endDate < now;
 
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 h-full flex flex-col">
@@ -48,7 +54,7 @@ const EnhancedEventCard = ({ event }: EnhancedEventCardProps) => {
             </Badge>
           )}
         </div>
-        
+
         <div className="space-y-2">
           <h3 className="font-bold text-xl text-foreground group-hover:text-primary transition-colors line-clamp-2">
             {event.title}
@@ -69,12 +75,25 @@ const EnhancedEventCard = ({ event }: EnhancedEventCardProps) => {
               <Clock className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium text-primary">Event Starts In:</span>
             </div>
-            <CountdownTimer 
+            <CountdownTimer
               eventTitle={event.title}
               startDate={event.startDate}
               location={event.location}
               className="text-xs"
             />
+          </div>
+        )}
+
+        {/* Ongoing event indicator */}
+        {isOngoing && (
+          <div className="bg-green-500/10 rounded-lg p-3 border border-green-500/20">
+            <div className="flex items-center gap-2">
+              <div className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+              </div>
+              <span className="text-sm font-semibold text-green-700 dark:text-green-400">Happening Now</span>
+            </div>
           </div>
         )}
 
@@ -108,8 +127,8 @@ const EnhancedEventCard = ({ event }: EnhancedEventCardProps) => {
 
       <CardFooter className="pt-4">
         <div className="flex flex-col sm:flex-row gap-2 w-full">
-          <Button 
-            asChild 
+          <Button
+            asChild
             className="flex-1 shadow-primary hover:shadow-lg transition-all"
           >
             <Link to={`/events/${event.id}`}>
@@ -117,15 +136,15 @@ const EnhancedEventCard = ({ event }: EnhancedEventCardProps) => {
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
-          
-          {isUpcoming && (
+
+          {(isUpcoming || isOngoing) && (
             <Button
               asChild
-              variant="outline"
+              variant={isOngoing ? "default" : "outline"}
               className="flex-1 hover:bg-primary hover:text-primary-foreground transition-all"
             >
               <Link to={`/register-interest?event=${event.id}`}>
-                Register Now
+                {isOngoing ? "Join Now" : "Register Now"}
               </Link>
             </Button>
           )}
