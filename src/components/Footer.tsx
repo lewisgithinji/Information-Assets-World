@@ -15,9 +15,12 @@ const Footer = () => {
 
   const eventTypes = [
     { name: 'Conferences', href: '/events?type=conference' },
+    { name: 'Workshops', href: '/events?type=workshop' },
+    { name: 'Webinars', href: '/events?type=webinar' },
+    { name: 'Seminars', href: '/events?type=seminar' },
     { name: 'Exhibitions', href: '/events?type=exhibition' },
+    { name: 'Networking Events', href: '/events?type=networking' },
     { name: 'Gala Events', href: '/events?type=gala' },
-    { name: 'Vendor Events', href: '/events?type=vendor' },
   ];
 
   return (
