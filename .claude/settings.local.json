@@ -29,7 +29,8 @@
       "Bash(git rm:*)",
       "Bash(del /f nul 2)",
       "Bash(.gitignore)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

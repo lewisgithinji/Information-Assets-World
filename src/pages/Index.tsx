@@ -31,10 +31,13 @@ const Index = () => {
 
   // Filter featured events to only show upcoming events (exclude past events)
   const now = new Date();
+  now.setHours(0, 0, 0, 0); // Set to start of today for fair comparison
+
   const featuredEvents = events
     .filter(event => {
       // Only show featured events that haven't ended yet
       const eventEndDate = new Date(event.endDate || event.startDate);
+      eventEndDate.setHours(23, 59, 59, 999); // Set to end of the event day
       return event.featured && eventEndDate >= now;
     })
     .slice(0, 3);
