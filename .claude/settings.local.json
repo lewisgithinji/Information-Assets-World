@@ -28,7 +28,8 @@
       "Bash(timeout 10 bash:*)",
       "Bash(git rm:*)",
       "Bash(del /f nul 2)",
-      "Bash(.gitignore)"
+      "Bash(.gitignore)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

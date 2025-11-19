@@ -1,0 +1,68 @@
+{
+  "name": "Information Assets World",
+  "short_name": "IAW",
+  "description": "Global network for information asset management, records management, and data governance professionals",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0F172A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "business",
+    "education",
+    "productivity"
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Browse Events",
+      "short_name": "Events",
+      "description": "View upcoming conferences and events",
+      "url": "/events",
+      "icons": [
+        {
+          "src": "/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Join Membership",
+      "short_name": "Membership",
+      "description": "Become a member of our network",
+      "url": "/membership",
+      "icons": [
+        {
+          "src": "/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Research Papers",
+      "short_name": "Papers",
+      "description": "Access our research library",
+      "url": "/papers",
+      "icons": [
+        {
+          "src": "/lovable-uploads/7edae356-b2d1-4e7d-96ba-9dcadd8a7061.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
