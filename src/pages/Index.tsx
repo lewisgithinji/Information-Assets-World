@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowRight, Calendar, FileText, Globe, Users, Star, TrendingUp, BarChart3, Award, Clock, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Hero from '@/components/Hero';
-import EventCard from '@/components/EventCard';
+import EventCard from '@/components/EnhancedEventCard';
 import PaperCard from '@/components/PaperCard';
 import BlogCard from '@/components/blog/BlogCard';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
