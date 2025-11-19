@@ -17,6 +17,7 @@ export default function AdminSponsors() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [tierFilter, setTierFilter] = useState<string>('all');
+  const [typeFilter, setTypeFilter] = useState<string>('all');
 
   const { data: sponsors, isLoading, refetch: refetchSponsors } = useQuery({
     queryKey: ['admin-sponsors'],
@@ -34,7 +35,8 @@ export default function AdminSponsors() {
   const filteredSponsors = sponsors?.filter(sponsor => {
     const matchesSearch = sponsor.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTier = tierFilter === 'all' || sponsor.tier === tierFilter;
-    return matchesSearch && matchesTier;
+    const matchesType = typeFilter === 'all' || sponsor.type === typeFilter;
+    return matchesSearch && matchesTier && matchesType;
   }) || [];
 
   const handleDelete = async (id: string, name: string) => {
@@ -71,6 +73,15 @@ export default function AdminSponsors() {
     }
   };
 
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'sponsor': return 'bg-purple-100 text-purple-800 border-purple-300';
+      case 'partner': return 'bg-blue-100 text-blue-800 border-blue-300';
+      case 'client': return 'bg-green-100 text-green-800 border-green-300';
+      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+    }
+  };
+
   if (isLoading) {
     return (
       <AdminLayout>
@@ -86,12 +97,12 @@ export default function AdminSponsors() {
     <AdminLayout>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Manage Sponsors</h1>
-          <p className="text-muted-foreground">Create and manage event sponsors</p>
+          <h1 className="text-3xl font-bold text-foreground">Manage Organizations</h1>
+          <p className="text-muted-foreground">Manage sponsors, partners, and clients</p>
         </div>
         <Button onClick={() => navigate('/admin/sponsors/new')} className="shadow-primary">
           <Plus className="h-4 w-4 mr-2" />
-          Add New Sponsor
+          Add New Organization
         </Button>
       </div>
 
@@ -110,6 +121,17 @@ export default function AdminSponsors() {
                 />
               </div>
             </div>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="sponsor">Sponsors</SelectItem>
+                <SelectItem value="partner">Partners</SelectItem>
+                <SelectItem value="client">Clients</SelectItem>
+              </SelectContent>
+            </Select>
             <Select value={tierFilter} onValueChange={setTierFilter}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by tier" />
@@ -149,9 +171,14 @@ export default function AdminSponsors() {
             <Card key={sponsor.id} className="group hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start mb-2">
-                  <Badge className={getTierColor(sponsor.tier)} variant="outline">
-                    {sponsor.tier}
-                  </Badge>
+                  <div className="flex gap-2">
+                    <Badge className={getTierColor(sponsor.tier)} variant="outline">
+                      {sponsor.tier}
+                    </Badge>
+                    <Badge className={getTypeColor(sponsor.type)} variant="outline">
+                      {sponsor.type}
+                    </Badge>
+                  </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <Button
                       size="sm"

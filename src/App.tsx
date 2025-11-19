@@ -41,6 +41,10 @@ import AdminEventCategoryForm from "./pages/admin/AdminEventCategoryForm";
 import AdminEventTypeForm from "./pages/admin/AdminEventTypeForm";
 import AdminLeads from "./pages/admin/AdminLeads";
 import AdminLeadDetail from "./pages/admin/AdminLeadDetail";
+import AdminBlog from "./pages/admin/AdminBlog";
+import AdminBlogForm from "./pages/admin/AdminBlogForm";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import UserProfile from "./pages/UserProfile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
@@ -76,6 +80,8 @@ const App = () => (
                 <Route path="/events/:slug" element={<EventDetails />} />
                 <Route path="/papers" element={<Papers />} />
                 <Route path="/papers/:slug" element={<PaperDetails />} />
+                <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
                 <Route path="/membership" element={<Membership />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/offices" element={<Offices />} />
@@ -116,7 +122,12 @@ const App = () => (
                 {/* Lead Management Routes */}
                 <Route path="/admin/leads" element={<AdminProtectedRoute><AdminLeads /></AdminProtectedRoute>} />
                 <Route path="/admin/leads/:id" element={<AdminProtectedRoute><AdminLeadDetail /></AdminProtectedRoute>} />
-                
+
+                {/* Blog Management Routes */}
+                <Route path="/admin/blog" element={<AdminProtectedRoute><AdminBlog /></AdminProtectedRoute>} />
+                <Route path="/admin/blog/new" element={<AdminProtectedRoute><AdminBlogForm /></AdminProtectedRoute>} />
+                <Route path="/admin/blog/:id/edit" element={<AdminProtectedRoute><AdminBlogForm /></AdminProtectedRoute>} />
+
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

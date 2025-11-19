@@ -1,15 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Calendar, FileText, Globe, Users, Star, TrendingUp, BarChart3, Award, Clock } from 'lucide-react';
+import { ArrowRight, Calendar, FileText, Globe, Users, Star, TrendingUp, BarChart3, Award, Clock, Newspaper } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Hero from '@/components/Hero';
 import EventCard from '@/components/EventCard';
 import PaperCard from '@/components/PaperCard';
+import BlogCard from '@/components/blog/BlogCard';
 import { AnimatedCounter } from '@/components/AnimatedCounter';
 import { useEvents } from '@/hooks/useEvents';
 import { usePapers } from '@/hooks/usePapers';
 import { useOffices } from '@/hooks/useOffices';
+import { useFeaturedBlogPosts } from '@/hooks/useBlogPosts';
+import { useSponsors } from '@/hooks/useSponsors';
 import { adaptDatabaseEvent } from '@/utils/eventAdapters';
 import conferenceImage from '@/assets/conference-image.jpg';
 
@@ -17,11 +20,13 @@ const Index = () => {
   const { data: databaseEvents } = useEvents();
   const { data: databasePapers } = usePapers();
   const { data: offices } = useOffices();
-  
+  const { data: featuredBlogPosts } = useFeaturedBlogPosts(3);
+  const { data: sponsors } = useSponsors();
+
   // Use only database events
   const events = databaseEvents ? databaseEvents.map(adaptDatabaseEvent) : [];
   const papers = databasePapers || [];
-  
+
   const featuredEvents = events.filter(event => event.featured).slice(0, 3);
   const latestPapers = papers.slice(0, 3);
 
@@ -215,7 +220,7 @@ const Index = () => {
               Cutting-edge research in information management and data governance
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {latestPapers.length > 0 ? (
               latestPapers.map((paper) => (
@@ -229,12 +234,60 @@ const Index = () => {
               </div>
             )}
           </div>
-          
+
           <div className="text-center">
             <Button asChild variant="outline" size="lg">
               <Link to="/papers">
                 Explore Research Library
                 <FileText className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Blog Posts Section */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <Badge variant="outline" className="mb-4 px-4 py-2">
+              <Newspaper className="h-4 w-4 mr-2" />
+              Latest Insights
+            </Badge>
+            <h2 className="text-4xl font-bold text-foreground mb-6">
+              Featured Blog Posts
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Expert insights, industry trends, and best practices in information security
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {featuredBlogPosts && featuredBlogPosts.length > 0 ? (
+              featuredBlogPosts.map((post) => (
+                <div key={post.id} className="animate-fade-in">
+                  <BlogCard
+                    post={post}
+                    showExcerpt={true}
+                    showCategory={true}
+                    showAuthor={false}
+                  />
+                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <Newspaper className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">No Blog Posts Available</h3>
+                <p className="text-muted-foreground">Featured blog posts will be displayed here when available.</p>
+              </div>
+            )}
+          </div>
+
+          <div className="text-center">
+            <Button asChild size="lg" className="shadow-primary">
+              <Link to="/blog">
+                View All Blog Posts
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
           </div>
@@ -367,14 +420,52 @@ const Index = () => {
       {/* Partnership Section */}
       <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4">
-          <div className="text-center">
+          <div className="text-center mb-12">
             <h2 className="text-2xl font-bold text-foreground mb-4">
-              Building Strategic Partnerships
+              Trusted By Leading Organizations
             </h2>
-            <p className="text-muted-foreground">
-              Connecting with leading organizations to advance information management excellence
+            <p className="text-muted-foreground mb-8">
+              Partnering with industry leaders, sponsors, and clients to advance information management excellence
             </p>
           </div>
+
+          {sponsors && sponsors.length > 0 ? (
+            <div className="relative overflow-hidden py-4">
+              <div className="flex gap-8 animate-scroll-logos">
+                {[...sponsors, ...sponsors].map((sponsor, index) => (
+                  <div
+                    key={`${sponsor.id}-${index}`}
+                    className="flex-shrink-0 w-48 h-24 flex items-center justify-center p-4 bg-background rounded-lg hover:shadow-lg transition-shadow duration-300"
+                  >
+                    {sponsor.logo_url ? (
+                      <a
+                        href={sponsor.website_url || '#'}
+                        target={sponsor.website_url ? '_blank' : undefined}
+                        rel={sponsor.website_url ? 'noopener noreferrer' : undefined}
+                        className="flex items-center justify-center w-full h-full"
+                      >
+                        <img
+                          src={sponsor.logo_url}
+                          alt={sponsor.name}
+                          className="max-w-full max-h-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
+                        />
+                      </a>
+                    ) : (
+                      <div className="text-center w-full">
+                        <p className="text-sm font-medium text-muted-foreground truncate">{sponsor.name}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">
+                Partner organizations will be displayed here
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </div>

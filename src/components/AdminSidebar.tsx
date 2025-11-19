@@ -1,15 +1,16 @@
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { 
-  Calendar, 
-  FileText, 
-  Users, 
-  Award, 
+import {
+  Calendar,
+  FileText,
+  Users,
+  Award,
   Building,
   Shield,
   LayoutDashboard,
   ChevronLeft,
-  ClipboardList
+  ClipboardList,
+  Newspaper
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRole } from '@/hooks/useRole';
@@ -36,12 +37,17 @@ const AdminSidebar = () => {
       icon: FileText
     },
     {
+      name: 'Blog',
+      href: '/admin/blog',
+      icon: Newspaper
+    },
+    {
       name: 'Speakers',
       href: '/admin/speakers',
       icon: Users
     },
     {
-      name: 'Sponsors',
+      name: 'Organizations',
       href: '/admin/sponsors',
       icon: Award
     },

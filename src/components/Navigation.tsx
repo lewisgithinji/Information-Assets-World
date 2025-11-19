@@ -24,6 +24,7 @@ const Navigation = () => {
     { name: 'Home', href: '/' },
     { name: 'Events', href: '/events', hasMegaMenu: true },
     { name: 'Research Papers', href: '/papers' },
+    { name: 'Blog', href: '/blog' },
     { name: 'About', href: '/about' },
     { name: 'Global Offices', href: '/offices' },
     { name: 'Contact', href: '/contact' },
