@@ -1,4 +1,4 @@
-import { onCLS, onFID, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
+import { onCLS, onINP, onFCP, onLCP, onTTFB, Metric } from 'web-vitals';
 
 // Send Web Vitals to analytics endpoint
 function sendToAnalytics(metric: Metric) {
@@ -37,7 +37,7 @@ function sendToAnalytics(metric: Metric) {
 export function reportWebVitals() {
   // Core Web Vitals
   onCLS(sendToAnalytics); // Cumulative Layout Shift
-  onFID(sendToAnalytics); // First Input Delay
+  onINP(sendToAnalytics); // Interaction to Next Paint
   onLCP(sendToAnalytics); // Largest Contentful Paint
 
   // Other Web Vitals
