@@ -1,73 +1,203 @@
-# Welcome to your Lovable project
+# Information Assets World
 
-## Project info
+A comprehensive event management and professional networking platform designed for the information management industry. This enterprise-grade solution powers conferences, exhibitions, workshops, and professional development events across multiple countries.
 
-**URL**: https://lovable.dev/projects/96db0f5f-8ef9-4960-8ead-e79a8b7fb693
+## Live Demo
 
-## How can I edit this code?
+**Production URL**: [informationassetsworld.com](https://informationassetsworld.com)
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+### Event Management
+- Multi-day conference and event scheduling
+- Real-time countdown timers for upcoming events
+- "Happening Now" live event indicators with animated status
+- Automatic past event filtering from featured sections
+- Support for 7+ event types: Conferences, Workshops, Webinars, Seminars, Exhibitions, Networking Events, and Gala Events
+- Dynamic event registration with lead capture
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/96db0f5f-8ef9-4960-8ead-e79a8b7fb693) and start prompting.
+### Content Management
+- Research papers and publications library
+- Blog/news management system with featured posts
+- Speaker and agenda management
+- Sponsor and partner showcases
+- Multi-image galleries for events
 
-Changes made via Lovable will be committed automatically to this repo.
+### Membership System
+- Tiered membership plans (Individual, Corporate, Enterprise)
+- Member benefits and access control
+- Secure authentication with role-based permissions
 
-**Use your preferred IDE**
+### Lead Management (CRM)
+- Comprehensive lead capture forms
+- Lead scoring and qualification
+- Follow-up tracking and reminders
+- Email notification system via Resend
+- Admin dashboard with analytics
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### SEO & Performance
+- Dynamic sitemap generation for all content
+- Structured data (JSON-LD) for events, organizations, and breadcrumbs
+- Open Graph and Twitter Card meta tags
+- Core Web Vitals tracking (CLS, FID, LCP, FCP, TTFB)
+- PWA-ready with offline support
+- Gzip/Brotli compression
+- Code splitting and lazy loading
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Security
+- Row Level Security (RLS) policies
+- Security audit logging
+- Session management
+- Input validation and sanitization
 
-Follow these steps:
+## Tech Stack
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+| Category | Technologies |
+|----------|-------------|
+| **Frontend** | React 18, TypeScript, Vite |
+| **Styling** | Tailwind CSS, shadcn/ui |
+| **Backend** | Supabase (PostgreSQL, Auth, Storage, Edge Functions) |
+| **State Management** | TanStack Query (React Query) |
+| **Forms** | React Hook Form, Zod validation |
+| **Email** | Resend API |
+| **SEO** | React Helmet Async, Dynamic Sitemap |
+| **Performance** | Web Vitals, Service Workers |
+| **Deployment** | Vercel / Cloudflare Pages |
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Architecture
 
-# Step 3: Install the necessary dependencies.
-npm i
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ui/             # shadcn/ui primitives
+│   ├── admin/          # Admin panel components
+│   ├── blog/           # Blog-related components
+│   └── leads/          # Lead management components
+├── hooks/              # Custom React hooks
+├── pages/              # Route pages
+│   └── admin/          # Admin dashboard pages
+├── integrations/       # Third-party integrations
+│   └── supabase/       # Supabase client & types
+├── utils/              # Utility functions
+└── assets/             # Static assets
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+supabase/
+├── migrations/         # Database schema migrations
+└── functions/          # Edge Functions (Deno)
+```
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Supabase account
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/lewisgithinji/don-iaw.git
+
+# Navigate to project directory
+cd don-iaw
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
+
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-**Use GitHub Codespaces**
+### Build for Production
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+# Generate sitemap and build
+npm run build
 
-## What technologies are used for this project?
+# Preview production build
+npm run preview
+```
 
-This project is built with:
+## Database Migrations
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```bash
+# Push migrations to Supabase
+cd supabase
+npx supabase db push
+```
 
-## How can I deploy this project?
+## Key Differentiators
 
-Simply open [Lovable](https://lovable.dev/projects/96db0f5f-8ef9-4960-8ead-e79a8b7fb693) and click on Share -> Publish.
+- **Enterprise-Ready**: Built for organizations managing multiple events across regions
+- **Industry-Focused**: Tailored for information management, records management, and data governance sectors
+- **Scalable Architecture**: Serverless backend with edge functions for global performance
+- **Compliance-Ready**: Security audit trails and data protection features
+- **Multi-Tenant Capable**: Architecture supports white-label deployments
 
-## Can I connect a custom domain to my Lovable project?
+## Use Cases
 
-Yes, you can!
+This platform is ideal for:
+- Professional associations and industry bodies
+- Conference and exhibition organizers
+- Corporate training and workshop providers
+- Academic institutions hosting symposiums
+- Government agencies managing public events
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Screenshots
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+*Contact for demo access and screenshots*
+
+## Deployment
+
+The application can be deployed to any static hosting provider:
+
+- **Vercel**: Connect your GitHub repository for automatic deployments
+- **Cloudflare Pages**: Optimal for global edge distribution
+- **Netlify**: Simple drag-and-drop or Git-based deployment
+
+## Support & Customization
+
+For enterprise deployments, white-label solutions, or custom development:
+
+**Contact the development team for:**
+- Custom feature development
+- White-label branding
+- Multi-tenant configurations
+- Integration with existing systems
+- Training and onboarding
+
+## Credits
+
+### Development
+
+**SirLewis** - Lead Developer & Architect
+[https://sirlewis.pages.dev/](https://sirlewis.pages.dev/)
+
+### Client & Domain Expertise
+
+**Datacare Solutions** - Information Management Specialists
+[https://datacare.co.ke](https://datacare.co.ke)
+
+---
+
+## License
+
+This project is proprietary software. All rights reserved.
+
+For licensing inquiries, please contact the development team.
+
+---
+
+*Built with precision for the information management industry*
